@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <meta content="blogger" name="generator">
+  <title>PikiranKitaSemua</title>
+  
+  <!-- Basic Skin Styles -->
+  <style>
+    /* Basic Skin Styles */
+    body {
+      font-family: 'Open Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #ffecd2 0%, #fcb69f 100%);
+      color: #333;
+    }
+    header {
+      background-color: #1e88e5;
+      color: #fff;
+      padding: 20px 0;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    header h1 {
+      font-size: 2.5em;
+      margin: 0;
+    }
+    main {
+      margin: 30px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
+      text-align: center; /* Center the content */
+    }
+    h2 {
+      color: #1e88e5;
+    }
+    footer {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      font-size: 0.7em; /* Font size for footer, reduced */
+    }
+    .random-section {
+      margin-bottom: 20px;
+    }
+    .randomizer-box {
+      font-size: 24px;
+      padding: 10px;
+      background-color: #f8f8f8;
+      border-radius: 5px;
+      margin: 10px 0;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, background-color 0.3s;
+    }
+    .randomizer-box:hover {
+      transform: scale(1.05);
+      background-color: #e0f7fa;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #1e88e5;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      border-radius: 5px;
+      margin-top: 20px; /* Add space above button */
+      transition: background-color 0.3s, transform 0.3s;
+    }
+    button:hover {
+      transform: scale(1.1);
+      background-color: #0d47a1;
+    }
+    
+    /* Responsive Styles */
+    @media (max-width: 600px) {
+      main {
+        margin: 10px;
+        padding: 15px;
+      }
+      header h1 {
+        font-size: 2em;
+      }
+      button {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>PikiranKitaSemua</h1>
+    <p>Randomize Everything!</p>
+  </header>
+
+  <main>
+    <h2>Mulai dan Dapatkan!</h2>
+    
+    <div class='random-section'>
+      <h3>Hewan Peliharaan</h3>
+      <div class='randomizer-box' id='random-animal'>...</div>
+    </div>
+
+    <div class='random-section'>
+      <h3>Makanan Favoritmu</h3>
+      <div class='randomizer-box' id='random-food'>...</div>
+    </div>
+
+    <div class='random-section'>
+      <h3>Negara Impianmu</h3>
+      <div class='randomizer-box' id='random-country'>...</div>
+    </div>
+
+    <button id='randomizer-button' aria-label='Start or stop the randomizer' onclick='toggleRandomizer()'>Mulai</button>
+    
+  </main>
+
+  <footer>
+    <p id='footer-text'>Website ini dibuat untuk <span id='footer-update'>undian dan game</span> random generate karya Pikirankitasemua Tim.</p>
+  </footer>
+
+  <!-- JavaScript for Randomizers -->
+  <script>
+    let randomInterval;
+    let lastAnimal, lastFood, lastCountry;
+    const animals = ["Kucing", "Anjing", "Harimau", "Singa", "Gajah", "Kuda", "Burung", "Kambing", "Sapi", "Ikan"];
+    const foods = ["Nasi Goreng", "Rendang", "Sate", "Gado-Gado", "Bakso", "Nasi Uduk", "Soto", "Ayam Penyet", "Tempe", "Kerak Telor"];
+    const countries = ["Indonesia", "United States", "Brazil", "Japan", "Germany", "Australia", "France", "India", "Mexico", "Canada",
+                      "China", "Russia", "Italy", "Spain", "South Africa", "Argentina", "Turkey", "Thailand", "Vietnam", "Philippines",
+                      "United Kingdom", "Saudi Arabia", "Egypt", "Sweden", "Norway", "Finland", "Netherlands", "Belgium", "Switzerland", 
+                      "Greece", "Ireland", "Portugal", "New Zealand", "Malaysia", "Singapore", "South Korea", "Israel", "UAE", "Pakistan", 
+                      "Bangladesh", "Colombia", "Chile", "Peru", "Czech Republic", "Hungary", "Austria", "Denmark", "Finland"];
+
+    // Function to generate random values
+    function generateRandomValues() {
+      lastAnimal = animals[Math.floor(Math.random() * animals.length)];
+      lastFood = foods[Math.floor(Math.random() * foods.length)];
+      lastCountry = countries[Math.floor(Math.random() * countries.length)];
+
+      // Update the footer with the generated values
+      updateFooter(lastAnimal, lastFood, lastCountry);
+    }
+
+    function displayRandomValues() {
+      document.getElementById("random-animal").innerHTML = lastAnimal;
+      document.getElementById("random-food").innerHTML = lastFood;
+      document.getElementById("random-country").innerHTML = lastCountry;
+    }
+
+    // Update footer with predetermined values
+    function updateFooter(animal, food, country) {
+      const footerUpdate = document.getElementById("footer-update");
+      footerUpdate.innerHTML = `${animal},${food},${country}`;
+    }
+
+    // Reset the footer back to its initial state
+    function resetFooter() {
+      const footerUpdate = document.getElementById("footer-update");
+      footerUpdate.innerHTML = "undian dan game"; // Initial text
+    }
+
+    // Function to show the changing random values in animation
+    function getRandomValues() {
+      document.getElementById("random-animal").innerHTML = animals[Math.floor(Math.random() * animals.length)];
+      document.getElementById("random-food").innerHTML = foods[Math.floor(Math.random() * foods.length)];
+      document.getElementById("random-country").innerHTML = countries[Math.floor(Math.random() * countries.length)];
+    }
+
+    // Mulai or Berhenti
+    function toggleRandomizer() {
+      const button = document.getElementById("randomizer-button");
+
+      if (button.innerHTML === "Mulai") {
+        button.innerHTML = "Berhenti";
+        generateRandomValues(); // Generate and store values on start
+        randomInterval = setInterval(getRandomValues, 30); // Animate new values every 50ms
+      } else {
+        button.innerHTML = "Mulai";
+        clearInterval(randomInterval); // Stop the animation
+        displayRandomValues(); // Display the predetermined values
+        resetFooter(); // Reset footer to its initial state
+      }
+    }
+  </script>
+</body>
+</html>
