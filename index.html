@@ -77,16 +77,21 @@
         #suggestions-dropdown li:hover {
             background-color: #444;
         }
-
+        .header-title {
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 5px 5px;
+        }
+        
         .movies-list {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 80px 15px 10px;
+            padding: 5px 15px 10px;
             overflow-y: auto;
             width: 100%;
             height: calc(100vh - 60px);
-            margin-top: 60px;
+            margin-top: 5px;
             box-sizing: border-box;
         }
 
@@ -211,14 +216,6 @@
                 width: 60%;
             }
         }
-
-        .header-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #fff;
-            margin-top: 20px;
-            text-align: center;
-        }
     </style>
 </head>
 <body>
@@ -235,8 +232,8 @@
         </div>
     </div>
 
-    <div class="header-title">Top Chart TMDB</div>
-
+    <div class="header-title"><h1>Best Movie of the Year</h1></div>
+    <d>List of the Best Movies of All Time</d>
     <div class="movies-list" id="movies-list">
         <!-- Daftar film akan dimuat disini -->
     </div>
