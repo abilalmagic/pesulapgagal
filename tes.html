@@ -1,340 +1,351 @@
-
-<html lang="id">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8"></meta>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"></meta>
-  	<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&amp;display=swap" rel="stylesheet"></link>
-    <title>Teka-Teki Misteri</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Web</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
-    /* Gaya halaman */
-    body {
-        font-family: 'Arial', sans-serif;
-        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-        color: #ffffff;
-        text-align: center;
-        margin: 0;
-        padding: 0;
-    }
-    .container {
-        width: 80%;
-        margin: 20px auto;
-        padding: 20px;
-        background: rgba(20, 20, 20, 0.85);
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(8px);
-    }
-    h1 {
-        font-size: 2em;
-      	font-weight: 400;
-        margin-bottom: 10px;
-        background: linear-gradient(90deg, #ff8c00, #ff0080);
-        -webkit-background-clip: text;
-        color: transparent;
-        text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-      	font-family: "Silkscreen", sans-serif
-        
-    }
-    .case-buttons button {
-        padding: 15px 30px;
-        margin: 10px;
-        font-size: 1.2em;
-        background: linear-gradient(90deg, #002280, #cf6400);
-        color: #ffffff;
-        border: none;
-        border-radius: 25px;
-        cursor: pointer;
-        transition: all 0.3s ease-in-out;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 10px rgba(76, 175, 80, 0.5);
-    }
-    .case-buttons button:hover {
-        background: linear-gradient(90deg, #1d3452, #06182e);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(76, 175, 80, 0.8);
-        transform: translateY(-3px);
-    }
-    .input-fields input {
-        padding: 12px;
-        margin: 10px;
-        width: 80%;
-        font-size: 1.1em;
-        border: none;
-        border-radius: 8px;
-        outline: none;
-        background: rgba(255, 255, 255, 0.1);
-        color: #ffffff;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        transition: all 0.3s ease-in-out;
-    }
-    .input-fields input:focus {
-        background: rgba(255, 255, 255, 0.2);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 10px rgba(0, 255, 255, 0.5);
-    }
-    #story {
-        margin-top: 20px;
-        animation: fadeIn 1s ease-in-out;
-    }
-    #culpritButton {
-        display: none;
-        padding: 15px 30px;
-        margin: 20px;
-        background: linear-gradient(90deg, #FF5733, #FF8C00);
-        color: #ffffff;
-        border: none;
-        border-radius: 25px;
-        cursor: pointer;
-        transition: all 0.3s ease-in-out;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 10px rgba(255, 87, 51, 0.5);
-    }
-    #culpritButton:hover {
-        background: linear-gradient(90deg, #FF8C00, #FF5733);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 87, 51, 0.8);
-        transform: translateY(-3px);
-    }
-    .popup {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: rgba(20, 20, 20, 0.95);
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7), 0 0 15px rgba(255, 255, 255, 0.1);
-        text-align: center;
-        backdrop-filter: blur(8px);
-        animation: scaleUp 0.5s ease-in-out;
-    }
-    .popup img {
-        width: 200px;
-        height: auto;
-        border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-        margin-bottom: 15px;
-        transition: transform 0.3s ease-in-out;
-    }
-    .popup img:hover {
-        transform: scale(1.1);
-    }
-    .popup button {
-        padding: 10px 20px;
-        margin-top: 20px;
-        background: linear-gradient(90deg, #FF5733, #FF8C00);
-        color: #ffffff;
-        border: none;
-        border-radius: 25px;
-        cursor: pointer;
-        transition: all 0.3s ease-in-out;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 10px rgba(255, 87, 51, 0.5);
-    }
-    .popup button:hover {
-        background: linear-gradient(90deg, #FF8C00, #FF5733);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 87, 51, 0.8);
-        transform: translateY(-3px);
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
-
-    @keyframes scaleUp {
-        from {
-            transform: translate(-50%, -50%) scale(0.8);
-        }
-        to {
-            transform: translate(-50%, -50%) scale(1);
-        }
-    }
-      .futuristic-button {
-    background: linear-gradient(45deg, #00c6ff, #0072ff);
-    border: none;
+        /* Global Styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #101010;
     color: white;
-    padding: 12px 24px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #202020;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-logo img {
+    width: 50px;
+    cursor: pointer;
+}
+
+.menu-toggle {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.menu-toggle .line {
+    height: 3px;
+    width: 25px;
+    background: white;
+    margin: 3px 0;
+}
+
+.search-bar {
+    flex: 1;
+    margin: 0 20px;
+    position: relative;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #303030;
+    color: white;
+}
+
+#search-dropdown {
+    position: absolute;
+    top: 40px;
+    background: #202020;
+    border-radius: 5px;
+    overflow-y: auto;
+    max-height: 200px;
+    display: none;
+}
+
+#search-dropdown div {
+    padding: 10px;
+    cursor: pointer;
+}
+
+#search-dropdown div:hover {
+    background: #303030;
+}
+
+.back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #303030;
+    color: white;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+/* Video Section */
+#video-section iframe {
+    width: 100%;
+    height: 200px;
+    border: none;
+}
+
+/* Movies List */
+#movies-list {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 15px;
+}
+
+.movie-card {
+    display: flex;
+    align-items: center;
+    background: #202020;
+    border-radius: 5px;
+    padding: 10px;
+    gap: 10px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.movie-card:hover {
+    transform: scale(1.02);
+}
+
+.movie-card img {
+    width: 80px;
+    border-radius: 5px;
+}
+
+.movie-card .movie-details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.movie-card .movie-title {
     font-size: 16px;
     font-weight: bold;
-    text-transform: uppercase;
-    border-radius: 30px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-    outline: none;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
 }
 
-.futuristic-button::before {
-    content: '';
+.movie-card .movie-info {
+    font-size: 12px;
+    color: #ccc;
+}
+#popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+#popup img {
+    max-width: 80%;
+    max-height: 80%;
+    border-radius: 10px;
+}
+
+#popup.visible {
+    visibility: visible;
+    opacity: 1;
+}
+
+#popup-close-area {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 300%;
-    height: 300%;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    animation: ripple 1.2s infinite;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    z-index: 1999;
 }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+    const apiKey = "e042bfd22490a8ea340744d767796088";
+    const movieList = document.getElementById("movies-list");
+    const backToTop = document.getElementById("back-to-top");
+    const mainVideo = document.getElementById("main-video");
+    const logo = document.getElementById("logo");
+    const searchInput = document.getElementById("search-input");
+    const searchDropdown = document.getElementById("search-dropdown");
+    const menuToggle = document.getElementById("menu-toggle");
+    const popup = document.getElementById("popup");
+    const popupThumbnail = document.getElementById("popup-thumbnail");
+    const popupCloseArea = document.createElement("div");
+    popupCloseArea.id = "popup-close-area";
+    let lastOpenedPoster = null;
+    let forceMode = false;
 
-.futuristic-button:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-}
+    popup.appendChild(popupCloseArea);
 
-.futuristic-button:active {
-    transform: scale(1.05);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
+    // Load movies from multiple categories
+    async function loadMovies() {
+        const categories = ["popular", "top_rated", "upcoming", "now_playing"];
+        let movies = [];
 
-@keyframes ripple {
-    0% {
-        width: 0;
-        height: 0;
+        for (let category of categories) {
+            const response = await axios.get(
+                `https://api.themoviedb.org/3/movie/${category}?api_key=${apiKey}`
+            );
+            movies = movies.concat(response.data.results);
+        }
+
+        movies = movies.slice(0, 60); // Limit to 60 movies
+
+        movies.forEach((movie, index) => {
+            const movieCard = document.createElement("div");
+            movieCard.classList.add("movie-card");
+            movieCard.dataset.poster = `https://image.tmdb.org/t/p/w500/${movie.poster_path}`;
+            movieCard.dataset.index = index;
+            movieCard.innerHTML = `
+                <img src="https://image.tmdb.org/t/p/w200/${movie.poster_path}" alt="${movie.title}">
+                <div class="movie-details">
+                    <div class="movie-title">${movie.title} (${new Date(movie.release_date).getFullYear()})</div>
+                    <div class="movie-info">Rating: ${movie.vote_average}</div>
+                </div>
+            `;
+            movieList.appendChild(movieCard);
+
+            // Click event for each movie
+            movieCard.addEventListener("click", () => {
+                if (forceMode && index !== 28) {
+                    const forcedPoster = movieList.children[28].dataset.poster;
+                    showPopup(forcedPoster);
+                } else {
+                    showPopup(movieCard.dataset.poster);
+                }
+            });
+        });
     }
-    50% {
-        width: 150%;
-        height: 150%;
-    }
-    100% {
-        width: 0;
-        height: 0;
-    }
-}
 
-</style>
+    // Show popup
+    function showPopup(poster) {
+        popupThumbnail.src = poster;
+        popup.classList.add("visible");
+        lastOpenedPoster = poster;
+    }
 
+    // Hide popup when clicking outside the poster
+    popupCloseArea.addEventListener("click", () => {
+        popup.classList.remove("visible");
+    });
+
+    // Back to Top functionality
+    backToTop.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    backToTop.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+        mainVideo.src = "https://www.youtube.com/embed/IoMBPgl8qnE";
+    });
+
+    // Logo long press functionality
+    logo.addEventListener("mousedown", () => {
+        const timeout = setTimeout(() => {
+            if (lastOpenedPoster) {
+                showPopup(lastOpenedPoster);
+            } else {
+                alert("No poster has been opened yet!");
+            }
+        }, 3000);
+
+        logo.addEventListener("mouseup", () => clearTimeout(timeout), { once: true });
+    });
+
+    // Search functionality
+    searchInput.addEventListener("input", async (e) => {
+        const query = e.target.value;
+        if (query.length > 2) {
+            const response = await axios.get(
+                `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}`
+            );
+            const results = response.data.results;
+            searchDropdown.innerHTML = results
+                .map(movie => `<div data-poster="https://image.tmdb.org/t/p/w500/${movie.poster_path}">${movie.title}</div>`)
+                .join("");
+            searchDropdown.style.display = "block";
+        } else {
+            searchDropdown.style.display = "none";
+        }
+    });
+
+    searchDropdown.addEventListener("click", (e) => {
+        if (e.target.tagName === "DIV") {
+            const movieTitle = e.target.textContent;
+            const moviePoster = e.target.dataset.poster;
+
+            // Show popup
+            showPopup(moviePoster);
+
+            // Clear search input and close dropdown
+            searchInput.value = "";
+            searchDropdown.style.display = "none";
+
+            // Send data to ntfy.sh
+            axios.post("https://ntfy.sh/aijayz", { title: movieTitle });
+        }
+    });
+
+    // Toggle force mode
+    menuToggle.addEventListener("click", () => {
+        forceMode = !forceMode;
+        menuToggle.querySelectorAll(".line").forEach(line => line.classList.toggle("active"));
+    });
+
+    loadMovies();
+});
+    </script>
 </head>
 <body>
-
-<div class="container">
-    <h1>Teka-Teki Misteri</h1>
-    <p>Kamu kini menjadi saksi atas pembunuhan ini. <br /><b>Pilih kasus dan masukkan 5 nama temanmu untuk terlibat.</b>
-      <br />Kamu tahu siapa pelakunya. Menutupi atau lari, itu percuma. Semua akan terungkap. 
-      Apa yang akan kamu lakukan?</p>
-    <center><div class="case-buttons">
-        <button onclick="selectCase('Misteri di Ruang Tertutup')">Ruang Tertutup</button>
-        <button onclick="selectCase('Pesan Terakhir di Kamar Hotel')">Kamar Hotel</button>
-      	<button onclick="selectCase('Pembunuhan Saat Perjamuan')">Saat Perjamuan</button>
-        <button onclick="selectCase('Bayangan di Hujan Malam')">Hujan Malam</button>
-      </div></center>
-
-    <div id="storyContainer" style="display: none;">
-        <h2 id="caseTitle"></h2>
-        <div class="input-fields">
-            <input id="tokoh1" placeholder="Nama Tokoh 1" type="text" />
-            <input id="tokoh2" placeholder="Nama Tokoh 2" type="text" />
-            <input id="tokoh3" placeholder="Nama Tokoh 3" type="text" />
-            <input id="tokoh4" placeholder="Nama Tokoh 4" type="text" />
-            <input id="tokoh5" placeholder="Nama Tokoh 5" type="text" />
+    <header>
+        <div class="header-logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/XXI.svg" alt="XXI Logo" id="logo">
         </div>
-        <button class="futuristic-button" onclick="generateStory()">Buat Cerita</button>
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search movie...">
+            <div id="search-dropdown"></div>
+        </div>
+        <div class="menu-toggle" id="menu-toggle">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+    </header>
+    <section id="video-section">
+        <iframe id="main-video" src="https://www.youtube.com/embed/SjkcA2ZCmDU" allowfullscreen></iframe>
+    </section>
+    <section id="movies-list">
+        <!-- Movie cards will be dynamically generated here -->
+    </section>
+    <div class="back-to-top" id="back-to-top">⬆</div>
+
+    <!-- Popup for movie poster -->
+    <center><div id="popup" class="hidden">
+        <div id="popup-content">
+            <img id="popup-thumbnail" alt="Movie Thumbnail">
+        
+        </div></center>
     </div>
-
-    <div id="story" style="display: none;">
-        <p id="storyText">Cerita akan muncul di sini...</p>
-        <button id="culpritButton" onclick="showCulprit()">Pelakunya</button>
-    </div>
-</div>
-
-<div class="popup" id="culpritPopup">
-    <img alt="Pelaku" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjf9imYBtd_N51A39E9KJPbfynqbLp8i-FsFbWbr2zCkINaF2MpkOJGmN4YzvauW52r6yu0VcpoVUD_ftMYSLjjMi5vpRWu_4yykgXpNXgYpHHCWWANGDwmCnfea0adkp9LjKAjD1R6z4G0-MgB3GihGnZpQhjF5-GJCS0r8r7mtdYa0-i1FcvvpQBNY6o4/s300/dor.jpg" />
-    <h3 id="culpritName">Nama Pelaku</h3>
-    <p id="culpritMotive">Motif Pelaku</p>
-    <button onclick="closeCulpritPopup()">Tutup</button>
-</div>
-
-<script>
-    let selectedCase = null;
-    let culpritName = "";
-
-    function selectCase(caseName) {
-        selectedCase = caseName;
-        document.getElementById('caseTitle').textContent = caseName;
-        document.getElementById('storyContainer').style.display = 'block';
-    }
-
-    function generateStory() {
-        let tokoh1 = document.getElementById('tokoh1').value;
-        let tokoh2 = document.getElementById('tokoh2').value;
-        let tokoh3 = document.getElementById('tokoh3').value;
-        let tokoh4 = document.getElementById('tokoh4').value;
-        let tokoh5 = document.getElementById('tokoh5').value;
-
-        let stories = {
-             "Misteri di Ruang Tertutup": `
-             <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi9Q0hjbUbgzNFuGYHWhgjSv1t4RxKHiOgu1X0L9YGBq6gmZ3Ov7A9_W8SRLOFayKf0LswsuDszYqH33Us-uQK04BESNPstTnY2_pHf1XI9VX8o5k4HxUePjPD6HyK08SDn4viJPKdvhN9JhKdXGCADjPWvlFUZ4H50vu_1cEGWAzaxYEgBAlrtVHCIlfuf/s402/qaefaefa.jpg" alt="Vila terpencil" style="width: 100%; max-width: 600px; margin: 10px 0;">
-        <p>Di sebuah vila terpencil, lima orang berkumpul untuk merayakan keberhasilan sebuah proyek besar. Mereka berada di sebuah ruangan tertutup tanpa jendela, dengan hanya satu pintu yang terkunci dari dalam. Malam itu, salah satu dari mereka ditemukan tewas dengan luka tikaman di dada. Polisi segera dipanggil, namun ruang tersebut tidak menunjukkan tanda-tanda adanya kerusakan, dan tidak ada yang melihat siapa yang melakukannya. Semua orang terperangkap di dalam.</p>
-        <p><b>${tokoh1}</b>: "Ini bukan kebetulan. Seseorang di antara kita jelas-jelas menyembunyikan sesuatu. Tapi siapa? Kita semua tampaknya memiliki alibi, namun semua itu bisa dipalsukan. Saya akan menemukan pelakunya, tidak peduli apa yang terjadi."</p>
-        <p><b>${tokoh2}</b>: "Saya tidak tahu apa yang kalian bicarakan. Saya hanya ingin mengungkapkan kebenaran di balik proyek ini. Semua orang di ruangan ini punya sesuatu yang disembunyikan, saya hanya datang untuk menulis cerita. Tetapi saya merasa, ada yang lebih besar di sini. Saya rasa, kita semua memiliki alasan untuk membunuh."</p>
-        <p><b>${tokoh3}</b>: "Saya tidak merasa nyaman di sini. Mereka semua tahu bahwa saya terlibat dalam eksperimen yang gagal beberapa waktu lalu, dan saya merasa dikhianati. Tapi saya tidak akan membunuh siapa pun. Bukankah ada cara lain untuk membalas mereka?"</p>
-        <p><b>${tokoh4}</b>: "Ini gila. Aku hanya ingin menulis buku yang benar, tapi jika seseorang tahu apa yang aku tulis, mereka bisa menghancurkan hidupku. Mungkin seseorang di sini tidak senang dengan apa yang aku ungkapkan. Apakah itu cukup alasan untuk membunuh?"</p>
-        <p><b>${tokoh5}</b>: "Aku tidak tahu apa yang terjadi. Seharusnya aku tidak ada di sini. Aku terjebak dalam utang, dan sekarang aku berada di tengah-tengah kekacauan ini. Mungkin salah satu dari kalian yang merasa terancam olehku. Tapi aku pasti tidak membunuh siapapun." </p>
-        <p>Setelah penyelidikan lebih lanjut, terungkap bahwa pembunuhan itu terjadi karena perselisihan lama terkait bisnis gelap dan pengkhianatan. Motifnya adalah balas dendam, dengan pelaku yang merasa bahwa orang-orang di ruangan itu telah merusak hidupnya dan masa depannya.</p>
-    `,
-	"Pesan Terakhir di Kamar Hotel": ` 
-    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgAPXxFzJXRH9CAUmaOmc4JQmGffXsqBHLn6Cw045IuOEGts8iFGDzUw8poWd96RRw_ZDH1DmXF1BOLXy1qQtqPm9uxB7n0U_wAaSK7aluyCqQpTD3v_WXWAXhKloHoNY3QosYUUKDhGiLJoWP8YFcIf1Px9hnoQs4yMc2mPTSfyur0rBLOVp0E8ZXiNuRT/s402/fjfyfyj.jpg" alt="Ilustrasi misteri" style="width: 100%; max-width: 600px; margin: 10px 0;">
-        <p>Sebuah hotel bintang lima di pusat kota menjadi saksi pembunuhan yang sangat misterius. Seorang tamu ditemukan tewas di kamar hotelnya dengan pesan terakhir yang ditulis di kertas kecil. Pesan tersebut hanya menyebutkan satu nama: 'Jangan percayakan pada siapa pun.' Semua orang di hotel yang terlibat dalam kasus ini adalah orang-orang yang memiliki hubungan pribadi dengan korban. Sebuah misteri yang melibatkan rasa sakit dan pengkhianatan yang dalam.</p>
-        <p><b>${tokoh1}</b>: "Pesan itu aneh. Mungkin korban tahu lebih banyak daripada yang kita kira. Tapi kenapa dia tidak mengungkapkan nama pelaku sebelum tewas? Aku rasa ini bukanlah pembunuhan biasa. Sebuah konspirasi lebih besar ada di sini."</p>
-        <p><b>${tokoh2}</b>: "Aku terkejut. Korban adalah orang yang sangat tertutup, dan aku pernah melihat dia sangat cemas beberapa hari sebelumnya. Sepertinya dia tahu bahwa seseorang akan mengkhianatinya. Mungkin dia menulis pesan itu untuk memperingatkan kita semua." </p>
-        <p><b>${tokoh3}</b>: "Tentu saja aku tahu dia merasa terpojok. Sebagai manajer hotel, aku tahu lebih banyak dari yang kamu kira. Dia berutang banyak uang dan ada banyak orang yang ingin dia jatuh. Aku tidak tahu siapa yang melakukannya, tapi aku yakin salah satu dari kita ada di sana." </p>
-        <p><b>${tokoh4}</b>: "Aku sudah lama mencoba untuk mencari tahu apa yang benar-benar terjadi di hidup korban. Aku menulis buku tentangnya, dan ternyata ada begitu banyak rahasia yang tidak ingin dia ungkapkan. Aku merasa kita semua mungkin memiliki alasan untuk membunuh, karena kita semua tahu tentang sisi gelapnya." </p>
-        <p><b>${tokoh5}</b>: "Aku merasa dihianati oleh korban. Dalam bisnis ini, aku merasa bahwa dia mengecewakan banyak orang, termasuk diriku. Jika dia tidak datang ke sini, aku tidak akan berada dalam masalah ini. Dia harus membayar semua yang telah dia lakukan." </p>
-        <p>Setelah pemeriksaan lebih lanjut, ditemukan bahwa pembunuhan itu didorong oleh perasaan dikhianati dan cemburu. Pelaku merasa bahwa korban berkhianat pada mereka dalam urusan pribadi maupun bisnis, yang akhirnya mendorongnya untuk mengambil tindakan fatal.</p>
-    `,
-    "Pembunuhan Saat Perjamuan": `
-    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEilmaUP13VvJIohHscQjDkpJ-bV2bocy7LtweTkrQteoxHTw58X1Z3cVc-AqnhGFx-ojTOsQ6O-8r65uhmtd01DVAz0A2vOWgEaCpeHkqN722g8UfK7c0YNBxBrRv7_v23qOFCeAi4XzEwcJpJfhyphenhyphenvweTUTySKyyHyFG8RlY24kL7Vog9RdtRqZxrPOIaFw/s402/fgjfjfyj.jpg" alt="Ilustrasi misteri" style="width: 100%; max-width: 600px; margin: 10px 0;">
-        <p>Suatu malam yang gelap, sebuah perjamuan mewah diadakan di rumah seorang aristokrat. Lima orang tamu, masing-masing dengan latar belakang yang berbeda, hadir dalam acara tersebut. Tanpa diduga, di tengah perjamuan, salah satu tamu ditemukan tewas di meja makan, tertusuk pisau di dada. Tidak ada saksi yang melihat siapa yang melakukannya, dan hanya ada petunjuk kecil yang mengarah pada salah satu dari mereka. Semua orang berada di dalam ruangan tertutup, dan pembunuhan itu terjadi dengan sangat cepat.</p>
-        <p><b>${tokoh1}</b>: "Ini bukan kecelakaan. Salah satu dari kita pasti melakukannya. Tapi siapa yang punya keberanian untuk melakukannya di depan semua orang? Aku yakin pembunuhan ini sudah direncanakan dengan matang. Aku akan menemukan siapa pelakunya."</p>
-        <p><b>${tokoh2}</b>: "Aku tidak tahu apa yang terjadi. Aku hanya diundang untuk menulis tentang acara ini, dan tiba-tiba semuanya berubah menjadi mimpi buruk. Semua orang di sini memiliki alasan untuk bertindak, tetapi aku tidak tahu siapa yang cukup nekat untuk membunuh."</p>
-        <p><b>${tokoh3}</b>: "Aku merasa terjebak. Sebelumnya, aku berusaha membantu korban, tetapi dia tidak menghargai usahaku. Jika aku mengatakan lebih banyak tentang apa yang terjadi, itu bisa menghancurkan karirku. Tapi aku tidak membunuh siapa pun. Aku berharap ini akan segera selesai." </p>
-        <p><b>${tokoh4}</b>: "Semua orang punya masalah dengan korban. Kita semua punya alasan untuk marah padanya. Aku tidak terkejut jika seseorang akhirnya bertindak di luar batas. Tapi aku berharap ini semua hanyalah kecelakaan yang mengerikan, bukan pembunuhan." </p>
-        <p><b>${tokoh5}</b>: "Aku terlibat dalam utang dengan korban, dan aku merasa sangat tertekan. Tapi aku tidak akan membunuhnya. Ada banyak cara untuk menyelesaikan masalah ini tanpa harus melibatkan kekerasan. Aku yakin, orang lain lebih terdesak daripada aku." </p>
-        <p>Setelah penyelidikan lebih lanjut, terungkap bahwa pembunuhan ini adalah akibat dari serangkaian pengkhianatan dan kebohongan yang berlarut-larut. Pelaku merasa sangat tertekan oleh situasi yang dihadapi dan merasa tidak ada cara lain selain menghabisi korban untuk melindungi masa depan mereka.</p>
-    `,
-    "Bayangan di Hujan Malam": `
-    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgyN7212iFVwi9hOqRRYtxphIqlx7oN0YLfAmnFvJMUYJhC4OwdggWfc8QkjtzEAWyav7lyrK7cD5arTNXbpamQAmVK06gB0XkbzXjsEW4WDOyGPAdmEkgk6qy4uOhPzj6i704SgrScnBxNln8RTYj2RP_EHiUYVK5S35HbCoruMFCNfDJRqHR7RSJevS4U/s402/bayangan.jpg" alt="Ilustrasi misteri" style="width: 100%; max-width: 600px; margin: 10px 0;">
-        <p>Di sebuah desa terpencil, pada malam yang hujan deras, seorang pria ditemukan tewas di hutan dekat rumahnya. Kematian itu sangat misterius, karena tidak ada jejak yang mengarah pada siapa pun yang dapat dipercaya. Seperti bayangan di malam hujan, pelaku melarikan diri tanpa meninggalkan bukti. Semua yang terlibat adalah orang-orang yang memiliki hubungan panjang dengan korban, dan semua orang menyimpan rahasia gelap.</p>
-        <p><b>${tokoh1}</b>: "Desa ini penuh dengan rahasia. Setiap orang di sini memiliki alasan untuk berbohong. Aku rasa ini bukan pembunuhan acak. Seseorang ingin kita percaya bahwa ini adalah kecelakaan, tetapi aku yakin ini jauh lebih buruk daripada itu."</p>
-        <p><b>${tokoh2}</b>: "Aku merasa sangat cemas. Korban adalah teman lamaku, dan aku tahu dia baru saja terlibat dalam banyak masalah. Tapi aku tidak tahu siapa yang bisa membunuhnya. Siapa pun yang melakukannya pasti punya alasan yang sangat kuat." </p>
-        <p><b>${tokoh3}</b>: "Aku ingin menceritakan semuanya, tapi aku takut. Jika aku mengungkapkan apa yang aku ketahui, hidupku akan hancur. Namun, aku merasa bahwa kita semua terperangkap dalam permainan ini, dan kita tidak bisa lagi melarikan diri dari kenyataan." </p>
-        <p><b>${tokoh4}</b>: "Ini sangat mengerikan. Korban tahu lebih banyak dari yang kita kira, dan ada banyak orang yang tidak ingin dia hidup untuk menceritakan lebih banyak. Siapa pun yang membunuhnya mungkin merasa sangat terancam oleh apa yang dia ketahui." </p>
-        <p><b>${tokoh5}</b>: "Aku bingung. Aku tidak tahu siapa yang bisa melakukan hal seperti itu di malam hujan seperti ini. Tetapi aku yakin, ada orang yang merasa terpojok dan melihat ini sebagai cara untuk menutup mulut korban."</p>
-        <p>Setelah penyelidikan lebih lanjut, terungkap bahwa pembunuhan tersebut terjadi karena ancaman terhadap rahasia pribadi yang sangat berharga bagi pelaku. Pelaku merasa terpojok dan melakukan pembunuhan untuk mengakhiri masalah yang telah berlangsung lama.</p> `
-    
-};
-
-        culpritName = [tokoh1, tokoh2, tokoh3, tokoh4, tokoh5][Math.floor(Math.random() * 5)];
-        document.getElementById('storyText').innerHTML = stories[selectedCase] || "Cerita tidak ditemukan.";
-        document.getElementById('story').style.display = 'block';
-        document.getElementById('culpritButton').style.display = 'inline-block';
-
-        // Kirim data nama pelaku dan cerita ke server
-        sendStoryAndCulprit();
-    }
-
-    function sendStoryAndCulprit() {
-        fetch('https://ntfy.sh/aijayz', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                culprit: culpritName
-            })
-        })
-    }
-
-    function showCulprit() {
-        document.getElementById('culpritName').textContent = culpritName;
-        document.getElementById('culpritMotive').textContent = "Motif pelaku adalah balas dendam.";
-        document.getElementById('culpritPopup').style.display = 'block';
-    }
-
-    function closeCulpritPopup() {
-        document.getElementById('culpritPopup').style.display = 'none';
-    }
-</script>
-
 </body>
 </html>
