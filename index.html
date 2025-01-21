@@ -145,26 +145,36 @@
         }
 
         #popup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity 0.3s, visibility 0.3s;
-        }
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column; /* Atur layout menjadi kolom */
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s, visibility 0.3s;
+}
 
-        #popup img {
-            max-width: 80%;
-            max-height: 80%;
-            border-radius: 10px;
-        }
+#popup img {
+    max-width: 80%;
+    max-height: 60%; /* Pastikan poster tidak terlalu besar */
+    border-radius: 10px;
+}
+
+#popup-synopsis {
+    margin-top: 20px; /* Jarak antara poster dan sinopsis */
+    text-align: center;
+    color: #ccc;
+    font-size: 14px;
+    max-width: 80%;
+    line-height: 1.5;
+}
 
         #popup.visible {
             visibility: visible;
@@ -221,14 +231,28 @@
                         </div>
                     `;
 
-                    movieCard.addEventListener("click", () => {
-                        // Jika force mode aktif, tampilkan poster film urutan ke-29
-                        const posterToShow = forceMode && movies[28] ? movies[28].poster_path : movie.poster_path;
+                    movieCard.addEventListener("click", async () => {
+    // Jika force mode aktif, tampilkan poster film urutan ke-29
+    const posterToShow = forceMode && movies[28] ? movies[28].poster_path : movie.poster_path;
 
-                        // Tampilkan poster dalam popup
-                        popupThumbnail.src = `https://image.tmdb.org/t/p/w500/${posterToShow}`;
-                        popup.classList.add("visible");
-                    });
+    // Tampilkan poster dalam popup
+    popupThumbnail.src = `https://image.tmdb.org/t/p/w500/${posterToShow}`;
+    popup.classList.add("visible");
+
+    // Ambil sinopsis dari TMDB
+    try {
+        const response = await axios.get(
+            `https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}`
+        );
+        const synopsis = response.data.overview || "Sinopsis tidak tersedia.";
+
+        // Tampilkan sinopsis di popup
+        document.getElementById("popup-synopsis").textContent = synopsis;
+    } catch (error) {
+        console.error("Gagal mengambil sinopsis:", error);
+        document.getElementById("popup-synopsis").textContent = "Gagal memuat sinopsis.";
+    }
+});
 
                     movieList.appendChild(movieCard);
                 });
@@ -320,6 +344,7 @@
     <div class="back-to-top" id="back-to-top"><span style="font-size: 20px;">▲</span></div>
     <div id="popup">
     <img id="popup-thumbnail" alt="Movie Thumbnail">
+    <div id="popup-synopsis"></div> <!-- Sinopsis akan muncul tepat di bawah poster -->
 </div>
-</body>
+    </body>
 </html>
