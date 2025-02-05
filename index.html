@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Web</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
         /* Global Styles */
         body {
@@ -164,7 +165,7 @@
 #popup img {
     max-width: 80%;
     max-height: 60%; /* Pastikan poster tidak terlalu besar */
-    border-radius: 10px;
+    border-radius: 30px;
 }
 
 #popup-synopsis {
@@ -180,6 +181,123 @@
             visibility: visible;
             opacity: 1;
         }
+        
+      /* Pricing Section */
+#pricing-section {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 20px;
+    background-color: #000; /* Background hitam */
+    color: #fff; /* Tulisan putih */
+}
+
+/* Card Styles */
+.card {
+    flex: 1;
+    background: #1a1a1a; /* Warna hitam abu untuk kontras */
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    min-width: 280px; /* Agar pas di layar kecil */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card:hover {
+    box-shadow: 0 6px 12px rgba(255, 0, 0, 0.3);
+    transform: scale(1.05);
+}
+
+/* Header Plan */
+.card-header {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #ff4c4c; /* Judul warna merah */
+    text-align: left; /* Rata kiri */
+}
+
+/* Features List */
+.card ul {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+    text-align: left; /* Rata kiri */
+}
+
+.card ul li {
+    display: flex;
+    align-items: center;
+    font-size: 0.9em;
+    margin-bottom: 8px;
+    color: #ccc;
+}
+
+.card ul li i {
+    color: #ff4c4c; /* Ikon warna merah */
+    font-size: 1.1em;
+    margin-right: 8px;
+}
+
+/* Footer Section (Price + Button) */
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-footer .price {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #fff;
+}
+
+.card-footer .price-btn {
+    display: inline-block;
+    padding: 10px 15px;
+    background: #ff4c4c; /* Tombol merah */
+    color: #fff; /* Tulisan putih */
+    font-size: 1em;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.3s ease;
+}
+
+.card-footer .price-btn:hover {
+    background: #e53939; /* Tombol merah lebih gelap saat hover */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #pricing-section {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .card {
+        min-width: 95%; /* Satu kartu per baris di layar kecil */
+        margin-bottom: 15px;
+    }
+}
+
+#runtext {
+    margin: 20px 0;
+    text-align: center;
+}
+
+marquee {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ff4c4c;
+    text-shadow: 0px 0px 5px rgba(255, 204, 0, 0.8);
+}
     </style>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
@@ -325,7 +443,7 @@
 <body>
     <header>
         <div class="header-logo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Cinema_XXI.svg" alt="XXI Logo" id="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Logonetflix.png/1600px-Logonetflix.png" alt="XXI Logo" id="logo">
         </div>
         <div class="search-bar">
             <input type="text" id="search-input" placeholder="Search movie...">
@@ -339,6 +457,55 @@
     </header>
     <section id="video-section">
         <iframe id="main-video" src="https://www.youtube.com/embed/qSu6i2iFMO0" allowfullscreen></iframe>
+        
+        <div id="runtext">
+    <marquee behavior="scroll" direction="left">
+        Enjoy the latest and best movies of all time. Subscribe to get the best experience with family and loved ones.
+    </marquee>
+</div>
+        
+        <section id="pricing-section">
+    <div class="card">
+        <div class="card-header">Mobile</div>
+        <ul>
+            <li><i class="fas fa-check-circle"></i> Stream on 1 mobile device at once</li>
+            <li><i class="fas fa-check-circle"></i> Standard HD video resolution</li>
+            <li><i class="fas fa-check-circle"></i> Watch only on mobile phone and tablet</li>
+            <li><i class="fas fa-check-circle"></i> 15 downloads to watch on the go</li>
+        </ul>
+        <div class="card-footer">
+            <span class="price">349K / Year</span>
+            <button class="price-btn">Select Plan</button>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">Standard</div>
+        <ul>
+            <li><i class="fas fa-check-circle"></i> Stream on 2 devices at once</li>
+            <li><i class="fas fa-check-circle"></i> Full HD video resolution</li>
+            <li><i class="fas fa-check-circle"></i> Watch on more devices, including TVs</li>
+            <li><i class="fas fa-check-circle"></i> 30 downloads to watch on the go</li>
+        </ul>
+        <div class="card-footer">
+            <span class="price">549K / Year</span>
+            <button class="price-btn">Select Plan</button>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">Ultimate</div>
+        <ul>
+            <li><i class="fas fa-check-circle"></i> Stream on 4 devices at once</li>
+            <li><i class="fas fa-check-circle"></i> 4K UHD and Dolby Atmos</li>
+            <li><i class="fas fa-check-circle"></i> Watch on more devices, including TVs</li>
+            <li><i class="fas fa-check-circle"></i> 100 downloads to watch on the go</li>
+        </ul>
+        <div class="card-footer">
+            <span class="price">829K / Year</span>
+            <button class="price-btn">Select Plan</button>
+        </div>
+    </div>
+</section>
+
     </section>
     <section id="movies-list"></section>
     <div class="back-to-top" id="back-to-top"><span style="font-size: 20px;">▲</span></div>
