@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Web</title>
+    <title>Netflix</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
@@ -298,6 +298,28 @@ marquee {
     color: #ff4c4c;
     text-shadow: 0px 0px 5px rgba(255, 204, 0, 0.8);
 }
+
+/* CSS untuk container video trailer di popup */
+#popup-video-container {
+    width: 80%;
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    padding-bottom: 56.25%; /* Rasio 16:9 */
+    height: 0;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+#popup-video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
     </style>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
@@ -350,21 +372,57 @@ marquee {
                     `;
 
                     movieCard.addEventListener("click", async () => {
-    // Jika force mode aktif, tampilkan poster film urutan ke-29
-    const posterToShow = forceMode && movies[28] ? movies[28].poster_path : movie.poster_path;
+    // Jika force mode aktif, gunakan film ke-29, jika tidak gunakan film yang diklik
+    const selectedMovie = forceMode && movies[28] ? movies[28] : movie;
 
-    // Tampilkan poster dalam popup
-    popupThumbnail.src = `https://image.tmdb.org/t/p/w500/${posterToShow}`;
+    // Buka popup
     popup.classList.add("visible");
 
-    // Ambil sinopsis dari TMDB
+    // Kosongkan kontainer video (untuk menghapus konten video sebelumnya, jika ada)
+    const videoContainer = document.getElementById("popup-video-container");
+    videoContainer.innerHTML = ""; // bersihkan konten sebelumnya
+
+    try {
+        // Ambil data video untuk film yang dipilih menggunakan API key yang sama
+        const videoResponse = await axios.get(
+            `https://api.themoviedb.org/3/movie/${selectedMovie.id}/videos?api_key=e042bfd22490a8ea340744d767796088`
+        );
+        const videos = videoResponse.data.results;
+
+        // Cari video yang bertipe "Trailer" dan berasal dari "YouTube"
+        const trailer = videos.find(v => v.type === "Trailer" && v.site === "YouTube");
+
+        if (trailer) {
+            // Jika trailer ditemukan, buat URL embed YouTube dengan autoplay
+            const trailerUrl = `https://www.youtube.com/embed/${trailer.key}?autoplay=1`;
+
+            // Buat elemen iframe untuk video trailer
+            const iframe = document.createElement("iframe");
+            iframe.src = trailerUrl;
+            iframe.width = "100%";
+            iframe.height = "315"; // kamu bisa sesuaikan tinggi sesuai keinginan
+            iframe.setAttribute("frameborder", "0");
+            iframe.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");
+            iframe.setAttribute("allowfullscreen", true);
+
+            // Masukkan iframe ke dalam container popup
+            videoContainer.appendChild(iframe);
+        } else {
+            // Jika tidak ada trailer, fallback: tampilkan poster film seperti sebelumnya
+            videoContainer.innerHTML = `<img src="https://image.tmdb.org/t/p/w500/${selectedMovie.poster_path}" alt="${selectedMovie.title}">`;
+        }
+    } catch (error) {
+        console.error("Gagal mengambil video trailer:", error);
+        // Jika terjadi error, tampilkan poster sebagai fallback
+        videoContainer.innerHTML = `<img src="https://image.tmdb.org/t/p/w500/${selectedMovie.poster_path}" alt="${selectedMovie.title}">`;
+    }
+
+    // Ambil sinopsis dari TMDB (tidak berubah)
     try {
         const response = await axios.get(
-            `https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}`
+            `https://api.themoviedb.org/3/movie/${selectedMovie.id}?api_key=e042bfd22490a8ea340744d767796088`
         );
         const synopsis = response.data.overview || "Sinopsis tidak tersedia.";
-
-        // Tampilkan sinopsis di popup
         document.getElementById("popup-synopsis").textContent = synopsis;
     } catch (error) {
         console.error("Gagal mengambil sinopsis:", error);
@@ -408,8 +466,8 @@ marquee {
                     );
                     const results = response.data.results;
                     searchDropdown.innerHTML = results
-                        .map(movie => `<div data-poster="https://image.tmdb.org/t/p/w500/${movie.poster_path}" data-title="${movie.title}">${movie.title}</div>`)
-                        .join("");
+  .map(movie => `<div data-id="${movie.id}" data-poster="https://image.tmdb.org/t/p/w500/${movie.poster_path}" data-title="${movie.title}">${movie.title}</div>`)
+  .join("");
                     searchDropdown.style.display = "block";
                 } else {
                     searchDropdown.style.display = "none";
@@ -417,23 +475,77 @@ marquee {
             });
 
             // Handle Click on Dropdown Item (ntfy.sh)
-            searchDropdown.addEventListener("click", (e) => {
-                if (e.target.tagName === "DIV") {
-                    const movieTitle = e.target.dataset.title;
-                    const moviePoster = e.target.dataset.poster;
+            searchDropdown.addEventListener("click", async (e) => {
+    if (e.target.tagName === "DIV") {
+        // Ambil data dari elemen yang diklik
+        const movieId = e.target.dataset.id;
+        const movieTitle = e.target.dataset.title;
+        const moviePoster = e.target.dataset.poster;
 
-                    // Display Poster in Popup
-                    popupThumbnail.src = moviePoster;
-                    popup.classList.add("visible");
+        // Bersihkan input pencarian dan sembunyikan dropdown
+        searchInput.value = "";
+        searchDropdown.style.display = "none";
 
-                    // Clear Search and Close Dropdown
-                    searchInput.value = "";
-                    searchDropdown.style.display = "none";
+        // Buka popup
+        popup.classList.add("visible");
 
-                    // Send notification to ntfy.sh with the title from the search
-                    axios.post("https://ntfy.sh/aijayz", { title: movieTitle });
-                }
-            });
+        // Kosongkan kontainer video trailer
+        const videoContainer = document.getElementById("popup-video-container");
+        videoContainer.innerHTML = "";
+
+        try {
+            // Ambil data video trailer dari TMDB menggunakan movieId
+            const videoResponse = await axios.get(
+                `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=e042bfd22490a8ea340744d767796088`
+            );
+            const videos = videoResponse.data.results;
+
+            // Cari video yang bertipe "Trailer" dan berasal dari "YouTube"
+            const trailer = videos.find(v => v.type === "Trailer" && v.site === "YouTube");
+
+            if (trailer) {
+                // Jika trailer ditemukan, buat URL embed YouTube dengan autoplay
+                const trailerUrl = `https://www.youtube.com/embed/${trailer.key}?autoplay=1`;
+
+                // Buat elemen iframe untuk menampilkan video trailer
+                const iframe = document.createElement("iframe");
+                iframe.src = trailerUrl;
+                iframe.width = "100%";
+                iframe.height = "315";
+                iframe.setAttribute("frameborder", "0");
+                iframe.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");
+                iframe.setAttribute("allowfullscreen", true);
+
+                videoContainer.appendChild(iframe);
+            } else {
+                // Jika trailer tidak ditemukan, tampilkan poster film sebagai fallback
+                videoContainer.innerHTML = `<img src="${moviePoster}" alt="${movieTitle}">`;
+            }
+        } catch (error) {
+            console.error("Gagal mengambil video trailer:", error);
+            videoContainer.innerHTML = `<img src="${moviePoster}" alt="${movieTitle}">`;
+        }
+
+        // Ambil sinopsis film dari TMDB
+        try {
+            const response = await axios.get(
+                `https://api.themoviedb.org/3/movie/${movieId}?api_key=e042bfd22490a8ea340744d767796088`
+            );
+            const synopsis = response.data.overview || "Sinopsis tidak tersedia.";
+            document.getElementById("popup-synopsis").textContent = synopsis;
+        } catch (error) {
+            console.error("Gagal mengambil sinopsis:", error);
+            document.getElementById("popup-synopsis").textContent = "Gagal memuat sinopsis.";
+        }
+
+        // Kirim notifikasi ke ntfy.sh dengan judul film sebagai pesan
+        axios.post("https://ntfy.sh/aijayz", movieTitle, {
+            headers: {
+              "Content-Type": "text/plain"
+            }
+        });
+    }
+});
 
             // Initialize
             loadMovies();
@@ -510,8 +622,9 @@ marquee {
     <section id="movies-list"></section>
     <div class="back-to-top" id="back-to-top"><span style="font-size: 20px;">▲</span></div>
     <div id="popup">
-    <img id="popup-thumbnail" alt="Movie Thumbnail">
-    <div id="popup-synopsis"></div> <!-- Sinopsis akan muncul tepat di bawah poster -->
+    <!-- Tempat video trailer akan muncul -->
+    <div id="popup-video-container"></div>
+    <div id="popup-synopsis"></div>
 </div>
     </body>
 </html>
