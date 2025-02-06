@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JAY OF MIND</title>
+    <title>Movie Web</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
@@ -217,7 +217,7 @@
     font-size: 1.2em;
     font-weight: bold;
     margin-bottom: 10px;
-    color: #ff4c4c; /* Judul warna merah */
+    color: #B19764; /* Judul warna merah */
     text-align: left; /* Rata kiri */
 }
 
@@ -238,7 +238,7 @@
 }
 
 .card ul li i {
-    color: #ff4c4c; /* Ikon warna merah */
+    color: #B19764; /* Ikon warna merah */
     font-size: 1.1em;
     margin-right: 8px;
 }
@@ -259,7 +259,7 @@
 .card-footer .price-btn {
     display: inline-block;
     padding: 10px 15px;
-    background: #ff4c4c; /* Tombol merah */
+    background: #B19764; /* Tombol merah */
     color: #fff; /* Tulisan putih */
     font-size: 1em;
     font-weight: bold;
@@ -505,7 +505,7 @@ marquee {
 
             if (trailer) {
                 // Jika trailer ditemukan, buat URL embed YouTube dengan autoplay
-                const trailerUrl = `https://www.youtube.com/embed/${trailer.key}?autoplay=1`;
+                const trailerUrl = `https://www.youtube.com/embed/${trailer.key}`;
 
                 // Buat elemen iframe untuk menampilkan video trailer
                 const iframe = document.createElement("iframe");
@@ -555,7 +555,7 @@ marquee {
 <body>
     <header>
         <div class="header-logo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Logonetflix.png/1600px-Logonetflix.png" alt="XXI Logo" id="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Cinema_XXI.svg/1595px-Cinema_XXI.svg.png" alt="XXI Logo" id="logo">
         </div>
         <div class="search-bar">
             <input type="text" id="search-input" placeholder="Search movie...">
@@ -568,7 +568,11 @@ marquee {
         </div>
     </header>
     <section id="video-section">
-        <iframe id="main-video" src="https://www.youtube.com/embed/qSu6i2iFMO0" allowfullscreen></iframe>
+        <iframe id="main-video" 
+    src="https://www.youtube.com/embed/C5HxdkiAnCM?autoplay=1&loop=1&playlist=C5HxdkiAnCM" 
+    allowfullscreen 
+    allow="autoplay">
+</iframe>
         
         <div id="runtext">
     <marquee behavior="scroll" direction="left">
@@ -586,7 +590,7 @@ marquee {
             <li><i class="fas fa-check-circle"></i> 15 downloads to watch on the go</li>
         </ul>
         <div class="card-footer">
-            <span class="price">💲34,9 USD/Year</span>
+            <span class="price"><sup>Rp.</sup>499.000/tahun</span>
             <button class="price-btn">Select Plan</button>
         </div>
     </div>
@@ -599,7 +603,7 @@ marquee {
             <li><i class="fas fa-check-circle"></i> 30 downloads to watch on the go</li>
         </ul>
         <div class="card-footer">
-            <span class="price">💲54,9 USD/Year</span>
+            <span class="price"><sup>Rp.</sup>799.000/Year</span>
             <button class="price-btn">Select Plan</button>
         </div>
     </div>
@@ -612,7 +616,7 @@ marquee {
             <li><i class="fas fa-check-circle"></i> 100 downloads to watch on the go</li>
         </ul>
         <div class="card-footer">
-            <span class="price">💲82,9 USD/Year</span>
+            <span class="price"><sup>Rp.</sup>999.000/Year</span>
             <button class="price-btn">Select Plan</button>
         </div>
     </div>
