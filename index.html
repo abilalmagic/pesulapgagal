@@ -1,634 +1,676 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Web</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <style>
-        /* Global Styles */
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #101010;
-            color: white;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background-color: #202020;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .header-logo img {
-            width: 150px;
-            cursor: pointer;
-        }
-
-        .menu-toggle {
-            display: flex;
-            flex-direction: column;
-            cursor: pointer;
-        }
-
-        .menu-toggle .line {
-            height: 3px;
-            width: 25px;
-            background: white;
-            margin: 3px 0;
-        }
-
-        .search-bar {
-            flex: 1;
-            margin: 0 10px;
-            position: relative;
-        }
-
-        .search-bar input {
-            width: 90%;
-            padding: 9px; /* Tinggi kolom pencarian dipendekkan */
-            border: none;
-            border-radius: 8px;
-            background-color: #303030;
-            color: white;
-        }
-
-        #search-dropdown {
-            position: absolute;
-            top: 40px;
-            background: #202020;
-            border-radius: 5px;
-            overflow-y: auto;
-            max-height: 200px;
-            display: none;
-        }
-
-        #search-dropdown div {
-            padding: 10px;
-            cursor: pointer;
-        }
-
-        #search-dropdown div:hover {
-            background: #303030;
-        }
-
-        .back-to-top {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #303030;
-            color: white;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            z-index: 1000;
-        }
-
-        /* Video Section */
-        #video-section iframe {
-            width: 100%;
-            height: 250px;
-            border: none;
-        }
-
-        /* Movies List */
-        #movies-list {
-            display: flex;
-            flex-direction: column;
-            padding: 10px;
-            gap: 15px;
-        }
-
-        .movie-card {
-            display: flex;
-            align-items: center;
-            background: #202020;
-            border-radius: 5px;
-            padding: 10px;
-            gap: 10px;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-
-        .movie-card:hover {
-            transform: scale(1.02);
-        }
-
-        .movie-card img {
-            width: 80px;
-            border-radius: 5px;
-        }
-
-        .movie-card .movie-details {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .movie-card .movie-title {
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .movie-card .movie-info {
-            font-size: 12px;
-            color: #ccc;
-        }
-
-        #popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: flex;
-    flex-direction: column; /* Atur layout menjadi kolom */
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.3s, visibility 0.3s;
-}
-
-#popup img {
-    max-width: 80%;
-    max-height: 60%; /* Pastikan poster tidak terlalu besar */
-    border-radius: 30px;
-}
-
-#popup-synopsis {
-    margin-top: 20px; /* Jarak antara poster dan sinopsis */
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Movie Web</title>  
+    <link rel="stylesheet" href="styles.css">  
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">  
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>  
+        /* Global Styles */  
+        body {  
+            margin: 0;  
+            font-family: Arial, sans-serif;  
+            background-color: #101010;  
+            color: white;  
+        }  
+  
+        header {  
+            display: flex;  
+            justify-content: space-between;  
+            align-items: center;  
+            padding: 10px;  
+            background-color: #202020;  
+            position: sticky;  
+            top: 0;  
+            z-index: 1000;  
+        }  
+  
+        .header-logo img {  
+            width: 150px;  
+            cursor: pointer;  
+        }  
+  
+        .menu-toggle {  
+            display: flex;  
+            flex-direction: column;  
+            cursor: pointer;  
+        }  
+  
+        .menu-toggle .line {  
+            height: 3px;  
+            width: 25px;  
+            background: white;  
+            margin: 3px 0;  
+        }  
+  
+        .search-bar {  
+            flex: 1;  
+            margin: 0 10px;  
+            position: relative;  
+        }  
+  
+        .search-bar input {  
+            width: 90%;  
+            padding: 9px; /* Tinggi kolom pencarian dipendekkan */  
+            border: none;  
+            border-radius: 8px;  
+            background-color: #303030;  
+            color: white;  
+        }  
+  
+        #search-dropdown {  
+            position: absolute;  
+            top: 40px;  
+            background: #202020;  
+            border-radius: 5px;  
+            overflow-y: auto;  
+            max-height: 200px;  
+            display: none;  
+        }  
+  
+        #search-dropdown div {  
+            padding: 10px;  
+            cursor: pointer;  
+        }  
+  
+        #search-dropdown div:hover {  
+            background: #303030;  
+        }  
+  
+        .back-to-top {  
+            position: fixed;  
+            bottom: 20px;  
+            right: 20px;  
+            background: #303030;  
+            color: white;  
+            border-radius: 50%;  
+            width: 50px;  
+            height: 50px;  
+            display: flex;  
+            justify-content: center;  
+            align-items: center;  
+            cursor: pointer;  
+            z-index: 1000;  
+        }  
+  
+        /* Video Section */  
+        #video-section iframe {  
+            width: 100%;  
+            height: 250px;  
+            border: none;  
+        }  
+  
+        /* Movies List */  
+        #movies-list {  
+            display: flex;  
+            flex-direction: column;  
+            padding: 10px;  
+            gap: 15px;  
+        }  
+  
+        .movie-card {  
+            display: flex;  
+            align-items: center;  
+            background: #202020;  
+            border-radius: 5px;  
+            padding: 10px;  
+            gap: 10px;  
+            cursor: pointer;  
+            transition: transform 0.3s;  
+        }  
+  
+        .movie-card:hover {  
+            transform: scale(1.02);  
+        }  
+  
+        .movie-card img {  
+            width: 80px;  
+            border-radius: 5px;  
+        }  
+  
+        .movie-card .movie-details {  
+            display: flex;  
+            flex-direction: column;  
+            gap: 5px;  
+        }  
+  
+        .movie-card .movie-title {  
+            font-size: 16px;  
+            font-weight: bold;  
+        }  
+  
+        .movie-card .movie-info {  
+            font-size: 12px;  
+            color: #ccc;  
+        }  
+  
+        #popup {  
+    position: fixed;  
+    top: 0;  
+    left: 0;  
+    width: 100%;  
+    height: 100%;  
+    background-color: rgba(0, 0, 0, 0.8);  
+    display: flex;  
+    flex-direction: column; /* Atur layout menjadi kolom */  
+    justify-content: center;  
+    align-items: center;  
+    z-index: 2000;  
+    visibility: hidden;  
+    opacity: 0;  
+    transition: opacity 0.3s, visibility 0.3s;  
+}  
+  
+#popup img {  
+    max-width: 80%;  
+    max-height: 60%; /* Pastikan poster tidak terlalu besar */  
+    border-radius: 30px;  
+}  
+  
+#popup-synopsis {  
+    margin-top: 20px; /* Jarak antara poster dan sinopsis */  
+    text-align: center;  
+    color: #ccc;  
+    font-size: 14px;  
+    max-width: 80%;  
+    line-height: 1.5;  
+}  
+  
+        #popup.visible {  
+            visibility: visible;  
+            opacity: 1;  
+        }  
+          
+      /* Pricing Section */  
+#pricing-section {  
+    display: flex;  
+    justify-content: space-around;  
+    align-items: flex-start;  
+    gap: 15px;  
+    padding: 20px;  
+    background-color: #000; /* Background hitam */  
+    color: #fff; /* Tulisan putih */  
+}  
+  
+/* Card Styles */  
+.card {  
+    flex: 1;  
+    background: #1a1a1a; /* Warna hitam abu untuk kontras */  
+    border-radius: 10px;  
+    padding: 15px;  
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);  
+    transition: transform 0.3s ease, box-shadow 0.3s ease;  
+    min-width: 280px; /* Agar pas di layar kecil */  
+    display: flex;  
+    flex-direction: column;  
+    justify-content: space-between;  
+}  
+  
+.card:hover {  
+    box-shadow: 0 6px 12px rgba(255, 0, 0, 0.3);  
+    transform: scale(1.05);  
+}  
+  
+/* Header Plan */  
+.card-header {  
+    font-size: 1.2em;  
+    font-weight: bold;  
+    margin-bottom: 10px;  
+    color: #B19764; /* Judul warna merah */  
+    text-align: left; /* Rata kiri */  
+}  
+  
+/* Features List */  
+.card ul {  
+    list-style: none;  
+    padding: 0;  
+    margin: 15px 0;  
+    text-align: left; /* Rata kiri */  
+}  
+  
+.card ul li {  
+    display: flex;  
+    align-items: center;  
+    font-size: 0.9em;  
+    margin-bottom: 8px;  
+    color: #ccc;  
+}  
+  
+.card ul li i {  
+    color: #B19764; /* Ikon warna merah */  
+    font-size: 1.1em;  
+    margin-right: 8px;  
+}  
+  
+/* Footer Section (Price + Button) */  
+.card-footer {  
+    display: flex;  
+    justify-content: space-between;  
+    align-items: center;  
+}  
+  
+.card-footer .price {  
+    font-size: 1.2em;  
+    font-weight: bold;  
+    color: #fff;  
+}  
+  
+.card-footer .price-btn {  
+    display: inline-block;  
+    padding: 10px 15px;  
+    background: #B19764; /* Tombol merah */  
+    color: #fff; /* Tulisan putih */  
+    font-size: 1em;  
+    font-weight: bold;  
+    border: none;  
+    border-radius: 5px;  
+    cursor: pointer;  
+    text-transform: uppercase;  
+    transition: background 0.3s ease;  
+}  
+  
+.card-footer .price-btn:hover {  
+    background: #e53939; /* Tombol merah lebih gelap saat hover */  
+}  
+  
+/* Responsive Design */  
+@media (max-width: 768px) {  
+    #pricing-section {  
+        flex-wrap: wrap;  
+        justify-content: center;  
+    }  
+  
+    .card {  
+        min-width: 95%; /* Satu kartu per baris di layar kecil */  
+        margin-bottom: 15px;  
+    }  
+}  
+  
+#runtext {  
+    margin: 20px 0;  
+    text-align: center;  
+}  
+  
+marquee {  
+    font-size: 16px;  
+    font-weight: bold;  
+    color: #fff;  
+    text-shadow: 0px 0px 5px rgba(255, 204, 0, 0.8);  
+}  
+  
+/* CSS untuk container video trailer di popup */  
+#popup-video-container {  
+    width: 80%;  
+    max-width: 800px;  
+    margin: 0 auto;  
+    position: relative;  
+    padding-bottom: 56.25%; /* Rasio 16:9 */  
+    height: 0;  
+    overflow: hidden;  
+    border-radius: 10px;  
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);  
+}  
+  
+#popup-video-container iframe {  
+    position: absolute;  
+    top: 0;  
+    left: 0;  
+    width: 100%;  
+    height: 100%;  
+    border: none;  
+} 
+footer {
+    background-color: #222; 
+    color: #fff;
     text-align: center;
-    color: #ccc;
+    padding: 15px 0;
     font-size: 14px;
-    max-width: 80%;
-    line-height: 1.5;
 }
 
-        #popup.visible {
-            visibility: visible;
-            opacity: 1;
-        }
-        
-      /* Pricing Section */
-#pricing-section {
-    display: flex;
-    justify-content: space-around;
-    align-items: flex-start;
-    gap: 15px;
-    padding: 20px;
-    background-color: #000; /* Background hitam */
-    color: #fff; /* Tulisan putih */
-}
-
-/* Card Styles */
-.card {
-    flex: 1;
-    background: #1a1a1a; /* Warna hitam abu untuk kontras */
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    min-width: 280px; /* Agar pas di layar kecil */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.card:hover {
-    box-shadow: 0 6px 12px rgba(255, 0, 0, 0.3);
-    transform: scale(1.05);
-}
-
-/* Header Plan */
-.card-header {
-    font-size: 1.2em;
+.footer-container a {
+    color: #B19764;
+    text-decoration: none;
     font-weight: bold;
-    margin-bottom: 10px;
-    color: #B19764; /* Judul warna merah */
-    text-align: left; /* Rata kiri */
 }
 
-/* Features List */
-.card ul {
-    list-style: none;
-    padding: 0;
-    margin: 15px 0;
-    text-align: left; /* Rata kiri */
-}
-
-.card ul li {
-    display: flex;
-    align-items: center;
-    font-size: 0.9em;
-    margin-bottom: 8px;
-    color: #ccc;
-}
-
-.card ul li i {
-    color: #B19764; /* Ikon warna merah */
-    font-size: 1.1em;
-    margin-right: 8px;
-}
-
-/* Footer Section (Price + Button) */
-.card-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.card-footer .price {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: #fff;
-}
-
-.card-footer .price-btn {
-    display: inline-block;
-    padding: 10px 15px;
-    background: #B19764; /* Tombol merah */
-    color: #fff; /* Tulisan putih */
-    font-size: 1em;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: background 0.3s ease;
-}
-
-.card-footer .price-btn:hover {
-    background: #e53939; /* Tombol merah lebih gelap saat hover */
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    #pricing-section {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .card {
-        min-width: 95%; /* Satu kartu per baris di layar kecil */
-        margin-bottom: 15px;
-    }
-}
-
-#runtext {
-    margin: 20px 0;
+.footer-container a:hover {
+    text-decoration: underline;
+} 
+/* Gunakan font Poppins untuk seluruh teks di dalam elemen ini */
+.movie-tagline {
     text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    color: #B19764; /* Warna emas */
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
-marquee {
-    font-size: 16px;
-    font-weight: bold;
-    color: #fff;
-    text-shadow: 0px 0px 5px rgba(255, 204, 0, 0.8);
+.movie-subtext {
+    font-size: 14px;
+    font-weight: 300;
+    font-family: 'Poppins', sans-serif;
+    color: #ccc; /* Warna abu-abu agar lebih soft */
+    margin-top: 5px;
 }
+    </style>  
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>  
+    <script>  
+        document.addEventListener("DOMContentLoaded", async () => {  
+            const apiKey = "e042bfd22490a8ea340744d767796088";  
+            const movieList = document.getElementById("movies-list");  
+            const backToTop = document.getElementById("back-to-top");  
+            const mainVideo = document.getElementById("main-video");  
+            const logo = document.getElementById("logo");  
+            const searchInput = document.getElementById("search-input");  
+            const searchDropdown = document.getElementById("search-dropdown");  
+            const popup = document.getElementById("popup");  
+            const popupThumbnail = document.getElementById("popup-thumbnail");  
+            const menuToggle = document.getElementById("menu-toggle");  
+            let forceMode = false;  
+            let lastScrollPosition = 0;  
+            let movies = []; // Array untuk menyimpan daftar film yang dimuat  
+  
+            // Toggle force mode  
+            menuToggle.addEventListener("click", () => {  
+                forceMode = !forceMode;  
+                menuToggle.querySelectorAll(".line").forEach(line => line.classList.toggle("active"));  
+            });  
+  
+            // Load Movies  
+            async function loadMovies() {  
+                const categories = ["popular", "top_rated", "upcoming", "now_playing"];  
+  
+                for (let category of categories) {  
+                    const response = await axios.get(  
+                        `https://api.themoviedb.org/3/movie/${category}?api_key=${apiKey}`  
+                    );  
+                    movies = movies.concat(response.data.results);  
+                }  
+  
+                movies = movies.slice(0, 60);  
+  
+                movies.forEach((movie, index) => {  
+                    const movieCard = document.createElement("div");  
+                    movieCard.classList.add("movie-card");  
+                    movieCard.dataset.poster = `https://image.tmdb.org/t/p/w500/${movie.poster_path}`;  
+                    movieCard.dataset.index = index;  
+  
+                    movieCard.innerHTML = `  
+                        <img src="https://image.tmdb.org/t/p/w200/${movie.poster_path}" alt="${movie.title}">  
+                        <div class="movie-details">  
+                            <div class="movie-title">${movie.title} (${new Date(movie.release_date).getFullYear()})</div>  
+                            <div class="movie-info">Rating: ${movie.vote_average}</div>  
+                        </div>  
+                    `;  
+  
+                    movieCard.addEventListener("click", async () => {  
+    // Jika force mode aktif, gunakan film ke-29, jika tidak gunakan film yang diklik  
+    const selectedMovie = forceMode && movies[28] ? movies[28] : movie;  
+  
+    // Buka popup  
+    popup.classList.add("visible");  
+  
+    // Kosongkan kontainer video (untuk menghapus konten video sebelumnya, jika ada)  
+    const videoContainer = document.getElementById("popup-video-container");  
+    videoContainer.innerHTML = ""; // bersihkan konten sebelumnya  
+  
+    try {  
+        // Ambil data video untuk film yang dipilih menggunakan API key yang sama  
+        const videoResponse = await axios.get(  
+            `https://api.themoviedb.org/3/movie/${selectedMovie.id}/videos?api_key=e042bfd22490a8ea340744d767796088`  
+        );  
+        const videos = videoResponse.data.results;  
+  
+        // Cari video yang bertipe "Trailer" dan berasal dari "YouTube"  
+        const trailer = videos.find(v => v.type === "Trailer" && v.site === "YouTube");  
+  
+        if (trailer) {  
+            // Jika trailer ditemukan, buat URL embed YouTube dengan autoplay  
+            const trailerUrl = `https://www.youtube.com/embed/${trailer.key}?autoplay=1`;  
+  
+            // Buat elemen iframe untuk video trailer  
+            const iframe = document.createElement("iframe");  
+            iframe.src = trailerUrl;  
+            iframe.width = "100%";  
+            iframe.height = "315"; // kamu bisa sesuaikan tinggi sesuai keinginan  
+            iframe.setAttribute("frameborder", "0");  
+            iframe.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");  
+            iframe.setAttribute("allowfullscreen", true);  
+  
+            // Masukkan iframe ke dalam container popup  
+            videoContainer.appendChild(iframe);  
+        } else {  
+            // Jika tidak ada trailer, fallback: tampilkan poster film seperti sebelumnya  
+            videoContainer.innerHTML = `<img src="https://image.tmdb.org/t/p/w500/${selectedMovie.poster_path}" alt="${selectedMovie.title}">`;  
+        }  
+    } catch (error) {  
+        console.error("Gagal mengambil video trailer:", error);  
+        // Jika terjadi error, tampilkan poster sebagai fallback  
+        videoContainer.innerHTML = `<img src="https://image.tmdb.org/t/p/w500/${selectedMovie.poster_path}" alt="${selectedMovie.title}">`;  
+    }  
+  
+    // Ambil sinopsis dari TMDB (tidak berubah)  
+    try {  
+        const response = await axios.get(  
+            `https://api.themoviedb.org/3/movie/${selectedMovie.id}?api_key=e042bfd22490a8ea340744d767796088`  
+        );  
+        const synopsis = response.data.overview || "Sinopsis tidak tersedia.";  
+        document.getElementById("popup-synopsis").textContent = synopsis;  
+    } catch (error) {  
+        console.error("Gagal mengambil sinopsis:", error);  
+        document.getElementById("popup-synopsis").textContent = "Gagal memuat sinopsis.";  
+    }  
+});  
+  
+                    movieList.appendChild(movieCard);  
+                });  
+            }  
+  
+            // Close popup  
+            popup.addEventListener("click", () => {  
+                popup.classList.remove("visible");  
+                popupThumbnail.src = "";  
+            });  
+  
+            // Back to Top  
+            backToTop.addEventListener("click", () => {  
+                lastScrollPosition = window.scrollY;  
+                window.scrollTo({ top: 0, behavior: "smooth" });  
+            });  
+  
+            // Switch video on long press  
+            backToTop.addEventListener("contextmenu", (e) => {  
+                e.preventDefault();  
+                mainVideo.src = "https://www.youtube.com/embed/nZoraXCzgz4";  
+            });  
+  
+            // Double-click logo to return to last position  
+            logo.addEventListener("dblclick", () => {  
+                window.scrollTo({ top: lastScrollPosition, behavior: "smooth" });  
+            });  
+  
+            // Search Movies and Display Dropdown  
+            searchInput.addEventListener("input", async (e) => {  
+                const query = e.target.value;  
+                if (query.length > 2) {  
+                    const response = await axios.get(  
+                        `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}`  
+                    );  
+                    const results = response.data.results;  
+                    searchDropdown.innerHTML = results  
+  .map(movie => `<div data-id="${movie.id}" data-poster="https://image.tmdb.org/t/p/w500/${movie.poster_path}" data-title="${movie.title}">${movie.title}</div>`)  
+  .join("");  
+                    searchDropdown.style.display = "block";  
+                } else {  
+                    searchDropdown.style.display = "none";  
+                }  
+            });  
+  
+            // Handle Click on Dropdown Item (ntfy.sh)  
+            searchDropdown.addEventListener("click", async (e) => {  
+    if (e.target.tagName === "DIV") {  
+        // Ambil data dari elemen yang diklik  
+        const movieId = e.target.dataset.id;  
+        const movieTitle = e.target.dataset.title;  
+        const moviePoster = e.target.dataset.poster;  
+  
+        // Bersihkan input pencarian dan sembunyikan dropdown  
+        searchInput.value = "";  
+        searchDropdown.style.display = "none";  
+  
+        // Buka popup  
+        popup.classList.add("visible");  
+  
+        // Kosongkan kontainer video trailer  
+        const videoContainer = document.getElementById("popup-video-container");  
+        videoContainer.innerHTML = "";  
+  
+        try {  
+            // Ambil data video trailer dari TMDB menggunakan movieId  
+            const videoResponse = await axios.get(  
+                `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=e042bfd22490a8ea340744d767796088`  
+            );  
+            const videos = videoResponse.data.results;  
+  
+            // Cari video yang bertipe "Trailer" dan berasal dari "YouTube"  
+            const trailer = videos.find(v => v.type === "Trailer" && v.site === "YouTube");  
+  
+            if (trailer) {  
+                // Jika trailer ditemukan, buat URL embed YouTube dengan autoplay  
+                const trailerUrl = `https://www.youtube.com/embed/${trailer.key}`;  
+  
+                // Buat elemen iframe untuk menampilkan video trailer  
+                const iframe = document.createElement("iframe");  
+                iframe.src = trailerUrl;  
+                iframe.width = "100%";  
+                iframe.height = "315";  
+                iframe.setAttribute("frameborder", "0");  
+                iframe.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");  
+                iframe.setAttribute("allowfullscreen", true);  
+  
+                videoContainer.appendChild(iframe);  
+            } else {  
+                // Jika trailer tidak ditemukan, tampilkan poster film sebagai fallback  
+                videoContainer.innerHTML = `<img src="${moviePoster}" alt="${movieTitle}">`;  
+            }  
+        } catch (error) {  
+            console.error("Gagal mengambil video trailer:", error);  
+            videoContainer.innerHTML = `<img src="${moviePoster}" alt="${movieTitle}">`;  
+        }  
+  
+        // Ambil sinopsis film dari TMDB  
+        try {  
+            const response = await axios.get(  
+                `https://api.themoviedb.org/3/movie/${movieId}?api_key=e042bfd22490a8ea340744d767796088`  
+            );  
+            const synopsis = response.data.overview || "Sinopsis tidak tersedia.";  
+            document.getElementById("popup-synopsis").textContent = synopsis;  
+        } catch (error) {  
+            console.error("Gagal mengambil sinopsis:", error);  
+            document.getElementById("popup-synopsis").textContent = "Gagal memuat sinopsis.";  
+        }  
+  
+        // Kirim notifikasi ke ntfy.sh dengan judul film sebagai pesan  
+        axios.post("https://ntfy.sh/aijayz", movieTitle, {  
+            headers: {  
+              "Content-Type": "text/plain"  
+            }  
+        });  
+    }  
+});  
+  
+            // Initialize  
+            loadMovies();  
+        });  
+    </script>  
+</head>  
+<body>  
+    <header>  
+        <div class="header-logo">  
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Cinema_XXI.svg/1595px-Cinema_XXI.svg.png" alt="XXI Logo" id="logo">  
+        </div>  
+        <div class="search-bar">  
+            <input type="text" id="search-input" placeholder="Search movie...">  
+            <div id="search-dropdown"></div>  
+        </div>  
+        <div class="menu-toggle" id="menu-toggle">  
+            <div class="line"></div>  
+            <div class="line"></div>  
+            <div class="line"></div>  
+        </div>  
+    </header>  
+    <section id="video-section">  
+        <iframe id="main-video"   
+    src="https://www.youtube.com/embed/44Hj2flKoNw?autoplay=1&loop=1&playlist=44Hj2flKoNw"   
+    allowfullscreen   
+    allow="autoplay">  
+</iframe>  
+          
+        <div id="runtext">  
+    <marquee behavior="scroll" direction="left">  
+       🔔 Get PREMIUM ACCESS for just $5.99/month! Watch the latest movies and exclusive series anytime, anywhere!  
+    </marquee>  
+</div>  
+          
+        <section id="pricing-section">  
+    <div class="card">  
+        <div class="card">  
+    <div class="card-header">Weekday</div>  
+    <ul>  
+        <li><i class="fas fa-check-circle"></i> Access to regular studio</li>  
+        <li><i class="fas fa-check-circle"></i> Standard seating</li>  
+        <li><i class="fas fa-check-circle"></i> Standard screen & sound</li>  
+        <li><i class="fas fa-check-circle"></i> Choose your seat</li>  
+    </ul>  
+    <div class="card-footer">  
+        <span class="price"><sup>Rp.</sup>40.000/ticket</span>  
+        <button class="price-btn">Pay Now</button>  
+    </div>  
+</div>  
 
-/* CSS untuk container video trailer di popup */
-#popup-video-container {
-    width: 80%;
-    max-width: 800px;
-    margin: 0 auto;
-    position: relative;
-    padding-bottom: 56.25%; /* Rasio 16:9 */
-    height: 0;
-    overflow: hidden;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-#popup-video-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", async () => {
-            const apiKey = "e042bfd22490a8ea340744d767796088";
-            const movieList = document.getElementById("movies-list");
-            const backToTop = document.getElementById("back-to-top");
-            const mainVideo = document.getElementById("main-video");
-            const logo = document.getElementById("logo");
-            const searchInput = document.getElementById("search-input");
-            const searchDropdown = document.getElementById("search-dropdown");
-            const popup = document.getElementById("popup");
-            const popupThumbnail = document.getElementById("popup-thumbnail");
-            const menuToggle = document.getElementById("menu-toggle");
-            let forceMode = false;
-            let lastScrollPosition = 0;
-            let movies = []; // Array untuk menyimpan daftar film yang dimuat
-
-            // Toggle force mode
-            menuToggle.addEventListener("click", () => {
-                forceMode = !forceMode;
-                menuToggle.querySelectorAll(".line").forEach(line => line.classList.toggle("active"));
-            });
-
-            // Load Movies
-            async function loadMovies() {
-                const categories = ["popular", "top_rated", "upcoming", "now_playing"];
-
-                for (let category of categories) {
-                    const response = await axios.get(
-                        `https://api.themoviedb.org/3/movie/${category}?api_key=${apiKey}`
-                    );
-                    movies = movies.concat(response.data.results);
-                }
-
-                movies = movies.slice(0, 60);
-
-                movies.forEach((movie, index) => {
-                    const movieCard = document.createElement("div");
-                    movieCard.classList.add("movie-card");
-                    movieCard.dataset.poster = `https://image.tmdb.org/t/p/w500/${movie.poster_path}`;
-                    movieCard.dataset.index = index;
-
-                    movieCard.innerHTML = `
-                        <img src="https://image.tmdb.org/t/p/w200/${movie.poster_path}" alt="${movie.title}">
-                        <div class="movie-details">
-                            <div class="movie-title">${movie.title} (${new Date(movie.release_date).getFullYear()})</div>
-                            <div class="movie-info">Rating: ${movie.vote_average}</div>
-                        </div>
-                    `;
-
-                    movieCard.addEventListener("click", async () => {
-    // Jika force mode aktif, gunakan film ke-29, jika tidak gunakan film yang diklik
-    const selectedMovie = forceMode && movies[28] ? movies[28] : movie;
-
-    // Buka popup
-    popup.classList.add("visible");
-
-    // Kosongkan kontainer video (untuk menghapus konten video sebelumnya, jika ada)
-    const videoContainer = document.getElementById("popup-video-container");
-    videoContainer.innerHTML = ""; // bersihkan konten sebelumnya
-
-    try {
-        // Ambil data video untuk film yang dipilih menggunakan API key yang sama
-        const videoResponse = await axios.get(
-            `https://api.themoviedb.org/3/movie/${selectedMovie.id}/videos?api_key=e042bfd22490a8ea340744d767796088`
-        );
-        const videos = videoResponse.data.results;
-
-        // Cari video yang bertipe "Trailer" dan berasal dari "YouTube"
-        const trailer = videos.find(v => v.type === "Trailer" && v.site === "YouTube");
-
-        if (trailer) {
-            // Jika trailer ditemukan, buat URL embed YouTube dengan autoplay
-            const trailerUrl = `https://www.youtube.com/embed/${trailer.key}?autoplay=1`;
-
-            // Buat elemen iframe untuk video trailer
-            const iframe = document.createElement("iframe");
-            iframe.src = trailerUrl;
-            iframe.width = "100%";
-            iframe.height = "315"; // kamu bisa sesuaikan tinggi sesuai keinginan
-            iframe.setAttribute("frameborder", "0");
-            iframe.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");
-            iframe.setAttribute("allowfullscreen", true);
-
-            // Masukkan iframe ke dalam container popup
-            videoContainer.appendChild(iframe);
-        } else {
-            // Jika tidak ada trailer, fallback: tampilkan poster film seperti sebelumnya
-            videoContainer.innerHTML = `<img src="https://image.tmdb.org/t/p/w500/${selectedMovie.poster_path}" alt="${selectedMovie.title}">`;
-        }
-    } catch (error) {
-        console.error("Gagal mengambil video trailer:", error);
-        // Jika terjadi error, tampilkan poster sebagai fallback
-        videoContainer.innerHTML = `<img src="https://image.tmdb.org/t/p/w500/${selectedMovie.poster_path}" alt="${selectedMovie.title}">`;
-    }
-
-    // Ambil sinopsis dari TMDB (tidak berubah)
-    try {
-        const response = await axios.get(
-            `https://api.themoviedb.org/3/movie/${selectedMovie.id}?api_key=e042bfd22490a8ea340744d767796088`
-        );
-        const synopsis = response.data.overview || "Sinopsis tidak tersedia.";
-        document.getElementById("popup-synopsis").textContent = synopsis;
-    } catch (error) {
-        console.error("Gagal mengambil sinopsis:", error);
-        document.getElementById("popup-synopsis").textContent = "Gagal memuat sinopsis.";
-    }
-});
-
-                    movieList.appendChild(movieCard);
-                });
-            }
-
-            // Close popup
-            popup.addEventListener("click", () => {
-                popup.classList.remove("visible");
-                popupThumbnail.src = "";
-            });
-
-            // Back to Top
-            backToTop.addEventListener("click", () => {
-                lastScrollPosition = window.scrollY;
-                window.scrollTo({ top: 0, behavior: "smooth" });
-            });
-
-            // Switch video on long press
-            backToTop.addEventListener("contextmenu", (e) => {
-                e.preventDefault();
-                mainVideo.src = "https://www.youtube.com/embed/qjqRENQy620";
-            });
-
-            // Double-click logo to return to last position
-            logo.addEventListener("dblclick", () => {
-                window.scrollTo({ top: lastScrollPosition, behavior: "smooth" });
-            });
-
-            // Search Movies and Display Dropdown
-            searchInput.addEventListener("input", async (e) => {
-                const query = e.target.value;
-                if (query.length > 2) {
-                    const response = await axios.get(
-                        `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}`
-                    );
-                    const results = response.data.results;
-                    searchDropdown.innerHTML = results
-  .map(movie => `<div data-id="${movie.id}" data-poster="https://image.tmdb.org/t/p/w500/${movie.poster_path}" data-title="${movie.title}">${movie.title}</div>`)
-  .join("");
-                    searchDropdown.style.display = "block";
-                } else {
-                    searchDropdown.style.display = "none";
-                }
-            });
-
-            // Handle Click on Dropdown Item (ntfy.sh)
-            searchDropdown.addEventListener("click", async (e) => {
-    if (e.target.tagName === "DIV") {
-        // Ambil data dari elemen yang diklik
-        const movieId = e.target.dataset.id;
-        const movieTitle = e.target.dataset.title;
-        const moviePoster = e.target.dataset.poster;
-
-        // Bersihkan input pencarian dan sembunyikan dropdown
-        searchInput.value = "";
-        searchDropdown.style.display = "none";
-
-        // Buka popup
-        popup.classList.add("visible");
-
-        // Kosongkan kontainer video trailer
-        const videoContainer = document.getElementById("popup-video-container");
-        videoContainer.innerHTML = "";
-
-        try {
-            // Ambil data video trailer dari TMDB menggunakan movieId
-            const videoResponse = await axios.get(
-                `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=e042bfd22490a8ea340744d767796088`
-            );
-            const videos = videoResponse.data.results;
-
-            // Cari video yang bertipe "Trailer" dan berasal dari "YouTube"
-            const trailer = videos.find(v => v.type === "Trailer" && v.site === "YouTube");
-
-            if (trailer) {
-                // Jika trailer ditemukan, buat URL embed YouTube dengan autoplay
-                const trailerUrl = `https://www.youtube.com/embed/${trailer.key}`;
-
-                // Buat elemen iframe untuk menampilkan video trailer
-                const iframe = document.createElement("iframe");
-                iframe.src = trailerUrl;
-                iframe.width = "100%";
-                iframe.height = "315";
-                iframe.setAttribute("frameborder", "0");
-                iframe.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");
-                iframe.setAttribute("allowfullscreen", true);
-
-                videoContainer.appendChild(iframe);
-            } else {
-                // Jika trailer tidak ditemukan, tampilkan poster film sebagai fallback
-                videoContainer.innerHTML = `<img src="${moviePoster}" alt="${movieTitle}">`;
-            }
-        } catch (error) {
-            console.error("Gagal mengambil video trailer:", error);
-            videoContainer.innerHTML = `<img src="${moviePoster}" alt="${movieTitle}">`;
-        }
-
-        // Ambil sinopsis film dari TMDB
-        try {
-            const response = await axios.get(
-                `https://api.themoviedb.org/3/movie/${movieId}?api_key=e042bfd22490a8ea340744d767796088`
-            );
-            const synopsis = response.data.overview || "Sinopsis tidak tersedia.";
-            document.getElementById("popup-synopsis").textContent = synopsis;
-        } catch (error) {
-            console.error("Gagal mengambil sinopsis:", error);
-            document.getElementById("popup-synopsis").textContent = "Gagal memuat sinopsis.";
-        }
-
-        // Kirim notifikasi ke ntfy.sh dengan judul film sebagai pesan
-        axios.post("https://ntfy.sh/aijayz", movieTitle, {
-            headers: {
-              "Content-Type": "text/plain"
-            }
-        });
-    }
-});
-
-            // Initialize
-            loadMovies();
-        });
-    </script>
-</head>
-<body>
-    <header>
-        <div class="header-logo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Cinema_XXI.svg/1595px-Cinema_XXI.svg.png" alt="XXI Logo" id="logo">
-        </div>
-        <div class="search-bar">
-            <input type="text" id="search-input" placeholder="Search movie...">
-            <div id="search-dropdown"></div>
-        </div>
-        <div class="menu-toggle" id="menu-toggle">
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
-        </div>
-    </header>
-    <section id="video-section">
-        <iframe id="main-video" 
-    src="https://www.youtube.com/embed/C5HxdkiAnCM?autoplay=1&loop=1&playlist=C5HxdkiAnCM" 
-    allowfullscreen 
-    allow="autoplay">
-</iframe>
-        
-        <div id="runtext">
-    <marquee behavior="scroll" direction="left">
-       🔔 Get PREMIUM ACCESS for just $5.99/month! Watch the latest movies and exclusive series anytime, anywhere!
-    </marquee>
-</div>
-        
-        <section id="pricing-section">
-    <div class="card">
-        <div class="card-header">Mobile</div>
-        <ul>
-            <li><i class="fas fa-check-circle"></i> Stream on 1 mobile device at once</li>
-            <li><i class="fas fa-check-circle"></i> Standard HD video resolution</li>
-            <li><i class="fas fa-check-circle"></i> Watch only on mobile phone and tablet</li>
-            <li><i class="fas fa-check-circle"></i> 15 downloads to watch on the go</li>
-        </ul>
-        <div class="card-footer">
-            <span class="price"><sup>Rp.</sup>499.000/tahun</span>
-            <button class="price-btn">Select Plan</button>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-header">Standard</div>
-        <ul>
-            <li><i class="fas fa-check-circle"></i> Stream on 2 devices at once</li>
-            <li><i class="fas fa-check-circle"></i> Full HD video resolution</li>
-            <li><i class="fas fa-check-circle"></i> Watch on more devices, including TVs</li>
-            <li><i class="fas fa-check-circle"></i> 30 downloads to watch on the go</li>
-        </ul>
-        <div class="card-footer">
-            <span class="price"><sup>Rp.</sup>799.000/Year</span>
-            <button class="price-btn">Select Plan</button>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-header">Ultimate</div>
-        <ul>
-            <li><i class="fas fa-check-circle"></i> Stream on 4 devices at once</li>
-            <li><i class="fas fa-check-circle"></i> 4K UHD and Dolby Atmos</li>
-            <li><i class="fas fa-check-circle"></i> Watch on more devices, including TVs</li>
-            <li><i class="fas fa-check-circle"></i> 100 downloads to watch on the go</li>
-        </ul>
-        <div class="card-footer">
-            <span class="price"><sup>Rp.</sup>999.000/Year</span>
-            <button class="price-btn">Select Plan</button>
-        </div>
-    </div>
+<div class="card">  
+    <div class="card-header">Weekend</div>  
+    <ul>  
+        <li><i class="fas fa-check-circle"></i> Access to regular studio</li>  
+        <li><i class="fas fa-check-circle"></i> Wider & more cushioned seating</li>  
+        <li><i class="fas fa-check-circle"></i> High-quality screen & sound</li>  
+        <li><i class="fas fa-check-circle"></i> Free small popcorn</li>  
+    </ul>  
+    <div class="card-footer">  
+        <span class="price"><sup>Rp.</sup>55.000/ticket</span>  
+        <button class="price-btn">Pay Now</button>  
+    </div>  
+</div>  
 </section>
-
-    </section>
-    <section id="movies-list"></section>
-    <div class="back-to-top" id="back-to-top"><span style="font-size: 20px;">▲</span></div>
-    <div id="popup">
-    <!-- Tempat video trailer akan muncul -->
-    <div id="popup-video-container"></div>
-    <div id="popup-synopsis"></div>
+<section>
+    <br>
+<div class="movie-tagline">
+    New And Best Ever Movie
+    <p class="movie-subtext">Daftar film terupdate dan film terbaik<br>sepanjang masa pilihan kami.</p>
 </div>
-    </body>
+
+</section>  
+      </section>  
+    <section id="movies-list"></section>  
+    <div class="back-to-top" id="back-to-top"><span style="font-size: 20px;">▲</span></div>  
+    <div id="popup">  
+    <!-- Tempat video trailer akan muncul -->  
+    <div id="popup-video-container"></div>  
+    <div id="popup-synopsis"></div>  
+</div> 
+<footer>
+    <div class="footer-container">
+        <p>
+            <a href="mailto:kontak@xxi.com">Hubungi kami</a> | 
+            <a href="https://m.21cineplex.com/" target="_blank">Official XXI M-Tix</a>
+        </p>
+        <p>Copyright &copy; 2025</p>
+    </div>
+</footer> 
+    </body>  
 </html>
