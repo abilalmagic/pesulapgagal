@@ -3,7 +3,7 @@
 <head>  
     <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-    <title>Movie Web</title>  
+    <title>Jay Movie</title>  
     <link rel="stylesheet" href="styles.css">  
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">  
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
@@ -541,20 +541,20 @@ footer {
             const trailer = videos.find(v => v.type === "Trailer" && v.site === "YouTube");  
   
             if (trailer) {  
-                // Jika trailer ditemukan, buat URL embed YouTube dengan autoplay  
-                const trailerUrl = `https://www.youtube.com/embed/${trailer.key}`;  
-  
-                // Buat elemen iframe untuk menampilkan video trailer  
-                const iframe = document.createElement("iframe");  
-                iframe.src = trailerUrl;  
-                iframe.width = "100%";  
-                iframe.height = "315";  
-                iframe.setAttribute("frameborder", "0");  
-                iframe.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");  
-                iframe.setAttribute("allowfullscreen", true);  
-  
-                videoContainer.appendChild(iframe);  
-            } else {  
+                // Jika trailer ditemukan, buat URL embed YouTube tanpa autoplay  
+const trailerUrl = `https://www.youtube.com/embed/${trailer.key}?autoplay=0`;  
+
+// Buat elemen iframe untuk menampilkan video trailer  
+const iframe = document.createElement("iframe");  
+iframe.src = trailerUrl;  
+iframe.width = "100%";  
+iframe.height = "315";  
+iframe.setAttribute("frameborder", "0");  
+iframe.setAttribute("allow", "accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture");  
+iframe.setAttribute("allowfullscreen", true);  
+
+videoContainer.appendChild(iframe);  
+} else {  
                 // Jika trailer tidak ditemukan, tampilkan poster film sebagai fallback  
                 videoContainer.innerHTML = `<img src="${moviePoster}" alt="${movieTitle}">`;  
             }  
