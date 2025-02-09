@@ -431,7 +431,7 @@ footer {
   
         if (trailer) {  
             // Jika trailer ditemukan, buat URL embed YouTube dengan autoplay  
-            const trailerUrl = `https://www.youtube.com/embed/${trailer.key}?autoplay=1`;  
+            const trailerUrl = `https://www.youtube.com/embed/${trailer.key}?autoplay=0`;  
   
             // Buat elemen iframe untuk video trailer  
             const iframe = document.createElement("iframe");  
@@ -439,7 +439,7 @@ footer {
             iframe.width = "100%";  
             iframe.height = "315"; // kamu bisa sesuaikan tinggi sesuai keinginan  
             iframe.setAttribute("frameborder", "0");  
-            iframe.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");  
+            iframe.setAttribute("allow", "accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture");  
             iframe.setAttribute("allowfullscreen", true);  
   
             // Masukkan iframe ke dalam container popup  
