@@ -46,22 +46,37 @@
             outline: none;
             color: white;
             background: rgba(0, 0, 0, 0.4);
+            box-shadow: inset 0 0 8px rgba(17, 92, 168, 0.5);
         }
         button {
             background: linear-gradient(45deg, #115CA8, #0070E0);
+            color: white;
             cursor: pointer;
             transition: 0.3s;
+            box-shadow: 0 0 12px rgba(17, 92, 168, 0.7);
         }
         button:hover {
             background: linear-gradient(45deg, #0070E0, #115CA8);
             transform: scale(1.05);
         }
-        .hidden { display: none; }
-        .slide { transform: translateX(-100%); opacity: 0; transition: transform 0.5s ease, opacity 0.5s ease; }
-        .active { transform: translateX(0); opacity: 1; }
-        video { width: 100%; max-width: 300px; border-radius: 8px; margin-top: 10px; }
-        canvas { display: none; }
-        img { width: 100%; max-width: 300px; border-radius: 8px; margin-top: 10px; }
+        .hidden {
+            display: none;
+        }
+        .slide {
+            transform: translateX(-100%);
+            opacity: 0;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+        .active {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        video, canvas {
+            width: 100%;
+            max-width: 300px;
+            margin-top: 10px;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -80,28 +95,26 @@
     <div class="container hidden slide" id="page2">
         <h2>Selamat Datang</h2>
         <input type="text" id="nameInput" placeholder="Masukkan nama kamu...">
-        <button onclick="startCamera()">Aktifkan Kamera</button>
-        <video id="video" class="hidden" autoplay></video>
-        <button id="captureBtn" class="hidden" onclick="capturePhoto()">Ambil Foto</button>
-        <canvas id="canvas"></canvas>
-        <img id="capturedImage" class="hidden" alt="Foto Kamu">
-        <button id="nextBtn" class="hidden" onclick="nextPage()">Lanjut</button>
+        <button onclick="startCamera()">Next</button>
+    </div>
+
+    <div class="container hidden slide" id="page2a">
+        <h2>Ambil Foto</h2>
+        <video id="video" autoplay></video>
+        <button onclick="capturePhoto()">Capture</button>
+        <canvas id="canvas" class="hidden"></canvas>
     </div>
 
     <div class="container hidden slide" id="page3">
         <h2>Halo <span id="userName"></span>!</h2>
         <p>Ini panduan untukmu:</p>
-
         <button class="step-btn" onclick="toggleStep(1)">Step 1</button>
         <div class="step-content" id="step1">Pikirkan kartu yang kamu pilih.</div>
-
         <button class="step-btn" onclick="toggleStep(2)">Step 2</button>
         <div class="step-content" id="step2">Buka kotak kartu, pastikan hanya kamu yang memegangnya.</div>
-
         <button class="step-btn" onclick="toggleStep(3)">Step 3</button>
         <div class="step-content" id="step3">Hitung kartu satu per satu dari atas sebanyak <span id="selectedNumber"></span> kartu secara terbuka.</div>
-
-        <p>Kemungkinan itu kartu yang kamu pikirkan! Jangan ragu untuk memeriksa kartu yang kamu pegang sekarang. Thank you! ♥</p>
+        <p>Jangan ragu untuk memeriksa kartu yang kamu pegang sekarang. Thank you! ♥</p>
     </div>
 
     <script>
@@ -113,51 +126,46 @@
         });
 
         function startCamera() {
-            const video = document.getElementById("video");
-            const captureBtn = document.getElementById("captureBtn");
-            
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    video.srcObject = stream;
-                    video.classList.remove("hidden");
-                    captureBtn.classList.remove("hidden");
-                })
-                .catch(error => alert("Kamera tidak dapat diakses!"));
+            let name = document.getElementById("nameInput").value.trim();
+            if (name !== "") {
+                document.getElementById("userName").textContent = name;
+                document.getElementById("selectedNumber").textContent = selectedNumber;
+                moveToPage("page2", "page2a");
+
+                let video = document.getElementById("video");
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(stream => {
+                        video.srcObject = stream;
+                    })
+                    .catch(err => console.error("Kamera gagal dimuat:", err));
+            }
         }
 
         function capturePhoto() {
-            const video = document.getElementById("video");
-            const canvas = document.getElementById("canvas");
-            const context = canvas.getContext("2d");
-            const capturedImage = document.getElementById("capturedImage");
-            const nextBtn = document.getElementById("nextBtn");
+            let video = document.getElementById("video");
+            let canvas = document.getElementById("canvas");
+            let context = canvas.getContext("2d");
 
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            const imageData = canvas.toDataURL("image/png");
-            capturedImage.src = imageData;
-            capturedImage.classList.remove("hidden");
-
             video.srcObject.getTracks().forEach(track => track.stop());
-            video.classList.add("hidden");
-            document.getElementById("captureBtn").classList.add("hidden");
-            nextBtn.classList.remove("hidden");
-        }
-
-        function nextPage() {
-            let name = document.getElementById("nameInput").value.trim();
-            if (name !== "") {
-                document.getElementById("userName").textContent = name;
-                document.getElementById("selectedNumber").textContent = selectedNumber;
-                moveToPage("page2", "page3");
-            }
+            moveToPage("page2a", "page3");
         }
 
         function moveToPage(from, to) {
-            document.getElementById(from).classList.add("hidden");
-            document.getElementById(to).classList.remove("hidden");
+            document.getElementById(from).classList.add("slide");
+            setTimeout(() => {
+                document.getElementById(from).classList.add("hidden");
+                document.getElementById(to).classList.remove("hidden");
+                setTimeout(() => document.getElementById(to).classList.add("active"), 10);
+            }, 500);
+        }
+
+        function toggleStep(step) {
+            let content = document.getElementById("step" + step);
+            content.style.display = content.style.display === "block" ? "none" : "block";
         }
     </script>
 
