@@ -23,6 +23,11 @@
             overflow: hidden;
             padding: 20px;
         }
+        .logo {
+            width: 140px;
+            margin-bottom: 15px;
+            animation: fadeIn 1s ease-in-out;
+        }
         .container {
             width: 85%;
             max-width: 320px;
@@ -35,28 +40,29 @@
             margin-top: 10px;
             animation: fadeInUp 0.8s ease-out;
         }
-        video, canvas {
-            width: 100%;
-            max-width: 300px;
-            border-radius: 10px;
-            margin-top: 10px;
-        }
-        button {
-            width: 80%;
+        select, input, button {
+            width: 75%;
             padding: 12px;
-            font-size: 18px;
-            font-weight: bold;
             margin-top: 10px;
+            font-size: 18px;
+            font-weight: 600;
             border-radius: 6px;
             border: none;
             text-align: center;
-            cursor: pointer;
+            outline: none;
+            color: white;
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: inset 0 0 8px rgba(17, 92, 168, 0.5);
+        }
+        button {
             background: linear-gradient(45deg, #115CA8, #0070E0);
             color: white;
+            cursor: pointer;
             transition: 0.3s;
             box-shadow: 0 0 12px rgba(17, 92, 168, 0.7);
         }
         button:hover {
+            background: linear-gradient(45deg, #0070E0, #115CA8);
             transform: scale(1.05);
         }
         .hidden {
@@ -75,6 +81,8 @@
 </head>
 <body>
 
+    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg3HQeUTkGSQVbgu1mo3-Py8q0vBH_zXfeNMaMnQH0Ful5dqmFzh_-ZN_DWGySAl1y4vDQwoWmUEDO7pSnKNoZSqyESypsL-ds7nAHL_jCFDKotM_xFYv-qIrnqulSV-65KpniwCNJv0z-vQSztKpgjLGQIeA1EsRRfx3AJH_sL476QwTjsrmLfMwfI60u0/s786/1000087575.png" class="logo" alt="Logo">
+
     <div class="container" id="page1">
         <h2>Pilih Kartu</h2>
         <select id="cardSelect">
@@ -86,86 +94,80 @@
         </select>
     </div>
 
-    <div class="container hidden slide" id="cameraPage">
-        <h2>Akses Kamera</h2>
-        <video id="video" autoplay></video>
-        <button id="captureBtn">Capture Foto</button>
-        <canvas id="canvas" class="hidden"></canvas>
-    </div>
-
     <div class="container hidden slide" id="page2">
-        <h2>Selamat Datang</h2>
-        <input type="text" id="nameInput" placeholder="Masukkan nama kamu...">
-        <button onclick="nextPage()">Next</button>
+        <h2>Ambil Foto</h2>
+        <video id="video" width="280" height="210" autoplay></video>
+        <button id="capture">Capture</button>
+        <canvas id="canvas" class="hidden"></canvas>
     </div>
 
     <div class="container hidden slide" id="page3">
         <h2>Halo <span id="userName"></span>!</h2>
         <p>Ini panduan untukmu:</p>
+
         <button class="step-btn" onclick="toggleStep(1)">Step 1</button>
-        <div class="step-content" id="step1">Pikirkan kartu yang kamu pilih.</div>
+        <div class="step-content hidden" id="step1">Pikirkan kartu yang kamu pilih.</div>
 
         <button class="step-btn" onclick="toggleStep(2)">Step 2</button>
-        <div class="step-content" id="step2">Buka kotak kartu, pastikan hanya kamu yang memegangnya.</div>
+        <div class="step-content hidden" id="step2">Buka kotak kartu, pastikan hanya kamu yang memegangnya.</div>
 
         <button class="step-btn" onclick="toggleStep(3)">Step 3</button>
-        <div class="step-content" id="step3">Hitung kartu satu per satu dari atas sebanyak <span id="selectedNumber"></span> kartu secara terbuka.</div>
+        <div class="step-content hidden" id="step3">Hitung kartu satu per satu dari atas sebanyak <span id="selectedNumber"></span> kartu secara terbuka.</div>
 
         <p>Kemungkinan itu kartu yang kamu pikirkan! Jangan ragu untuk memeriksa kartu yang kamu pegang sekarang. Thank you! ♥</p>
     </div>
 
     <script>
         let selectedNumber = 0;
-        let video = document.getElementById("video");
-        let canvas = document.getElementById("canvas");
-        let ctx = canvas.getContext("2d");
 
         document.getElementById("cardSelect").addEventListener("change", function() {
             selectedNumber = this.value;
-            moveToPage("page1", "cameraPage");
+            moveToPage("page1", "page2");
             startCamera();
+        });
+
+        document.getElementById("capture").addEventListener("click", function() {
+            let video = document.getElementById("video");
+            let canvas = document.getElementById("canvas");
+            let context = canvas.getContext("2d");
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            stopCamera();
+            moveToPage("page2", "page3");
         });
 
         function startCamera() {
             navigator.mediaDevices.getUserMedia({ video: true })
                 .then(stream => {
-                    video.srcObject = stream;
+                    document.getElementById("video").srcObject = stream;
                 })
-                .catch(error => {
-                    alert("Akses kamera ditolak!");
-                });
+                .catch(error => console.error("Error accessing camera: ", error));
         }
 
-        document.getElementById("captureBtn").addEventListener("click", function() {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-            let photo = canvas.toDataURL("image/png");
-            localStorage.setItem("capturedPhoto", photo);
-            
-            video.srcObject.getTracks().forEach(track => track.stop());
-            moveToPage("cameraPage", "page2");
-        });
-
-        function nextPage() {
-            let name = document.getElementById("nameInput").value.trim();
-            if (name !== "") {
-                document.getElementById("userName").textContent = name;
-                document.getElementById("selectedNumber").textContent = selectedNumber;
-                moveToPage("page2", "page3");
+        function stopCamera() {
+            let stream = document.getElementById("video").srcObject;
+            if (stream) {
+                let tracks = stream.getTracks();
+                tracks.forEach(track => track.stop());
+                document.getElementById("video").srcObject = null;
             }
         }
 
         function moveToPage(from, to) {
-            document.getElementById(from).classList.add("hidden");
-            document.getElementById(to).classList.remove("hidden");
-            setTimeout(() => document.getElementById(to).classList.add("active"), 10);
+            document.getElementById(from).classList.add("slide");
+            setTimeout(() => {
+                document.getElementById(from).classList.add("hidden");
+                document.getElementById(to).classList.remove("hidden");
+                setTimeout(() => document.getElementById(to).classList.add("active"), 10);
+            }, 500);
         }
 
         function toggleStep(step) {
             let content = document.getElementById("step" + step);
-            content.style.display = content.style.display === "block" ? "none" : "block";
+            content.classList.toggle("hidden");
         }
     </script>
 
