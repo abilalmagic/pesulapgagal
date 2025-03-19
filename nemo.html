@@ -20,6 +20,7 @@
             height: 100vh;
             margin: 0;
             flex-direction: column;
+            overflow: hidden;
             padding: 20px;
         }
         .container {
@@ -34,59 +35,47 @@
             margin-top: 10px;
             animation: fadeInUp 0.8s ease-out;
         }
-        select, input, button {
-            width: 75%;
-            padding: 12px;
+        video, canvas {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 10px;
             margin-top: 10px;
+        }
+        button {
+            width: 80%;
+            padding: 12px;
             font-size: 18px;
-            font-weight: 600;
+            font-weight: bold;
+            margin-top: 10px;
             border-radius: 6px;
             border: none;
             text-align: center;
-            outline: none;
-            color: white;
-            background: rgba(0, 0, 0, 0.4);
-            box-shadow: inset 0 0 8px rgba(17, 92, 168, 0.5);
-        }
-        button {
+            cursor: pointer;
             background: linear-gradient(45deg, #115CA8, #0070E0);
             color: white;
-            cursor: pointer;
             transition: 0.3s;
             box-shadow: 0 0 12px rgba(17, 92, 168, 0.7);
         }
         button:hover {
-            background: linear-gradient(45deg, #0070E0, #115CA8);
             transform: scale(1.05);
         }
-        .hidden { display: none; }
-        video, canvas {
-            width: 100%;
-            max-width: 300px;
-            margin-top: 15px;
-            border-radius: 8px;
+        .hidden {
+            display: none;
         }
         .slide {
+            transform: translateX(-100%);
             opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+            transition: transform 0.5s ease, opacity 0.5s ease;
         }
-        .slide.active {
+        .active {
+            transform: translateX(0);
             opacity: 1;
-            transform: translateY(0);
-        }
-        .step-content {
-            display: none;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px;
-            margin-top: 5px;
-            border-radius: 5px;
         }
     </style>
 </head>
 <body>
 
-    <div class="container slide" id="page1">
+    <div class="container" id="page1">
         <h2>Pilih Kartu</h2>
         <select id="cardSelect">
             <option value="" disabled selected>Pilih kartu...</option>
@@ -98,9 +87,9 @@
     </div>
 
     <div class="container hidden slide" id="cameraPage">
-        <h2>Arahkan Kamera</h2>
+        <h2>Akses Kamera</h2>
         <video id="video" autoplay></video>
-        <button id="captureBtn">Ambil Foto</button>
+        <button id="captureBtn">Capture Foto</button>
         <canvas id="canvas" class="hidden"></canvas>
     </div>
 
@@ -113,7 +102,6 @@
     <div class="container hidden slide" id="page3">
         <h2>Halo <span id="userName"></span>!</h2>
         <p>Ini panduan untukmu:</p>
-
         <button class="step-btn" onclick="toggleStep(1)">Step 1</button>
         <div class="step-content" id="step1">Pikirkan kartu yang kamu pilih.</div>
 
@@ -140,11 +128,11 @@
 
         function startCamera() {
             navigator.mediaDevices.getUserMedia({ video: true })
-                .then(function(stream) {
+                .then(stream => {
                     video.srcObject = stream;
                 })
-                .catch(function(error) {
-                    console.log("Gagal mengakses kamera:", error);
+                .catch(error => {
+                    alert("Akses kamera ditolak!");
                 });
         }
 
@@ -152,16 +140,13 @@
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            stopCamera();
+
+            let photo = canvas.toDataURL("image/png");
+            localStorage.setItem("capturedPhoto", photo);
+            
+            video.srcObject.getTracks().forEach(track => track.stop());
             moveToPage("cameraPage", "page2");
         });
-
-        function stopCamera() {
-            let stream = video.srcObject;
-            let tracks = stream.getTracks();
-            tracks.forEach(track => track.stop());
-            video.srcObject = null;
-        }
 
         function nextPage() {
             let name = document.getElementById("nameInput").value.trim();
@@ -173,12 +158,9 @@
         }
 
         function moveToPage(from, to) {
-            document.getElementById(from).classList.add("slide");
-            setTimeout(() => {
-                document.getElementById(from).classList.add("hidden");
-                document.getElementById(to).classList.remove("hidden");
-                setTimeout(() => document.getElementById(to).classList.add("active"), 10);
-            }, 500);
+            document.getElementById(from).classList.add("hidden");
+            document.getElementById(to).classList.remove("hidden");
+            setTimeout(() => document.getElementById(to).classList.add("active"), 10);
         }
 
         function toggleStep(step) {
