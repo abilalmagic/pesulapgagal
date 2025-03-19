@@ -66,15 +66,27 @@
             margin-top: 15px;
             border-radius: 8px;
         }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .slide {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .step-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
 
-    <div class="container" id="page1">
+    <div class="container slide" id="page1">
         <h2>Pilih Kartu</h2>
         <select id="cardSelect">
             <option value="" disabled selected>Pilih kartu...</option>
@@ -85,28 +97,33 @@
         </select>
     </div>
 
-    <div class="container hidden" id="cameraPage">
+    <div class="container hidden slide" id="cameraPage">
         <h2>Arahkan Kamera</h2>
         <video id="video" autoplay></video>
         <button id="captureBtn">Ambil Foto</button>
         <canvas id="canvas" class="hidden"></canvas>
     </div>
 
-    <div class="container hidden" id="page2">
+    <div class="container hidden slide" id="page2">
         <h2>Selamat Datang</h2>
         <input type="text" id="nameInput" placeholder="Masukkan nama kamu...">
         <button onclick="nextPage()">Next</button>
     </div>
 
-    <div class="container hidden" id="page3">
+    <div class="container hidden slide" id="page3">
         <h2>Halo <span id="userName"></span>!</h2>
         <p>Ini panduan untukmu:</p>
-        <ul>
-            <li>Pikirkan kartu yang kamu pilih.</li>
-            <li>Buka kotak kartu, pastikan hanya kamu yang memegangnya.</li>
-            <li>Hitung kartu satu per satu.</li>
-        </ul>
-        <p>Apakah ini kartu yang kamu pikirkan? Cek sekarang!</p>
+
+        <button class="step-btn" onclick="toggleStep(1)">Step 1</button>
+        <div class="step-content" id="step1">Pikirkan kartu yang kamu pilih.</div>
+
+        <button class="step-btn" onclick="toggleStep(2)">Step 2</button>
+        <div class="step-content" id="step2">Buka kotak kartu, pastikan hanya kamu yang memegangnya.</div>
+
+        <button class="step-btn" onclick="toggleStep(3)">Step 3</button>
+        <div class="step-content" id="step3">Hitung kartu satu per satu dari atas sebanyak <span id="selectedNumber"></span> kartu secara terbuka.</div>
+
+        <p>Kemungkinan itu kartu yang kamu pikirkan! Jangan ragu untuk memeriksa kartu yang kamu pegang sekarang. Thank you! ♥</p>
     </div>
 
     <script>
@@ -150,13 +167,23 @@
             let name = document.getElementById("nameInput").value.trim();
             if (name !== "") {
                 document.getElementById("userName").textContent = name;
+                document.getElementById("selectedNumber").textContent = selectedNumber;
                 moveToPage("page2", "page3");
             }
         }
 
         function moveToPage(from, to) {
-            document.getElementById(from).classList.add("hidden");
-            document.getElementById(to).classList.remove("hidden");
+            document.getElementById(from).classList.add("slide");
+            setTimeout(() => {
+                document.getElementById(from).classList.add("hidden");
+                document.getElementById(to).classList.remove("hidden");
+                setTimeout(() => document.getElementById(to).classList.add("active"), 10);
+            }, 500);
+        }
+
+        function toggleStep(step) {
+            let content = document.getElementById("step" + step);
+            content.style.display = content.style.display === "block" ? "none" : "block";
         }
     </script>
 
