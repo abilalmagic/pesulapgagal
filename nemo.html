@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pilih Kartu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, rgba(10, 10, 10, 0.8), rgba(26, 26, 26, 0.8)), 
+                        url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjBhz0mJb7KVy0duJg283cgL5nC7U2z8UkxGs1zEjM_YKZgmBX4JqxmCM37yVSVNr3OpdhbvKrzibQX0YasfktU8O58gypcXGZDQrEJHv1hoAhPEOgTV-OLeZHTwuP6HVK5yGKb0PmzZWJuKeHvrNU-1NHJYW5gWrBdS-9K3pRobnNKSUReC7wmbrOogrUe/s4608/1000087662.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            padding: 20px;
+        }
+        .container {
+            width: 85%;
+            max-width: 320px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(17, 92, 168, 0.6);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            margin-top: 10px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        select, input, button {
+            width: 75%;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 6px;
+            border: none;
+            text-align: center;
+            outline: none;
+            color: white;
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: inset 0 0 8px rgba(17, 92, 168, 0.5);
+        }
+        button {
+            background: linear-gradient(45deg, #115CA8, #0070E0);
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 0 12px rgba(17, 92, 168, 0.7);
+        }
+        button:hover {
+            background: linear-gradient(45deg, #0070E0, #115CA8);
+            transform: scale(1.05);
+        }
+        .hidden { display: none; }
+        video, canvas {
+            width: 100%;
+            max-width: 300px;
+            margin-top: 15px;
+            border-radius: 8px;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="page1">
+        <h2>Pilih Kartu</h2>
+        <select id="cardSelect">
+            <option value="" disabled selected>Pilih kartu...</option>
+            <option value="1">4♣</option>
+            <option value="2">2♥</option>
+            <option value="3">7♦</option>
+            <option value="41">7♥</option>
+        </select>
+    </div>
+
+    <div class="container hidden" id="cameraPage">
+        <h2>Arahkan Kamera</h2>
+        <video id="video" autoplay></video>
+        <button id="captureBtn">Ambil Foto</button>
+        <canvas id="canvas" class="hidden"></canvas>
+    </div>
+
+    <div class="container hidden" id="page2">
+        <h2>Selamat Datang</h2>
+        <input type="text" id="nameInput" placeholder="Masukkan nama kamu...">
+        <button onclick="nextPage()">Next</button>
+    </div>
+
+    <div class="container hidden" id="page3">
+        <h2>Halo <span id="userName"></span>!</h2>
+        <p>Ini panduan untukmu:</p>
+        <ul>
+            <li>Pikirkan kartu yang kamu pilih.</li>
+            <li>Buka kotak kartu, pastikan hanya kamu yang memegangnya.</li>
+            <li>Hitung kartu satu per satu.</li>
+        </ul>
+        <p>Apakah ini kartu yang kamu pikirkan? Cek sekarang!</p>
+    </div>
+
+    <script>
+        let selectedNumber = 0;
+        let video = document.getElementById("video");
+        let canvas = document.getElementById("canvas");
+        let ctx = canvas.getContext("2d");
+
+        document.getElementById("cardSelect").addEventListener("change", function() {
+            selectedNumber = this.value;
+            moveToPage("page1", "cameraPage");
+            startCamera();
+        });
+
+        function startCamera() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    video.srcObject = stream;
+                })
+                .catch(function(error) {
+                    console.log("Gagal mengakses kamera:", error);
+                });
+        }
+
+        document.getElementById("captureBtn").addEventListener("click", function() {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            stopCamera();
+            moveToPage("cameraPage", "page2");
+        });
+
+        function stopCamera() {
+            let stream = video.srcObject;
+            let tracks = stream.getTracks();
+            tracks.forEach(track => track.stop());
+            video.srcObject = null;
+        }
+
+        function nextPage() {
+            let name = document.getElementById("nameInput").value.trim();
+            if (name !== "") {
+                document.getElementById("userName").textContent = name;
+                moveToPage("page2", "page3");
+            }
+        }
+
+        function moveToPage(from, to) {
+            document.getElementById(from).classList.add("hidden");
+            document.getElementById(to).classList.remove("hidden");
+        }
+    </script>
+
+</body>
+</html>
