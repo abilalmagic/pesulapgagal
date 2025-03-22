@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bicycle Read Your Face</title>
+    <style>
+        body {
+            background: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjBhz0mJb7KVy0duJg283cgL5nC7U2z8UkxGs1zEjM_YKZgmBX4JqxmCM37yVSVNr3OpdhbvKrzibQX0YasfktU8O58gypcXGZDQrEJHv1hoAhPEOgTV-OLeZHTwuP6HVK5yGKb0PmzZWJuKeHvrNU-1NHJYW5gWrBdS-9K3pRobnNKSUReC7wmbrOogrUe/s4608/1000087662.jpg') no-repeat center center fixed;
+            background-size: cover;
+            text-align: center;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.8);
+            width: 90%;
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .hidden {
+            display: none;
+        }
+        .button {
+            background: #ff4500;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        .cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+            margin: 10px 0;
+        }
+        .card, .suit {
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            background: white;
+            color: black;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="slide1">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg3HQeUTkGSQVbgu1mo3-Py8q0vBH_zXfeNMaMnQH0Ful5dqmFzh_-ZN_DWGySAl1y4vDQwoWmUEDO7pSnKNoZSqyESypsL-ds7nAHL_jCFDKotM_xFYv-qIrnqulSV-65KpniwCNJv0z-vQSztKpgjLGQIeA1EsRRfx3AJH_sL476QwTjsrmLfMwfI60u0/s786/1000087575.png" width="100">
+        <h2>Selamat Datang</h2>
+        <p>Bicycle Read your Face!</p>
+        <button class="button" onclick="nextSlide(2)">Next</button>
+    </div>
+
+    <div class="container hidden" id="slide2">
+        <h2>Pilih Kartu</h2>
+        <div class="cards">
+            <div class="card" onclick="selectCard(1)">A</div>
+            <div class="card" onclick="selectCard(2)">2</div>
+            <div class="card" onclick="selectCard(3)">3</div>
+            <div class="card" onclick="selectCard(4)">4</div>
+            <div class="card" onclick="selectCard(5)">5</div>
+            <div class="card" onclick="selectCard(6)">6</div>
+            <div class="card" onclick="selectCard(7)">7</div>
+            <div class="card" onclick="selectCard(8)">8</div>
+            <div class="card" onclick="selectCard(9)">9</div>
+            <div class="card" onclick="selectCard(10)">10</div>
+            <div class="card" onclick="selectCard(11)">J</div>
+            <div class="card" onclick="selectCard(12)">Q</div>
+            <div class="card" onclick="selectCard(13)">K</div>
+        </div>
+        <div class="cards">
+            <div class="suit" onclick="selectSuit('♠')">♠</div>
+            <div class="suit" onclick="selectSuit('♥')">♥</div>
+            <div class="suit" onclick="selectSuit('♦')">♦</div>
+            <div class="suit" onclick="selectSuit('♣')">♣</div>
+        </div>
+        <button class="button" onclick="nextSlide(3)">Next</button>
+    </div>
+
+    <div class="container hidden" id="slide3">
+        <h2>Masukkan Nama</h2>
+        <input type="text" id="nama" placeholder="Nama kamu">
+        <button class="button" onclick="nextSlide(4)">Next</button>
+    </div>
+
+    <div class="container hidden" id="slide4">
+        <h2>Ambil Foto</h2>
+        <video id="video" width="300" height="200" autoplay></video>
+        <button class="button" onclick="capturePhoto()">Capture</button>
+        <canvas id="canvas" class="hidden"></canvas>
+    </div>
+
+    <script>
+        let selectedCard = null;
+        let selectedSuit = null;
+
+        const kartuTetap = {
+            1: "4♣", 2: "2♥", 3: "7♦", 4: "3♣", 5: "4♥", 6: "6♦", 
+            7: "A♠", 8: "5♥", 9: "9♠", 10: "2♠", 11: "Q♥", 12: "3♦",
+            13: "Q♣", 14: "8♥", 15: "6♠", 16: "5♠", 17: "9♥", 18: "K♣", 
+            19: "2♦", 20: "J♥", 21: "3♠", 22: "8♠", 23: "6♥", 24: "10♣"
+        };
+
+        function nextSlide(slide) {
+            document.querySelectorAll('.container').forEach(el => el.classList.add('hidden'));
+            document.getElementById('slide' + slide).classList.remove('hidden');
+        }
+
+        function selectCard(number) {
+            selectedCard = number;
+        }
+
+        function selectSuit(suit) {
+            selectedSuit = suit;
+        }
+
+        function capturePhoto() {
+            let video = document.getElementById("video");
+            let canvas = document.getElementById("canvas");
+            let context = canvas.getContext("2d");
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            nextSlide(5);
+        }
+    </script>
+
+</body>
+</html>
