@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Meet Up Magic Online</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom, #0f0f0f, #1a1a1a);
+      color: white;
+    }
+
+    header {
+      background: #111;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+    }
+
+    header h1 {
+      font-size: 2.2em;
+      color: #00ffff;
+      margin: 0;
+      letter-spacing: 2px;
+    }
+
+    header h2 {
+      font-weight: normal;
+      font-size: 1.1em;
+      color: #aaa;
+      margin-top: 8px;
+      letter-spacing: 1px;
+    }
+
+    #controls {
+      background: #181818;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px 20px;
+      gap: 20px;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+    }
+
+    input {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background: #333;
+      color: white;
+      min-width: 200px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background: #00ffff;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s ease-in-out;
+    }
+
+    button:hover {
+      background: #00cccc;
+    }
+
+    #jitsi-container {
+      width: 100vw;
+      height: calc(100vh - 160px);
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.6em;
+      }
+      header h2 {
+        font-size: 0.9em;
+      }
+      #controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Meet Up Magic Online</h1>
+    <h2>"NOC MAGIC SOCIETY"</h2>
+  </header>
+
+  <div id="controls">
+    <input id="room-name" placeholder="Enter Room Name..." />
+    <button onclick="startMeeting()">Start / Join</button>
+    <button onclick="endMeeting()">Leave Meeting</button>
+  </div>
+
+  <div id="jitsi-container"></div>
+
+  <script src='https://meet.jit.si/external_api.js'></script>
+  <script>
+    let api = null;
+
+    function startMeeting() {
+      const roomName = document.getElementById('room-name').value.trim();
+      if (!roomName) {
+        alert("Please enter a room name.");
+        return;
+      }
+
+      if (api) {
+        api.dispose(); // clean previous session
+      }
+
+      const domain = "meet.jit.si";
+      const options = {
+        roomName: roomName,
+        width: "100%",
+        height: "100%",
+        parentNode: document.querySelector('#jitsi-container'),
+        configOverwrite: {
+          startWithAudioMuted: false,
+          startWithVideoMuted: false,
+        },
+        interfaceConfigOverwrite: {
+          SHOW_JITSI_WATERMARK: false,
+          SHOW_BRAND_WATERMARK: false,
+          SHOW_WATERMARK_FOR_GUESTS: false,
+          DEFAULT_REMOTE_DISPLAY_NAME: 'Guest',
+          TOOLBAR_BUTTONS: [
+            'microphone', 'camera', 'chat', 'desktop', 'fullscreen',
+            'hangup', 'settings', 'raisehand', 'videoquality'
+          ]
+        }
+      };
+
+      api = new JitsiMeetExternalAPI(domain, options);
+    }
+
+    function endMeeting() {
+      if (api) {
+        api.executeCommand('hangup');
+        api.dispose();
+        api = null;
+      }
+    }
+  </script>
+</body>
+</html>
