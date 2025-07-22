@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Futuristic Quotation App v2</title>
+    <title>Futuristic Quotation App v2.1</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -353,8 +353,6 @@
     // Set tanggal hari ini
     window.onload = function() {
         const today = new Date();
-        // Menggunakan zona waktu WITA (UTC+8) tidak bisa langsung di client-side
-        // jadi kita format tanggal lokal client saja.
         const day = String(today.getDate()).padStart(2, '0');
         const month = String(today.getMonth() + 1).padStart(2, '0');
         const year = today.getFullYear();
@@ -449,105 +447,111 @@
     }
 
     function generatePDF() {
-        if (quotationItems.length === 0) {
-            alert('Tidak ada item dalam penawaran untuk dicetak.');
-            return;
+        try {
+            if (quotationItems.length === 0) {
+                alert('Tidak ada item dalam penawaran untuk dicetak.');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Ambil semua data dari form
+            const quoId = document.getElementById('quoId').value;
+            const quoDate = document.getElementById('quoDate').value;
+            const senderPhone = document.getElementById('senderPhone').value;
+            const senderEmail = document.getElementById('senderEmail').value;
+            const clientCompany = document.getElementById('clientCompany').value || "-";
+            const clientName = document.getElementById('clientName').value || "-";
+            const clientPhone = document.getElementById('clientPhone').value || "-";
+
+            // Header Kiri (Info Perusahaan Anda)
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(14);
+            doc.text("PT. TIMUR SUKSES BAJATAMA", 14, 20);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9);
+            doc.text("Jl. Untung Suropati Komp. Mahakam Square Blok C.10", 14, 26);
+            doc.text("Samarinda, Kalimantan Timur", 14, 30);
+
+            // Header Kanan (Info Penawaran)
+            doc.setFontSize(10);
+            const rightAlign = 196;
+            doc.text("QUOTATION", rightAlign, 20, { align: 'right' });
+            doc.text(`ID: ${quoId}`, rightAlign, 30, { align: 'right' });
+            doc.text(`Date: Samarinda, ${quoDate}`, rightAlign, 35, { align: 'right' });
+            doc.text(`Phone: ${senderPhone}`, rightAlign, 40, { align: 'right' });
+            doc.text(`Email: ${senderEmail}`, rightAlign, 45, { align: 'right' });
+            
+            // Data Klien
+            doc.line(14, 55, 196, 55); // Garis pemisah
+            doc.setFont('helvetica', 'bold');
+            doc.text("Kepada Yth:", 14, 62);
+            doc.setFont('helvetica', 'normal');
+            doc.text(clientCompany, 14, 68);
+            doc.text(`Attn: ${clientName}`, 14, 73);
+            doc.text(`Phone: ${clientPhone}`, 14, 78);
+            
+            // Tabel Data Barang
+            const tableData = quotationItems.map(item => [
+                item.description, item.size, item.qty, item.unit, item.ketersediaan,
+                item.berat,
+                formatRupiah(item.price).replace(/Rp\s?/, ''),
+                formatRupiah(item.total).replace(/Rp\s?/, '')
+            ]);
+            const subtotal = quotationItems.reduce((sum, item) => sum + item.total, 0);
+            tableData.push([
+                { content: 'Subtotal', colSpan: 7, styles: { halign: 'right', fontStyle: 'bold' } },
+                { content: formatRupiah(subtotal).replace(/Rp\s?/, ''), styles: { halign: 'right', fontStyle: 'bold' } }
+            ]);
+
+            doc.autoTable({
+                startY: 85,
+                head: [['Description', 'Size', 'QTY', 'Unit', 'Ketersediaan', 'Berat/KG', 'Price', 'Total']],
+                body: tableData,
+                theme: 'grid',
+                headStyles: { fillColor: [44, 58, 71], font: 'helvetica', fontStyle: 'bold' },
+                styles: { font: 'helvetica', fontSize: 9, cellPadding: 2 },
+                columnStyles: { 6: { halign: 'right' }, 7: { halign: 'right' } }
+            });
+
+            // Footer (Notes, Delivery, Payment)
+            let finalY = doc.lastAutoTable.finalY + 10;
+            const paymentMethod = document.getElementById('payment').value;
+            const deliveryInfo = document.getElementById('delivery').value;
+            
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'bold');
+            doc.text("Note:", 14, finalY);
+            doc.setFont('helvetica', 'normal');
+            doc.text("- Harga Franco Kota Samarinda", 25, finalY);
+            doc.text("- Harga sudah termasuk PPN", 25, finalY + 4);
+            
+            finalY += 12;
+            
+            doc.setFont('helvetica', 'bold');
+            doc.text("Delivery:", 14, finalY);
+            doc.setFont('helvetica', 'normal');
+            doc.text(deliveryInfo, 35, finalY);
+
+            finalY += 5;
+            
+            doc.setFont('helvetica', 'bold');
+            doc.text("Payment:", 14, finalY);
+            doc.setFont('helvetica', 'normal');
+            doc.text(paymentMethod, 35, finalY);
+
+            // Tanda Tangan
+            finalY += 15;
+            doc.text("Hormat Kami,", 14, finalY);
+            doc.text("PT. TIMUR SUKSES BAJATAMA", 14, finalY + 20);
+
+            doc.save(`Quotation-${clientCompany.replace(/[\.\s]/g,"_")}-${quoDate.replace(/\//g,"-")}.pdf`);
+
+        } catch (error) {
+            console.error("Gagal membuat PDF:", error);
+            alert("Terjadi kesalahan saat membuat PDF. Silakan periksa console browser untuk detailnya.");
         }
-
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        
-        // Ambil semua data dari form
-        const quoId = document.getElementById('quoId').value;
-        const quoDate = document.getElementById('quoDate').value;
-        const senderPhone = document.getElementById('senderPhone').value;
-        const senderEmail = document.getElementById('senderEmail').value;
-        const clientCompany = document.getElementById('clientCompany').value || "-";
-        const clientName = document.getElementById('clientName').value || "-";
-        const clientPhone = document.getElementById('clientPhone').value || "-";
-
-        // Header Kiri (Info Perusahaan Anda)
-        doc.setFont('Poppins', 'bold');
-        doc.setFontSize(14);
-        doc.text("PT. TIMUR SUKSES BAJATAMA", 14, 20);
-        doc.setFont('Poppins', 'normal');
-        doc.setFontSize(9);
-        doc.text("Jl. Untung Suropati Komp. Mahakam Square Blok C.10", 14, 26);
-        doc.text("Samarinda, Kalimantan Timur", 14, 30);
-
-        // Header Kanan (Info Penawaran)
-        doc.setFontSize(10);
-        const rightAlign = 196;
-        doc.text("QUOTATION", rightAlign, 20, { align: 'right' });
-        doc.text(`ID: ${quoId}`, rightAlign, 30, { align: 'right' });
-        doc.text(`Date: Samarinda, ${quoDate}`, rightAlign, 35, { align: 'right' });
-        doc.text(`Phone: ${senderPhone}`, rightAlign, 40, { align: 'right' });
-        doc.text(`Email: ${senderEmail}`, rightAlign, 45, { align: 'right' });
-        
-        // Data Klien
-        doc.line(14, 55, 196, 55); // Garis pemisah
-        doc.setFont('Poppins', 'bold');
-        doc.text("Kepada Yth:", 14, 62);
-        doc.setFont('Poppins', 'normal');
-        doc.text(clientCompany, 14, 68);
-        doc.text(`Attn: ${clientName}`, 14, 73);
-        doc.text(`Phone: ${clientPhone}`, 14, 78);
-        
-        // Tabel Data Barang
-        const tableData = quotationItems.map(item => [
-            item.description, item.size, item.qty, item.unit, item.ketersediaan,
-            item.berat,
-            formatRupiah(item.price).replace('Rp\u00A0', ''),
-            formatRupiah(item.total).replace('Rp\u00A0', '')
-        ]);
-        const subtotal = quotationItems.reduce((sum, item) => sum + item.total, 0);
-        tableData.push([
-            { content: 'Subtotal', colSpan: 7, styles: { halign: 'right', fontStyle: 'bold' } },
-            { content: formatRupiah(subtotal).replace('Rp\u00A0', ''), styles: { halign: 'right', fontStyle: 'bold' } }
-        ]);
-
-        doc.autoTable({
-            startY: 85,
-            head: [['Description', 'Size', 'QTY', 'Unit', 'Ketersediaan', 'Berat/KG', 'Price', 'Total']],
-            body: tableData,
-            theme: 'grid',
-            headStyles: { fillColor: [44, 58, 71], font: 'Poppins', fontStyle: 'bold' },
-            styles: { font: 'Poppins', fontSize: 9, cellPadding: 2 },
-            columnStyles: { 6: { halign: 'right' }, 7: { halign: 'right' } }
-        });
-
-        // Footer (Notes, Delivery, Payment)
-        let finalY = doc.lastAutoTable.finalY + 10;
-        const paymentMethod = document.getElementById('payment').value;
-        const deliveryInfo = document.getElementById('delivery').value;
-        
-        doc.setFontSize(9);
-        doc.setFont('Poppins', 'bold');
-        doc.text("Note:", 14, finalY);
-        doc.setFont('Poppins', 'normal');
-        doc.text("- Harga Franco Kota Samarinda", 25, finalY);
-        doc.text("- Harga sudah termasuk PPN", 25, finalY + 4);
-        
-        finalY += 12;
-        
-        doc.setFont('Poppins', 'bold');
-        doc.text("Delivery:", 14, finalY);
-        doc.setFont('Poppins', 'normal');
-        doc.text(deliveryInfo, 35, finalY);
-
-        finalY += 5;
-        
-        doc.setFont('Poppins', 'bold');
-        doc.text("Payment:", 14, finalY);
-        doc.setFont('Poppins', 'normal');
-        doc.text(paymentMethod, 35, finalY);
-
-        // Tanda Tangan
-        finalY += 15;
-        doc.text("Hormat Kami,", 14, finalY);
-        doc.text("PT. TIMUR SUKSES BAJATAMA", 14, finalY + 20);
-
-        doc.save(`Quotation-${clientCompany.replace(/ /g,"_")}-${quoDate.replace(/\//g,"-")}.pdf`);
     }
 
 </script>
