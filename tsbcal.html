@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Steel oleh Bang Jay</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* bg-gray-900 */
+        }
+        .futuristic-card {
+            background-color: #1F2937; /* bg-gray-800 */
+            border: 1px solid #374151; /* border-gray-700 */
+            box-shadow: 0 0 25px rgba(79, 70, 229, 0.3), 0 0 10px rgba(219, 39, 119, 0.2);
+        }
+        .futuristic-input {
+            background-color: #374151; /* bg-gray-700 */
+            border: 1px solid #4B5563; /* border-gray-600 */
+            transition: all 0.3s ease;
+        }
+        .futuristic-input:focus {
+            ring: 2px;
+            ring-color: #6D28D9; /* ring-violet-700 */
+            border-color: #8B5CF6; /* border-violet-500 */
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+        }
+        .futuristic-btn {
+            background-image: linear-gradient(to right, #8B5CF6, #EC4899);
+            transition: all 0.3s ease;
+        }
+        .futuristic-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .result-value {
+            color: #34D399; /* text-green-400 */
+            font-weight: 700;
+            font-size: 1.125rem; /* text-lg */
+        }
+        /* Hide number input spinners */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+          -webkit-appearance: none; 
+          margin: 0; 
+        }
+        input[type=number] {
+          -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="text-gray-200 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-3xl mx-auto">
+        <div class="futuristic-card rounded-2xl p-6 md:p-8">
+            
+            <!-- Header -->
+            <header class="text-center mb-8">
+                <h1 class="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-pink-500 pb-2">
+                    Kalkulator Steel
+                </h1>
+                <p class="text-gray-400 text-sm">
+                    Program dibuat oleh Bang Jay, <span id="openModalBtn" class="text-cyan-400 hover:text-cyan-300 cursor-pointer underline decoration-dotted">berdasarkan ini</span>.
+                </p>
+            </header>
+
+            <!-- Main Calculator Body -->
+            <main class="space-y-6">
+                <!-- Main Selector -->
+                <div>
+                    <label for="calculationType" class="block mb-2 text-sm font-medium text-gray-300">Pilih Tipe Kalkulasi</label>
+                    <select id="calculationType" class="w-full p-3 rounded-lg futuristic-input text-white focus:outline-none">
+                        <option value="exclude">Harga Jual Exclude</option>
+                        <option value="include">Harga Jual Include</option>
+                    </select>
+                </div>
+
+                <!-- Fields for "Harga Exclude" -->
+                <div id="excludeFields" class="space-y-4">
+                    <h2 class="text-xl font-bold text-violet-400 border-b-2 border-violet-800 pb-2">Kalkulasi Harga Exclude</h2>
+                    <div>
+                        <label for="modal" class="block mb-2 text-sm font-medium text-gray-300">Modal (Rp)</label>
+                        <input type="text" id="modal" class="w-full p-3 rounded-lg futuristic-input" placeholder="Contoh: 48000">
+                    </div>
+                    <div>
+                        <label for="profitPercentage" class="block mb-2 text-sm font-medium text-gray-300">Profit (%)</label>
+                        <input type="number" id="profitPercentage" class="w-full p-3 rounded-lg futuristic-input" placeholder="Contoh: 10">
+                    </div>
+                    <div class="bg-gray-900/50 p-4 rounded-lg space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400">Modal Exclude PPN:</span>
+                            <span id="modalExclude" class="result-value">Rp 0</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400">Hasil Profit:</span>
+                            <span id="profitResult" class="result-value">Rp 0</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xl font-bold pt-2 border-t border-gray-600">
+                            <span class="text-violet-300">Harga Jual Exclude:</span>
+                            <span id="hargaJualExclude" class="result-value text-2xl text-green-300">Rp 0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fields for "Harga Jual" -->
+                <div id="includeFields" class="hidden space-y-4">
+                    <h2 class="text-xl font-bold text-pink-400 border-b-2 border-pink-800 pb-2">Kalkulasi Harga Jual</h2>
+                    <div>
+                        <label for="includeType" class="block mb-2 text-sm font-medium text-gray-300">Pilih Tipe Harga Jual</label>
+                        <select id="includeType" class="w-full p-3 rounded-lg futuristic-input text-white focus:outline-none">
+                            <option value="stok">Stok</option>
+                            <option value="vendor">Vendor</option>
+                            <option value="spindo">Spindo</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Sub-fields for Harga Jual -->
+                    <div id="stokFields" class="space-y-4">
+                        <div>
+                            <label for="stokModal" class="block mb-2 text-sm font-medium text-gray-300">Harga Modal (Rp)</label>
+                            <input type="text" id="stokModal" class="w-full p-3 rounded-lg futuristic-input" placeholder="Contoh: 350000">
+                        </div>
+                        <div>
+                            <label for="stokOngkir" class="block mb-2 text-sm font-medium text-gray-300">Ongkir (Rp)</label>
+                            <input type="text" id="stokOngkir" class="w-full p-3 rounded-lg futuristic-input" placeholder="Contoh: 29000">
+                        </div>
+                        <div>
+                            <label for="stokProfit" class="block mb-2 text-sm font-medium text-gray-300">Profit (%)</label>
+                            <input type="number" id="stokProfit" class="w-full p-3 rounded-lg futuristic-input" placeholder="Contoh: 12">
+                        </div>
+                    </div>
+
+                    <div id="vendorFields" class="hidden space-y-4">
+                        <div>
+                            <label for="vendorModal" class="block mb-2 text-sm font-medium text-gray-300">Harga Modal (Rp)</label>
+                            <input type="text" id="vendorModal" class="w-full p-3 rounded-lg futuristic-input" placeholder="Contoh: 43000">
+                        </div>
+                        <div>
+                            <label for="vendorProfit" class="block mb-2 text-sm font-medium text-gray-300">Profit (%)</label>
+                            <input type="number" id="vendorProfit" class="w-full p-3 rounded-lg futuristic-input" placeholder="Contoh: 12">
+                        </div>
+                    </div>
+
+                    <div id="spindoFields" class="hidden space-y-4">
+                         <div>
+                            <label for="spindoModal" class="block mb-2 text-sm font-medium text-gray-300">Harga Modal (Rp)</label>
+                            <input type="text" id="spindoModal" class="w-full p-3 rounded-lg futuristic-input" placeholder="Contoh: 50000">
+                        </div>
+                        <div>
+                            <label for="spindoProfit" class="block mb-2 text-sm font-medium text-gray-300">Profit (%)</label>
+                            <input type="number" id="spindoProfit" class="w-full p-3 rounded-lg futuristic-input" placeholder="Contoh: 15">
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-900/50 p-4 rounded-lg space-y-2">
+                         <div class="flex justify-between items-center text-xl font-bold pt-2">
+                            <span class="text-pink-300">Harga Jual:</span>
+                            <span id="hargaJual" class="result-value text-2xl text-green-300">Rp 0</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="text-center text-xs text-gray-500 pt-6 mt-6 border-t border-gray-700">
+                Dibuat dengan ❤️ oleh jay
+            </footer>
+        </div>
+    </div>
+
+    <!-- Modal for Formulas -->
+    <div id="formulaModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div class="futuristic-card rounded-xl p-8 max-w-2xl w-full relative max-h-[90vh] overflow-y-auto">
+            <button id="closeModalBtn" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl">&times;</button>
+            <h2 class="text-2xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">Rincian Rumus Kalkulator</h2>
+            
+            <div class="space-y-6 text-gray-300">
+                <!-- Harga Exclude -->
+                <div class="p-4 bg-gray-900/50 rounded-lg border border-violet-700">
+                    <h3 class="font-bold text-lg text-violet-400 mb-2">1. Harga Jual Exclude</h3>
+                    <ul class="list-disc list-inside space-y-2 text-sm">
+                        <li><strong class="font-semibold">Modal Exclude</strong> = <code class="bg-gray-700 px-1 rounded">Harga Modal / 1.11</code></li>
+                        <li><strong class="font-semibold">Hasil Profit (Rp)</strong> = <code class="bg-gray-700 px-1 rounded">Modal Exclude * (Profit % / 100)</code></li>
+                        <li><strong class="font-semibold">Harga Jual Exclude</strong> = <code class="bg-gray-700 px-1 rounded">Modal Exclude + Hasil Profit</code></li>
+                        <li>Hasil akhir <strong class="text-green-400">dibulatkan ke atas</strong> ke ribuan terdekat.</li>
+                    </ul>
+                </div>
+
+                <!-- Harga Jual -->
+                <div class="p-4 bg-gray-900/50 rounded-lg border border-pink-700">
+                    <h3 class="font-bold text-lg text-pink-400 mb-2">2. Harga Jual</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <h4 class="font-semibold text-cyan-400">a. Tipe "Stok"</h4>
+                             <ul class="list-disc list-inside space-y-2 text-sm pl-4">
+                                <li><strong class="font-semibold">Harga Modal Pasti</strong> = <code class="bg-gray-700 px-1 rounded">Modal + (Ongkir * 1.11)</code></li>
+                                <li><strong class="font-semibold">Harga Jual</strong> = <code class="bg-gray-700 px-1 rounded">Harga Modal Pasti * (1 + Profit % / 100)</code></li>
+                             </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-cyan-400">b. Tipe "Vendor"</h4>
+                            <ul class="list-disc list-inside space-y-2 text-sm pl-4">
+                                <li><strong class="font-semibold">Harga Jual</strong> = <code class="bg-gray-700 px-1 rounded">Harga Modal * (1 + Profit % / 100)</code></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-cyan-400">c. Tipe "Spindo"</h4>
+                             <ul class="list-disc list-inside space-y-2 text-sm pl-4">
+                                <li><strong class="font-semibold">Harga Jual</strong> = <code class="bg-gray-700 px-1 rounded">(Harga Modal * 1.11) * (1 + Profit % / 100)</code></li>
+                             </ul>
+                        </div>
+                         <p class="text-sm pt-2">Hasil akhir untuk semua tipe Harga Jual <strong class="text-green-400">dibulatkan ke atas</strong> ke ribuan terdekat.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- DOM Element Selection ---
+            const calculationType = document.getElementById('calculationType');
+            const includeType = document.getElementById('includeType');
+
+            const excludeFields = document.getElementById('excludeFields');
+            const includeFields = document.getElementById('includeFields');
+
+            const stokFields = document.getElementById('stokFields');
+            const vendorFields = document.getElementById('vendorFields');
+            const spindoFields = document.getElementById('spindoFields');
+
+            // Exclude Inputs
+            const modalInput = document.getElementById('modal');
+            const profitPercentageInput = document.getElementById('profitPercentage');
+
+            // Include Inputs
+            const stokModalInput = document.getElementById('stokModal');
+            const stokOngkirInput = document.getElementById('stokOngkir');
+            const stokProfitInput = document.getElementById('stokProfit');
+            const vendorModalInput = document.getElementById('vendorModal');
+            const vendorProfitInput = document.getElementById('vendorProfit');
+            const spindoModalInput = document.getElementById('spindoModal');
+            const spindoProfitInput = document.getElementById('spindoProfit');
+
+            // Result Displays
+            const modalExcludeOutput = document.getElementById('modalExclude');
+            const profitResultOutput = document.getElementById('profitResult');
+            const hargaJualExcludeOutput = document.getElementById('hargaJualExclude');
+            const hargaJualOutput = document.getElementById('hargaJual');
+            
+            // Modal Elements
+            const openModalBtn = document.getElementById('openModalBtn');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const formulaModal = document.getElementById('formulaModal');
+
+            // --- Helper Functions ---
+            const formatRupiah = (angka) => {
+                if (isNaN(angka)) return 'Rp 0';
+                return new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(angka);
+            };
+
+            const parseRupiah = (string) => {
+                // Remove all non-digit characters to get a clean number
+                return parseFloat(string.replace(/[^0-9]/g, '')) || 0;
+            };
+            
+            const roundUpToNearestThousand = (num) => {
+                if (isNaN(num) || num === 0) return 0;
+                return Math.ceil(num / 1000) * 1000;
+            };
+
+            // --- Calculation Logic ---
+            function calculate() {
+                const type = calculationType.value;
+
+                if (type === 'exclude') {
+                    const modal = parseRupiah(modalInput.value);
+                    const profitPercentage = parseFloat(profitPercentageInput.value) || 0;
+
+                    const modalExclude = modal / 1.11;
+                    const profitResult = modalExclude * (profitPercentage / 100);
+                    const hargaJualExcludeRaw = modalExclude + profitResult;
+                    const hargaJualExcludeFinal = roundUpToNearestThousand(hargaJualExcludeRaw);
+
+                    modalExcludeOutput.textContent = formatRupiah(modalExclude);
+                    profitResultOutput.textContent = formatRupiah(profitResult);
+                    hargaJualExcludeOutput.textContent = formatRupiah(hargaJualExcludeFinal);
+                } else { // type === 'include'
+                    const subType = includeType.value;
+                    let hargaJualRaw = 0;
+
+                    if (subType === 'stok') {
+                        const modal = parseRupiah(stokModalInput.value);
+                        const ongkir = parseRupiah(stokOngkirInput.value);
+                        const profit = parseFloat(stokProfitInput.value) || 0;
+                        
+                        const hargaModalPasti = modal + (ongkir * 1.11);
+                        hargaJualRaw = hargaModalPasti * (1 + (profit / 100));
+
+                    } else if (subType === 'vendor') {
+                        const modal = parseRupiah(vendorModalInput.value);
+                        const profit = parseFloat(vendorProfitInput.value) || 0;
+                        
+                        hargaJualRaw = modal * (1 + (profit / 100));
+
+                    } else if (subType === 'spindo') {
+                        const modal = parseRupiah(spindoModalInput.value);
+                        const profit = parseFloat(spindoProfitInput.value) || 0;
+                        
+                        const modalWithPpn = modal * 1.11;
+                        hargaJualRaw = modalWithPpn * (1 + (profit / 100));
+                    }
+                    
+                    const hargaJualFinal = roundUpToNearestThousand(hargaJualRaw);
+                    hargaJualOutput.textContent = formatRupiah(hargaJualFinal);
+                }
+            }
+            
+            // --- UI Logic & Event Listeners ---
+            function toggleFields() {
+                const type = calculationType.value;
+                if (type === 'exclude') {
+                    excludeFields.classList.remove('hidden');
+                    includeFields.classList.add('hidden');
+                } else {
+                    excludeFields.classList.add('hidden');
+                    includeFields.classList.remove('hidden');
+                    toggleIncludeSubFields();
+                }
+                calculate();
+            }
+
+            function toggleIncludeSubFields() {
+                const subType = includeType.value;
+                stokFields.classList.toggle('hidden', subType !== 'stok');
+                vendorFields.classList.toggle('hidden', subType !== 'vendor');
+                spindoFields.classList.toggle('hidden', subType !== 'spindo');
+                calculate();
+            }
+            
+            // Function to auto-format Rupiah input fields
+            function formatInputField(e) {
+                const input = e.target;
+                let value = parseRupiah(input.value);
+                // To avoid "Rp 0" when field is empty
+                if (input.value === '' || value === 0) {
+                    input.value = '';
+                } else {
+                    // Format back to Rp string but without the 'Rp' prefix for easier editing
+                    input.value = new Intl.NumberFormat('id-ID').format(value);
+                }
+            }
+
+            // --- Attach Event Listeners ---
+            calculationType.addEventListener('change', toggleFields);
+            includeType.addEventListener('change', toggleIncludeSubFields);
+            
+            // Add input listeners to all fields that trigger calculation
+            const inputsToWatch = [
+                modalInput, profitPercentageInput,
+                stokModalInput, stokOngkirInput, stokProfitInput,
+                vendorModalInput, vendorProfitInput,
+                spindoModalInput, spindoProfitInput
+            ];
+            inputsToWatch.forEach(input => input.addEventListener('input', calculate));
+            
+            // Add blur listeners for Rupiah formatting
+            const rupiahInputs = [modalInput, stokModalInput, stokOngkirInput, vendorModalInput, spindoModalInput];
+            rupiahInputs.forEach(input => input.addEventListener('input', formatInputField));
+
+            // Modal Listeners
+            openModalBtn.addEventListener('click', () => formulaModal.classList.remove('hidden'));
+            closeModalBtn.addEventListener('click', () => formulaModal.classList.add('hidden'));
+            formulaModal.addEventListener('click', (e) => {
+                if (e.target === formulaModal) {
+                    formulaModal.classList.add('hidden');
+                }
+            });
+
+            // --- Initial State ---
+            toggleFields();
+        });
+    </script>
+</body>
+</html>
+
