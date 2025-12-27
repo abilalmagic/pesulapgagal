@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Magic Morph</title>
+    <title>AI Magic Partial Morph</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #000; font-family: sans-serif; height: 100vh; overflow: hidden; color: white; }
@@ -13,53 +13,62 @@
             position: fixed; inset: 0; background: #1a1a1a; z-index: 100;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        select, button { padding: 15px; width: 80%; margin: 10px; border-radius: 10px; border: none; }
-        button { background: #ffcc00; font-weight: bold; }
+        select, button { padding: 15px; width: 80%; margin: 10px; border-radius: 10px; border: none; font-size: 16px; }
+        button { background: #ffcc00; font-weight: bold; cursor: pointer; }
 
         /* Viewport */
         .viewport { flex: 1; position: relative; background: #000; display: flex; justify-content: center; align-items: center; height: calc(100vh - 150px); }
         #webcam { width: 100%; height: 100%; object-fit: cover; }
         
-        /* Layer Foto */
-        .result-layer {
+        /* Layer Hasil */
+        #result-layer {
             position: absolute; inset: 0; display: none;
-            justify-content: center; align-items: center; background: black;
+            justify-content: center; align-items: center; background: black; z-index: 50;
+        }
+
+        /* Foto Asli (Paling Depan) */
+        #original-canvas { 
+            width: 100%; height: 100%; object-fit: cover; 
+            position: absolute; z-index: 30; pointer-events: none;
         }
         
-        /* Foto Asli (Bawah) */
-        #original-snap { width: 100%; height: 100%; object-fit: cover; position: absolute; z-index: 10; }
-        
-        /* Foto AI (Atas) */
-        #ai-morph { 
-            width: 100%; height: 100%; object-fit: cover; position: absolute; 
-            z-index: 20; opacity: 0; 
-            transition: opacity 3s ease-in-out; /* Transisi halus 3 detik */
+        /* Kartu AI (Di Belakang Foto Asli) */
+        #ai-card { 
+            width: 40%; /* Ukuran kartu yang akan muncul di tengah */
+            position: absolute; z-index: 20; 
+            opacity: 0;
+            transition: opacity 4s ease-in-out;
         }
 
         /* UI Kamera */
         .bottom-bar { height: 150px; background: black; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .shutter-btn { width: 70px; height: 70px; background: white; border-radius: 50%; border: 5px solid #333; }
+        .shutter-btn { width: 75px; height: 75px; background: white; border-radius: 50%; border: 5px solid #333; cursor: pointer; }
+        
+        /* Instruksi kecil */
+        .hint { position: absolute; bottom: 10px; color: rgba(255,255,255,0.5); font-size: 10px; }
     </style>
 </head>
 <body>
 
 <div id="setup-menu">
-    <h3>Setting Kartu Target</h3>
+    <h2 style="margin-bottom:20px;">AI Magic Trick</h2>
+    <p>Pilih Kartu yang Akan Muncul:</p>
     <select id="card-select">
-        <option value="2 of hearts">2 Hati (2 of Hearts)</option>
-        <option value="ace of spades">As Sekop (Ace of Spades)</option>
-        <option value="king of diamonds">King Wajik (King of Diamonds)</option>
+        <option value="2_of_hearts">2 Hati</option>
+        <option value="ace_of_spades">As Sekop</option>
+        <option value="king_of_diamonds">King Wajik</option>
     </select>
-    <button onclick="initApp()">BUKA KAMERA</button>
+    <button onclick="initApp()">MULAI SEKARANG</button>
 </div>
 
 <div class="viewport">
     <video id="webcam" autoplay playsinline></video>
     
-    <div id="result-layer" class="result-layer">
-        <canvas id="original-snap"></canvas>
-        <img id="ai-morph" src="" alt="AI Result">
+    <div id="result-layer">
+        <canvas id="original-canvas"></canvas>
+        <img id="ai-card" src="" alt="AI Card">
     </div>
+    <div class="hint">Posisikan kartu tepat di tengah layar</div>
 </div>
 
 <div class="bottom-bar">
@@ -70,46 +79,59 @@
     let targetCard = "";
     const video = document.getElementById('webcam');
     const resultLayer = document.getElementById('result-layer');
-    const originalSnap = document.getElementById('original-snap');
-    const aiMorph = document.getElementById('ai-morph');
-    const ctx = originalSnap.getContext('2d');
+    const canvas = document.getElementById('original-canvas');
+    const aiCard = document.getElementById('ai-card');
+    const ctx = canvas.getContext('2d');
 
     async function initApp() {
         targetCard = document.getElementById('card-select').value;
         document.getElementById('setup-menu').style.display = 'none';
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { facingMode: "environment", width: 1280, height: 720 } 
+        });
         video.srcObject = stream;
     }
 
     function captureMagic() {
-        // 1. Ambil foto asli dan tampilkan di canvas
-        originalSnap.width = video.videoWidth;
-        originalSnap.height = video.videoHeight;
-        ctx.drawImage(video, 0, 0);
-        
-        // Tampilkan layer hasil (masih foto asli)
+        // 1. Gambar video ke canvas
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // 2. Buat "Lubang" Transparan di tengah foto asli (area kartu)
+        // Kita gunakan globalCompositeOperation untuk menghapus bagian tengah
+        const cardWidth = canvas.width * 0.4;
+        const cardHeight = cardWidth * 1.4;
+        const startX = (canvas.width - cardWidth) / 2;
+        const startY = (canvas.height - cardHeight) / 2;
+
+        // Efek transisi halus: kita tidak langsung melubangi, 
+        // tapi kita siapkan gambar AI dulu
+        const seed = Math.floor(Math.random() * 9999);
+        const prompt = `single_playing_card_${targetCard}_white_background_clear_design`;
+        aiCard.src = `https://image.pollinations.ai/prompt/${prompt}?seed=${seed}&width=500&height=700&nologo=true`;
+
         resultLayer.style.display = 'flex';
-        aiMorph.style.opacity = "0"; // Pastikan AI masih transparan
 
-        // 2. Siapkan gambar AI di background
-        const seed = Math.floor(Math.random() * 1000);
-        // Kita gunakan prompt yang mirip dengan komposisi foto pada umumnya
-        const prompt = `a hand holding a ${targetCard} playing card, first person view, realistic photography, match lighting`;
-        const aiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?seed=${seed}&width=${video.videoWidth}&height=${video.videoHeight}&nologo=true`;
-        
-        aiMorph.src = aiUrl;
-
-        // 3. Logika Perubahan (Tunggu 5 detik, lalu munculkan AI pelan-pelan)
+        // 3. Eksekusi Perubahan setelah 5 detik
         setTimeout(() => {
-            // Morphing dimulai: Foto AI perlahan menutupi foto asli
-            aiMorph.style.opacity = "1";
-        }, 5000); // 5 detik setelah jepret
+            // Melubangi canvas tepat di tengah agar gambar AI di belakangnya terlihat
+            ctx.globalCompositeOperation = 'destination-out';
+            
+            // Membuat lubang dengan pinggiran agak blur agar tidak kaku
+            ctx.filter = 'blur(10px)'; 
+            ctx.fillRect(startX, startY, cardWidth, cardHeight);
+            
+            // Munculkan kartu AI secara perlahan
+            aiCard.style.opacity = "1";
+        }, 5000);
     }
 
-    // Klik layar untuk kembali ke kamera
     resultLayer.onclick = () => {
         resultLayer.style.display = 'none';
-        aiMorph.style.opacity = "0";
+        aiCard.style.opacity = "0";
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.filter = 'none';
     };
 </script>
 </body>
