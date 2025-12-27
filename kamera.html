@@ -3,133 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Magic Camera</title>
+    <title>AI Magic Morph</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #000; font-family: sans-serif; height: 100vh; overflow: hidden; color: white; }
 
-        /* Setup Menu - Muncul di Awal */
+        /* Setup Menu */
         #setup-menu {
             position: fixed; inset: 0; background: #1a1a1a; z-index: 100;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        select, button.start-btn { 
-            padding: 15px; width: 80%; margin: 10px; border-radius: 10px; border: none; font-size: 16px;
-        }
-        button.start-btn { background: #ffcc00; font-weight: bold; cursor: pointer; }
+        select, button { padding: 15px; width: 80%; margin: 10px; border-radius: 10px; border: none; }
+        button { background: #ffcc00; font-weight: bold; }
 
-        /* Main App */
-        .app-container { width: 100%; height: 100%; display: flex; flex-direction: column; position: relative; }
-        
-        .viewport { flex: 1; position: relative; background: #111; display: flex; justify-content: center; align-items: center; }
+        /* Viewport */
+        .viewport { flex: 1; position: relative; background: #000; display: flex; justify-content: center; align-items: center; height: calc(100vh - 150px); }
         #webcam { width: 100%; height: 100%; object-fit: cover; }
         
-        /* Result Overlay */
-        #result-container {
-            position: absolute; inset: 0; background: black; display: none;
-            justify-content: center; align-items: center; z-index: 50;
+        /* Layer Foto */
+        .result-layer {
+            position: absolute; inset: 0; display: none;
+            justify-content: center; align-items: center; background: black;
         }
-        #final-image { width: 100%; height: 100%; object-fit: contain; display: none; }
-
-        /* Loader halus tanpa angka */
-        .processing-loader {
-            width: 40px; height: 40px; border: 3px solid #333; border-top: 3px solid #fff;
-            border-radius: 50%; animation: spin 1s linear infinite;
+        
+        /* Foto Asli (Bawah) */
+        #original-snap { width: 100%; height: 100%; object-fit: cover; position: absolute; z-index: 10; }
+        
+        /* Foto AI (Atas) */
+        #ai-morph { 
+            width: 100%; height: 100%; object-fit: cover; position: absolute; 
+            z-index: 20; opacity: 0; 
+            transition: opacity 3s ease-in-out; /* Transisi halus 3 detik */
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* UI Kamera */
-        .bottom-bar { height: 180px; background: black; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .shutter-btn { 
-            width: 70px; height: 70px; background: white; border-radius: 50%; 
-            border: 5px solid #333; cursor: pointer;
-        }
-        .status-dot { width: 8px; height: 8px; background: #ffcc00; border-radius: 50%; margin-top: 10px; }
+        .bottom-bar { height: 150px; background: black; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .shutter-btn { width: 70px; height: 70px; background: white; border-radius: 50%; border: 5px solid #333; }
     </style>
 </head>
 <body>
 
 <div id="setup-menu">
-    <h2>Pilih Kartu Target</h2>
-    <p style="color: #888; margin-bottom: 20px;">Kartu ini yang akan muncul nanti</p>
+    <h3>Setting Kartu Target</h3>
     <select id="card-select">
         <option value="2 of hearts">2 Hati (2 of Hearts)</option>
         <option value="ace of spades">As Sekop (Ace of Spades)</option>
         <option value="king of diamonds">King Wajik (King of Diamonds)</option>
-        <option value="queen of clubs">Queen Keriting (Queen of Clubs)</option>
-        <option value="10 of hearts">10 Hati (10 of Hearts)</option>
     </select>
-    <button class="start-btn" onclick="initApp()">MULAI KAMERA</button>
+    <button onclick="initApp()">BUKA KAMERA</button>
 </div>
 
-<div class="app-container">
-    <div class="viewport">
-        <video id="webcam" autoplay playsinline></video>
-        
-        <div id="result-container">
-            <div id="processing-ui" class="processing-loader"></div>
-            <img id="final-image" src="" alt="Magic Result">
-        </div>
+<div class="viewport">
+    <video id="webcam" autoplay playsinline></video>
+    
+    <div id="result-layer" class="result-layer">
+        <canvas id="original-snap"></canvas>
+        <img id="ai-morph" src="" alt="AI Result">
     </div>
+</div>
 
-    <div class="bottom-bar">
-        <div style="color:#888; font-size: 12px; margin-bottom: 15px; letter-spacing: 2px;">PHOTO</div>
-        <div class="shutter-btn" onclick="captureMagic()"></div>
-        <div class="status-dot"></div>
-    </div>
+<div class="bottom-bar">
+    <div class="shutter-btn" onclick="captureMagic()"></div>
 </div>
 
 <script>
     let targetCard = "";
     const video = document.getElementById('webcam');
-    const resultContainer = document.getElementById('result-container');
-    const processingUI = document.getElementById('processing-ui');
-    const finalImage = document.getElementById('final-image');
-    const setupMenu = document.getElementById('setup-menu');
+    const resultLayer = document.getElementById('result-layer');
+    const originalSnap = document.getElementById('original-snap');
+    const aiMorph = document.getElementById('ai-morph');
+    const ctx = originalSnap.getContext('2d');
 
     async function initApp() {
         targetCard = document.getElementById('card-select').value;
-        setupMenu.style.display = 'none';
-        
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: "environment" }
-            });
-            video.srcObject = stream;
-        } catch (err) {
-            alert("Izin kamera diperlukan untuk trik ini.");
-        }
+        document.getElementById('setup-menu').style.display = 'none';
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        video.srcObject = stream;
     }
 
     function captureMagic() {
-        // 1. Ambil snapshot visual (Freeze)
-        resultContainer.style.display = 'flex';
-        processingUI.style.display = 'block';
-        finalImage.style.display = 'none';
+        // 1. Ambil foto asli dan tampilkan di canvas
+        originalSnap.width = video.videoWidth;
+        originalSnap.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0);
+        
+        // Tampilkan layer hasil (masih foto asli)
+        resultLayer.style.display = 'flex';
+        aiMorph.style.opacity = "0"; // Pastikan AI masih transparan
 
-        // 2. Simulasi Proses AI (20 Detik sesuai permintaan Anda)
-        // Kita panggil API di awal agar saat 20 detik selesai, gambar sudah siap
-        const seed = Math.floor(Math.random() * 100000);
-        const prompt = `a realistic photo of a person's hand holding a single ${targetCard} playing card, indoor lighting, high resolution, detailed skin texture`;
-        const aiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?seed=${seed}&width=720&height=1280&nologo=true`;
+        // 2. Siapkan gambar AI di background
+        const seed = Math.floor(Math.random() * 1000);
+        // Kita gunakan prompt yang mirip dengan komposisi foto pada umumnya
+        const prompt = `a hand holding a ${targetCard} playing card, first person view, realistic photography, match lighting`;
+        const aiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?seed=${seed}&width=${video.videoWidth}&height=${video.videoHeight}&nologo=true`;
+        
+        aiMorph.src = aiUrl;
 
-        // Pre-load gambar agar tidak patah saat muncul
-        const imgPreloader = new Image();
-        imgPreloader.src = aiUrl;
-
+        // 3. Logika Perubahan (Tunggu 5 detik, lalu munculkan AI pelan-pelan)
         setTimeout(() => {
-            // 3. Tiba-tiba berubah
-            processingUI.style.display = 'none';
-            finalImage.src = aiUrl;
-            finalImage.style.display = 'block';
-        }, 20000); // 20.000 ms = 20 Detik
+            // Morphing dimulai: Foto AI perlahan menutupi foto asli
+            aiMorph.style.opacity = "1";
+        }, 5000); // 5 detik setelah jepret
     }
 
-    // Klik pada gambar hasil untuk reset kembali ke kamera
-    finalImage.onclick = () => {
-        resultContainer.style.display = 'none';
+    // Klik layar untuk kembali ke kamera
+    resultLayer.onclick = () => {
+        resultLayer.style.display = 'none';
+        aiMorph.style.opacity = "0";
     };
 </script>
-
 </body>
 </html>
