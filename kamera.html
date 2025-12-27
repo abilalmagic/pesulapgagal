@@ -3,127 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gemini Magic Camera</title>
+    <title>Magic AI Invisibility</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #000; font-family: sans-serif; height: 100vh; overflow: hidden; color: white; }
+        body { background: #000; font-family: sans-serif; height: 100vh; overflow: hidden; }
 
-        /* Setup Menu */
-        #setup-menu {
+        /* Setup awal */
+        #setup {
             position: fixed; inset: 0; background: #111; z-index: 100;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; color: white;
         }
-        select, .btn { padding: 15px; width: 80%; margin: 10px; border-radius: 12px; border: none; font-size: 16px; }
-        .btn { background: #4285f4; color: white; font-weight: bold; cursor: pointer; }
+        select, button { padding: 15px; width: 80%; margin: 10px; border-radius: 12px; border: none; font-size: 16px; }
+        button { background: #4285f4; color: white; font-weight: bold; }
 
-        /* Viewport */
-        .viewport { flex: 1; position: relative; background: #000; display: flex; justify-content: center; align-items: center; height: 80vh; }
+        .viewport { position: relative; width: 100vw; height: 80vh; background: #000; }
         #webcam { width: 100%; height: 100%; object-fit: cover; }
         
-        /* Layer Hasil */
-        #result-layer {
-            position: absolute; inset: 0; display: none;
-            justify-content: center; align-items: center; background: black; z-index: 50;
+        /* Layer utama untuk hasil */
+        #display-container {
+            position: absolute; inset: 0; display: none; z-index: 50;
+            cursor: pointer; background: black;
         }
 
-        /* Foto Hasil Akhir (Ini yang bisa ditekan lama untuk save) */
-        #final-output { 
-            width: 100%; height: 100%; object-fit: contain; 
-            position: absolute; z-index: 60; opacity: 0;
-            transition: opacity 1.5s ease-in-out;
+        /* Foto final yang sudah digabung (Bisa di save) */
+        #final-render {
+            width: 100%; height: 100%; object-fit: contain;
+            opacity: 0; transition: opacity 2s ease-in-out;
         }
 
-        /* Overlay Foto Asli saat transisi */
-        #snap-canvas { width: 100%; height: 100%; object-fit: contain; position: absolute; z-index: 55; }
-
-        /* UI Kamera */
-        .bottom-bar { height: 20vh; background: black; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-        .shutter-btn { width: 75px; height: 75px; background: white; border-radius: 50%; border: 5px solid #333; cursor: pointer; }
-        
-        /* Hint */
-        .hint { position: absolute; top: 10px; width: 100%; text-align: center; color: #666; font-size: 12px; }
+        /* Bottom UI */
+        .bottom-bar { height: 20vh; background: black; display: flex; align-items: center; justify-content: center; }
+        .shutter { width: 70px; height: 70px; background: white; border-radius: 50%; border: 5px solid #333; }
     </style>
 </head>
 <body>
 
-<div id="setup-menu">
-    <h2 style="margin-bottom:10px;">Gemini AI Vision</h2>
-    <p style="margin-bottom:20px; color:#888;">Pilih hasil transformasi:</p>
-    <select id="card-select">
-        <option value="2_of_hearts">Menjadi 2 Hati</option>
-        <option value="ace_of_spades">Menjadi As Sekop</option>
-        <option value="king_of_diamonds">Menjadi King Wajik</option>
+<div id="setup">
+    <h2>Magic Card AI</h2>
+    <p>Kartu target:</p>
+    <select id="card-choice">
+        <option value="ace_of_spades">As Sekop (Ace of Spades)</option>
+        <option value="2_of_hearts">2 Hati (2 of Hearts)</option>
+        <option value="king_of_diamonds">King Wajik (King of Diamonds)</option>
     </select>
-    <button class="btn" onclick="initApp()">BUKA KAMERA</button>
+    <button onclick="startApp()">MASUK KAMERA</button>
 </div>
 
 <div class="viewport">
     <video id="webcam" autoplay playsinline></video>
-    
-    <div id="result-layer" onclick="resetApp()">
-        <canvas id="snap-canvas"></canvas>
-        <img id="final-output" src="" alt="Tekan lama untuk simpan">
-        <div class="hint" id="status-hint">Memproses dengan Gemini AI...</div>
+    <div id="display-container" onclick="reset()">
+        <img id="final-render" alt="Hasil Magic">
     </div>
 </div>
 
 <div class="bottom-bar">
-    <div class="shutter-btn" onclick="captureMagic()"></div>
-    <p style="margin-top:10px; font-size:10px; color:#444;">KLIK UNTUK CAPTURE</p>
+    <div class="shutter" onclick="shoot()"></div>
 </div>
 
-<script>
-    let targetCard = "";
-    const video = document.getElementById('webcam');
-    const resultLayer = document.getElementById('result-layer');
-    const snapCanvas = document.getElementById('snap-canvas');
-    const finalOutput = document.getElementById('final-output');
-    const statusHint = document.getElementById('status-hint');
-    const ctx = snapCanvas.getContext('2d');
+<canvas id="proc-canvas" style="display:none;"></canvas>
 
-    async function initApp() {
-        targetCard = document.getElementById('card-select').value;
-        document.getElementById('setup-menu').style.display = 'none';
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-            video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } } 
-        });
+<script>
+    const video = document.getElementById('webcam');
+    const container = document.getElementById('display-container');
+    const finalImg = document.getElementById('final-render');
+    const procCanvas = document.getElementById('proc-canvas');
+    const ctx = procCanvas.getContext('2d');
+    let target = "";
+
+    async function startApp() {
+        target = document.getElementById('card-choice').value;
+        document.getElementById('setup').style.display = 'none';
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
         video.srcObject = stream;
     }
 
-    function captureMagic() {
+    function shoot() {
         // 1. Ambil foto asli
-        snapCanvas.width = video.videoWidth;
-        snapCanvas.height = video.videoHeight;
+        procCanvas.width = video.videoWidth;
+        procCanvas.height = video.videoHeight;
         ctx.drawImage(video, 0, 0);
         
-        resultLayer.style.display = 'flex';
-        statusHint.style.display = 'block';
-        finalOutput.style.opacity = "0";
+        // Tampilkan foto asli dulu agar user tidak curiga
+        const originalData = procCanvas.toDataURL('image/jpeg');
+        finalImg.src = originalData;
+        finalImg.style.opacity = "1";
+        container.style.display = 'block';
 
-        // 2. Simulasi Integrasi Gemini AI
-        // Prompt untuk Gemini: "Analyze this image, find the playing card in hand, 
-        // and replace only the card texture with a ${targetCard} while keeping the hand and background."
-        
-        const seed = Math.floor(Math.random() * 5000);
-        // Menggunakan engine Pollinations sebagai placeholder (karena API Gemini butuh server-side)
-        const prompt = `a high quality photo of a person hand holding a ${targetCard.replace(/_/g, ' ')} playing card, realistic, same position as original`;
-        
-        finalOutput.src = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?seed=${seed}&width=${video.videoWidth}&height=${video.videoHeight}&nologo=true`;
+        // 2. Siapkan kartu AI secara rahasia
+        const aiCard = new Image();
+        const seed = Math.floor(Math.random() * 999);
+        const prompt = `playing_card_${target}_realistic_white_background`;
+        aiCard.crossOrigin = "anonymous";
+        aiCard.src = `https://image.pollinations.ai/prompt/${prompt}?seed=${seed}&width=400&height=600&nologo=true`;
 
-        // 3. Eksekusi Perubahan
-        setTimeout(() => {
-            statusHint.style.display = 'none';
-            finalOutput.style.opacity = "1";
-        }, 5000); // 5 detik proses "AI"
+        aiCard.onload = () => {
+            // 3. Gabungkan AI ke foto asli di background (Clipping)
+            // Kita gambar ulang foto asli ke canvas
+            ctx.drawImage(video, 0, 0);
+            
+            // Tentukan area kartu (tengah layar)
+            const cw = procCanvas.width * 0.35;
+            const ch = cw * 1.45;
+            const cx = (procCanvas.width - cw) / 2;
+            const cy = (procCanvas.height - ch) / 2;
+
+            // Efek Inpainting: Kita tempel kartu AI dengan pinggiran yang sangat halus (soft edges)
+            ctx.save();
+            // Membuat bayangan halus di sekitar kartu agar menyatu
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = "black";
+            // Tempel kartu AI tepat di atas kartu asli
+            ctx.drawImage(aiCard, cx, cy, cw, ch);
+            ctx.restore();
+
+            const mergedData = procCanvas.toDataURL('image/jpeg');
+
+            // 4. Detik ajaib: Ganti foto asli dengan foto yang sudah "dimodifikasi"
+            setTimeout(() => {
+                finalImg.src = mergedData; 
+                // Karena src diganti, transisi terjadi secara halus di mata user
+            }, 5000); 
+        };
     }
 
-    function resetApp() {
-        // Klik mana saja untuk kembali standby
-        if (finalOutput.style.opacity === "1") {
-            resultLayer.style.display = 'none';
-            finalOutput.style.opacity = "0";
-            finalOutput.src = "";
-        }
+    function reset() {
+        container.style.display = 'none';
+        finalImg.style.opacity = "0";
     }
 </script>
 </body>
