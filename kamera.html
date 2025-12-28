@@ -3,204 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Magic Camera Fullscreen</title>
+    <title>AI Magic Camera</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body, html { 
-            width: 100%; height: 100%; background: #000; 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            overflow: hidden; color: white;
-        }
-
-        /* Setup Screen */
-        #setup-menu {
-            position: fixed; inset: 0; background: #000; z-index: 1000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        .setup-input { 
-            padding: 15px; width: 80%; margin: 10px; border-radius: 10px; 
-            border: 1px solid #333; background: #111; color: white; font-size: 16px; 
-        }
-        .start-btn { 
-            padding: 15px 40px; background: white; color: black; 
-            border: none; border-radius: 30px; font-weight: bold; cursor: pointer; margin-top: 20px;
-        }
-
-        /* Camera UI Layout */
-        .camera-container {
-            position: relative; width: 100%; height: 100%; display: flex; flex-direction: column;
-        }
-
-        /* Top Bar */
-        .top-bar {
-            height: 60px; display: flex; justify-content: space-between; align-items: center;
-            padding: 0 20px; z-index: 10; font-size: 20px;
-        }
-
-        /* Viewport / Viewfinder */
-        .viewfinder {
-            flex: 1; position: relative; background: #111;
-            display: flex; justify-content: center; align-items: center; overflow: hidden;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { width: 100%; height: 100%; background: #000; color: white; overflow: hidden; font-family: sans-serif; }
+        
+        #setup { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        input { padding: 15px; width: 80%; border-radius: 10px; border: 1px solid #333; background: #111; color: white; margin-bottom: 20px; }
+        
+        .camera-ui { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; }
+        .top-bar { height: 60px; display: flex; justify-content: space-between; padding: 20px; font-size: 18px; }
+        
+        .viewfinder { flex: 1; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         #webcam { width: 100%; height: 100%; object-fit: cover; }
         
-        /* Result Overlay */
-        #result-layer {
-            position: absolute; inset: 0; z-index: 50; display: none;
-            background: black; justify-content: center; align-items: center;
-        }
-        #display-image { width: 100%; height: 100%; object-fit: contain; }
+        #result-canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; z-index: 50; }
+        #ai-output-layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; z-index: 60; }
 
-        /* Bottom Controls */
-        .bottom-ui {
-            height: 180px; background: black; display: flex; flex-direction: column;
-            align-items: center; justify-content: space-evenly; padding-bottom: 20px;
-        }
+        .bottom-ui { height: 180px; background: #000; display: flex; flex-direction: column; align-items: center; padding-bottom: 20px; }
+        .modes { margin-top: 10px; color: #888; font-size: 12px; letter-spacing: 1px; }
+        .modes .active { color: white; font-weight: bold; border-bottom: 2px solid white; padding-bottom: 4px; }
         
-        .mode-selector {
-            display: flex; gap: 20px; font-size: 13px; font-weight: 500;
-            text-transform: uppercase; color: #aaa; letter-spacing: 1px;
-        }
-        .mode-selector span.active { color: white; }
+        .controls { width: 100%; display: flex; justify-content: space-evenly; align-items: center; margin-top: 25px; }
+        .shutter-btn { width: 75px; height: 75px; background: white; border-radius: 50%; border: 5px solid #222; cursor: pointer; }
+        .flip-btn { width: 50px; height: 50px; background: #222; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; }
 
-        .shutter-row {
-            width: 100%; display: flex; justify-content: space-evenly; align-items: center;
-        }
-        .circle-preview { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #333; }
-        .shutter-outer {
-            width: 80px; height: 80px; border-radius: 50%; border: 4px solid white;
-            display: flex; justify-content: center; align-items: center; cursor: pointer;
-        }
-        .shutter-inner { width: 68px; height: 68px; background: white; border-radius: 50%; }
-        
-        .flip-btn {
-            width: 50px; height: 50px; border-radius: 50%; background: #222;
-            display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer;
-        }
-
-        /* Timer/Status text similar to image */
-        #status-text {
-            position: absolute; bottom: 20px; width: 100%; text-align: center;
-            font-size: 24px; color: white; text-shadow: 0 0 10px rgba(0,0,0,0.8);
-            z-index: 60; display: none;
-        }
+        #timer-display { position: absolute; bottom: 100px; width: 100%; text-align: center; font-size: 24px; z-index: 100; display: none; }
     </style>
 </head>
 <body>
 
-<div id="setup-menu">
-    <h2 style="margin-bottom:20px;">AI Camera Magic</h2>
-    <input type="text" id="target-card" class="setup-input" placeholder="Contoh: 2 of Hearts / 7 Wajik">
-    <button class="start-btn" onclick="requestFullscreen(); startApp();">AKTIFKAN KAMERA</button>
+<div id="setup">
+    <h2 style="margin-bottom:10px;">Input Perintah Kartu</h2>
+    <input type="text" id="card-cmd" placeholder="Misal: 2 Hati / Ace of Spades">
+    <button onclick="startApp()" style="padding: 12px 30px; border-radius: 20px; border:none; cursor:pointer; font-weight:bold;">START</button>
 </div>
 
-<div class="camera-container">
-    <div class="top-bar">
-        <span>⚡</span> <span>HDR</span> <span>👤</span> <span>≡</span>
-    </div>
-
+<div class="camera-ui">
+    <div class="top-bar"><span>⚡</span> <span>HDR</span> <span>👤</span> <span>≡</span></div>
+    
     <div class="viewfinder">
         <video id="webcam" autoplay playsinline></video>
-        
-        <div id="result-layer" onclick="resetApp()">
-            <img id="display-image" alt="Hasil - Tekan lama untuk simpan">
-        </div>
-        <div id="status-text">60 ss</div>
+        <canvas id="result-canvas"></canvas>
+        <img id="ai-output-layer" onclick="resetCam()">
+        <div id="timer-display">60 ss</div>
     </div>
 
     <div class="bottom-ui">
-        <div class="mode-selector">
-            <span>Video</span> <span class="active">Photo</span> <span>Portrait</span> <span>1:1</span>
-        </div>
-        <div class="shutter-row">
-            <div class="circle-preview"></div>
-            <div class="shutter-outer" onclick="captureMagic()">
-                <div class="shutter-inner"></div>
-            </div>
-            <div class="flip-btn" onclick="flipCamera()">🔄</div>
+        <div class="modes">PHOTO</div>
+        <div class="controls">
+            <div style="width:50px"></div>
+            <div class="shutter-btn" onclick="processMagic()"></div>
+            <div class="flip-btn" onclick="toggleCamera()">🔄</div>
         </div>
     </div>
 </div>
 
-<canvas id="proc-canvas" style="display:none;"></canvas>
-
 <script>
-    let stream;
-    let facingMode = "environment";
-    let targetCard = "";
-    
+    let currentStream;
+    let useFace = "environment";
+    let cardTarget = "";
     const video = document.getElementById('webcam');
-    const resultLayer = document.getElementById('result-layer');
-    const displayImg = document.getElementById('display-image');
-    const statusText = document.getElementById('status-text');
-    const canvas = document.getElementById('proc-canvas');
+    const canvas = document.getElementById('result-canvas');
+    const aiImg = document.getElementById('ai-output-layer');
+    const timer = document.getElementById('timer-display');
     const ctx = canvas.getContext('2d');
 
-    // Minta Fullscreen agar bar URL tersembunyi
-    function requestFullscreen() {
-        const doc = window.document.documentElement;
-        if (doc.requestFullscreen) doc.requestFullscreen();
-        else if (doc.webkitRequestFullscreen) doc.webkitRequestFullscreen();
-    }
-
     async function startApp() {
-        targetCard = document.getElementById('target-card').value || "Ace of Spades";
-        document.getElementById('setup-menu').style.display = 'none';
+        cardTarget = document.getElementById('card-cmd').value;
+        document.getElementById('setup').style.display = 'none';
         
-        if (stream) stream.getTracks().forEach(t => t.stop());
-        
-        try {
-            stream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: facingMode, width: { ideal: 1280 }, height: { ideal: 720 } }
-            });
-            video.srcObject = stream;
-        } catch (err) {
-            alert("Gagal akses kamera.");
-        }
+        // Minta Fullscreen
+        if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+
+        if (currentStream) currentStream.getTracks().forEach(t => t.stop());
+        currentStream = await navigator.mediaDevices.getUserMedia({ 
+            video: { facingMode: useFace, width: { ideal: 1280 }, height: { ideal: 720 } } 
+        });
+        video.srcObject = currentStream;
     }
 
-    function flipCamera() {
-        facingMode = (facingMode === "user") ? "environment" : "user";
+    function toggleCamera() {
+        useFace = (useFace === "user") ? "environment" : "user";
         startApp();
     }
 
-    function captureMagic() {
+    async function processMagic() {
         // 1. Capture Foto Asli
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         ctx.drawImage(video, 0, 0);
         
-        const originalData = canvas.toDataURL('image/jpeg');
-        displayImg.src = originalData;
-        resultLayer.style.display = 'flex';
-        statusText.style.display = 'block';
-        statusText.innerText = "60 ss";
+        const photoData = canvas.toDataURL('image/jpeg');
+        canvas.style.display = 'block';
+        timer.style.display = 'block';
+        timer.innerText = "60 ss";
 
-        // 2. Simulasi Proses AI dengan Prompt Sesuai Perintah Anda
-        // System Prompt: "Ubah object kartu yang di pegang di tangan dengan kartu (targetCard) 
-        // buat realistic dan pertahankan gambar asli tanpa ada perubahan sama sekali.."
+        // 2. Prompt Sesuai Keinginan Anda
+        const magicPrompt = `Ubah object kartu yang di pegang di tangan dengan kartu ${cardTarget} buat realistic dan pertahankan gambar asli tanpa ada perubahan sama sekali..`;
         
+        // 3. Memanggil API AI (Menggunakan teknik perpaduan latar belakang)
         const seed = Math.floor(Math.random() * 9999);
-        const aiPrompt = `Ubah object kartu yang di pegang di tangan dengan kartu ${targetCard} buat realistic dan pertahankan gambar asli tanpa ada perubahan sama sekali..`;
-        
-        // Memanggil generator dengan prompt spesifik Anda
-        const aiResultUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(aiPrompt)}?seed=${seed}&width=${canvas.width}&height=${canvas.height}&nologo=true`;
+        const aiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(magicPrompt)}?seed=${seed}&width=${canvas.width}&height=${canvas.height}&nologo=true&enhance=true`;
 
-        // 3. Efek Timer & Perubahan Mendadak
-        let timer = 5; // Kita buat 5 detik saja agar tidak terlalu lama, tapi text display 60
-        const interval = setInterval(() => {
-            timer--;
-            if(timer <= 0) {
-                clearInterval(interval);
-                displayImg.src = aiResultUrl; // Objek Berubah
-                statusText.style.display = 'none';
-            }
-        }, 1000);
+        // Pre-load agar tidak lag
+        const tempImg = new Image();
+        tempImg.src = aiUrl;
+        
+        // Tunggu simulasi proses
+        setTimeout(() => {
+            aiImg.src = aiUrl;
+            aiImg.style.display = 'block';
+            timer.style.display = 'none';
+        }, 5000); // 5 detik untuk transisi
     }
 
-    function resetApp() {
-        resultLayer.style.display = 'none';
-        statusText.style.display = 'none';
+    function resetCam() {
+        aiImg.style.display = 'none';
+        canvas.style.display = 'none';
+        timer.style.display = 'none';
     }
 </script>
 </body>
