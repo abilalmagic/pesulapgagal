@@ -3,140 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Magic Object Transformer</title>
+    <title>AI Magic Camera Fullscreen</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #000; font-family: -apple-system, sans-serif; height: 100vh; overflow: hidden; color: white; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body, html { 
+            width: 100%; height: 100%; background: #000; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden; color: white;
+        }
 
-        /* Setup Awal */
-        #setup-screen {
-            position: fixed; inset: 0; background: #111; z-index: 100;
+        /* Setup Screen */
+        #setup-menu {
+            position: fixed; inset: 0; background: #000; z-index: 1000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        input, select, .btn { padding: 15px; width: 85%; margin: 10px; border-radius: 12px; border: 1px solid #333; font-size: 16px; background: #222; color: white; }
-        .btn { background: #4285f4; border: none; font-weight: bold; cursor: pointer; }
+        .setup-input { 
+            padding: 15px; width: 80%; margin: 10px; border-radius: 10px; 
+            border: 1px solid #333; background: #111; color: white; font-size: 16px; 
+        }
+        .start-btn { 
+            padding: 15px 40px; background: white; color: black; 
+            border: none; border-radius: 30px; font-weight: bold; cursor: pointer; margin-top: 20px;
+        }
 
-        /* Viewport */
-        .viewport { position: relative; width: 100vw; height: 85vh; background: #000; }
+        /* Camera UI Layout */
+        .camera-container {
+            position: relative; width: 100%; height: 100%; display: flex; flex-direction: column;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            height: 60px; display: flex; justify-content: space-between; align-items: center;
+            padding: 0 20px; z-index: 10; font-size: 20px;
+        }
+
+        /* Viewport / Viewfinder */
+        .viewfinder {
+            flex: 1; position: relative; background: #111;
+            display: flex; justify-content: center; align-items: center; overflow: hidden;
+        }
         #webcam { width: 100%; height: 100%; object-fit: cover; }
         
-        /* Layer Hasil (Foto yang di-capture) */
+        /* Result Overlay */
         #result-layer {
-            position: absolute; inset: 0; display: none; z-index: 50;
+            position: absolute; inset: 0; z-index: 50; display: none;
             background: black; justify-content: center; align-items: center;
         }
-        #final-canvas { width: 100%; height: 100%; object-fit: contain; cursor: pointer; }
+        #display-image { width: 100%; height: 100%; object-fit: contain; }
 
-        /* Loader Halus */
-        #magic-loader {
-            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: rgba(0,0,0,0.6); padding: 8px 20px; border-radius: 20px;
-            font-size: 12px; display: none; z-index: 60; color: #aaa;
+        /* Bottom Controls */
+        .bottom-ui {
+            height: 180px; background: black; display: flex; flex-direction: column;
+            align-items: center; justify-content: space-evenly; padding-bottom: 20px;
+        }
+        
+        .mode-selector {
+            display: flex; gap: 20px; font-size: 13px; font-weight: 500;
+            text-transform: uppercase; color: #aaa; letter-spacing: 1px;
+        }
+        .mode-selector span.active { color: white; }
+
+        .shutter-row {
+            width: 100%; display: flex; justify-content: space-evenly; align-items: center;
+        }
+        .circle-preview { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #333; }
+        .shutter-outer {
+            width: 80px; height: 80px; border-radius: 50%; border: 4px solid white;
+            display: flex; justify-content: center; align-items: center; cursor: pointer;
+        }
+        .shutter-inner { width: 68px; height: 68px; background: white; border-radius: 50%; }
+        
+        .flip-btn {
+            width: 50px; height: 50px; border-radius: 50%; background: #222;
+            display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer;
         }
 
-        /* UI Kamera */
-        .bottom-bar { height: 15vh; background: black; display: flex; align-items: center; justify-content: center; }
-        .shutter { width: 70px; height: 70px; background: white; border-radius: 50%; border: 5px solid #222; cursor: pointer; }
+        /* Timer/Status text similar to image */
+        #status-text {
+            position: absolute; bottom: 20px; width: 100%; text-align: center;
+            font-size: 24px; color: white; text-shadow: 0 0 10px rgba(0,0,0,0.8);
+            z-index: 60; display: none;
+        }
     </style>
 </head>
 <body>
 
-<div id="setup-screen">
-    <h2>Magic Config</h2>
-    <p style="color:#777; margin-bottom: 10px;">Ketik kartu yang ingin dimunculkan:</p>
-    <input type="text" id="custom-prompt" placeholder="Contoh: 7 Hati / 7 of Hearts" value="Ace of Spades">
-    <button class="btn" onclick="startCamera()">MULAI MAGIC</button>
+<div id="setup-menu">
+    <h2 style="margin-bottom:20px;">AI Camera Magic</h2>
+    <input type="text" id="target-card" class="setup-input" placeholder="Contoh: 2 of Hearts / 7 Wajik">
+    <button class="start-btn" onclick="requestFullscreen(); startApp();">AKTIFKAN KAMERA</button>
 </div>
 
-<div class="viewport">
-    <video id="webcam" autoplay playsinline></video>
-    
-    <div id="result-layer" onclick="reset()">
-        <canvas id="final-canvas"></canvas>
-        <div id="magic-loader">AI sedang mengubah objek...</div>
+<div class="camera-container">
+    <div class="top-bar">
+        <span>⚡</span> <span>HDR</span> <span>👤</span> <span>≡</span>
+    </div>
+
+    <div class="viewfinder">
+        <video id="webcam" autoplay playsinline></video>
+        
+        <div id="result-layer" onclick="resetApp()">
+            <img id="display-image" alt="Hasil - Tekan lama untuk simpan">
+        </div>
+        <div id="status-text">60 ss</div>
+    </div>
+
+    <div class="bottom-ui">
+        <div class="mode-selector">
+            <span>Video</span> <span class="active">Photo</span> <span>Portrait</span> <span>1:1</span>
+        </div>
+        <div class="shutter-row">
+            <div class="circle-preview"></div>
+            <div class="shutter-outer" onclick="captureMagic()">
+                <div class="shutter-inner"></div>
+            </div>
+            <div class="flip-btn" onclick="flipCamera()">🔄</div>
+        </div>
     </div>
 </div>
 
-<div class="bottom-bar">
-    <div class="shutter" onclick="capture()"></div>
-</div>
+<canvas id="proc-canvas" style="display:none;"></canvas>
 
 <script>
+    let stream;
+    let facingMode = "environment";
+    let targetCard = "";
+    
     const video = document.getElementById('webcam');
     const resultLayer = document.getElementById('result-layer');
-    const finalCanvas = document.getElementById('final-canvas');
-    const loader = document.getElementById('magic-loader');
-    const ctx = finalCanvas.getContext('2d');
-    
-    let userPrompt = "";
-    let originalSnapshot = null;
+    const displayImg = document.getElementById('display-image');
+    const statusText = document.getElementById('status-text');
+    const canvas = document.getElementById('proc-canvas');
+    const ctx = canvas.getContext('2d');
 
-    async function startCamera() {
-        userPrompt = document.getElementById('custom-prompt').value;
-        document.getElementById('setup-screen').style.display = 'none';
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-            video: { facingMode: "environment", width: 1280, height: 720 } 
-        });
-        video.srcObject = stream;
+    // Minta Fullscreen agar bar URL tersembunyi
+    function requestFullscreen() {
+        const doc = window.document.documentElement;
+        if (doc.requestFullscreen) doc.requestFullscreen();
+        else if (doc.webkitRequestFullscreen) doc.webkitRequestFullscreen();
     }
 
-    function capture() {
-        // 1. Ambil foto asli (Background & Tangan)
-        finalCanvas.width = video.videoWidth;
-        finalCanvas.height = video.videoHeight;
+    async function startApp() {
+        targetCard = document.getElementById('target-card').value || "Ace of Spades";
+        document.getElementById('setup-menu').style.display = 'none';
+        
+        if (stream) stream.getTracks().forEach(t => t.stop());
+        
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: facingMode, width: { ideal: 1280 }, height: { ideal: 720 } }
+            });
+            video.srcObject = stream;
+        } catch (err) {
+            alert("Gagal akses kamera.");
+        }
+    }
+
+    function flipCamera() {
+        facingMode = (facingMode === "user") ? "environment" : "user";
+        startApp();
+    }
+
+    function captureMagic() {
+        // 1. Capture Foto Asli
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
         ctx.drawImage(video, 0, 0);
         
-        // Simpan data asli untuk referensi
-        originalSnapshot = ctx.getImageData(0, 0, finalCanvas.width, finalCanvas.height);
-        
-        // Tampilkan foto asli secara statis (semua diam)
+        const originalData = canvas.toDataURL('image/jpeg');
+        displayImg.src = originalData;
         resultLayer.style.display = 'flex';
-        loader.style.display = 'block';
+        statusText.style.display = 'block';
+        statusText.innerText = "60 ss";
 
-        // 2. Perintah AI: Hanya fokus pada kartu
-        const aiCard = new Image();
-        aiCard.crossOrigin = "anonymous";
-        const seed = Math.floor(Math.random() * 99999);
+        // 2. Simulasi Proses AI dengan Prompt Sesuai Perintah Anda
+        // System Prompt: "Ubah object kartu yang di pegang di tangan dengan kartu (targetCard) 
+        // buat realistic dan pertahankan gambar asli tanpa ada perubahan sama sekali.."
         
-        // Prompt Engineering Otomatis agar AI hanya membuat kartunya saja
-        const fullPrompt = `a realistic single playing card ${userPrompt}, white background, flat design, high quality`;
-        aiCard.src = `https://image.pollinations.ai/prompt/${encodeURIComponent(fullPrompt)}?seed=${seed}&width=512&height=728&nologo=true`;
+        const seed = Math.floor(Math.random() * 9999);
+        const aiPrompt = `Ubah object kartu yang di pegang di tangan dengan kartu ${targetCard} buat realistic dan pertahankan gambar asli tanpa ada perubahan sama sekali..`;
+        
+        // Memanggil generator dengan prompt spesifik Anda
+        const aiResultUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(aiPrompt)}?seed=${seed}&width=${canvas.width}&height=${canvas.height}&nologo=true`;
 
-        aiCard.onload = () => {
-            // 3. Waktu Perubahan (Simulasi AI Memproses)
-            setTimeout(() => {
-                // KEMBALIKAN BACKGROUND ASLI (agar tembok/tangan tidak berubah)
-                ctx.putImageData(originalSnapshot, 0, 0);
-
-                // 4. Tanamkan Object Baru ke dalam Gambar Capture yang sama
-                const cw = finalCanvas.width * 0.35; // Ukuran lebar kartu
-                const ch = cw * 1.45;              // Ukuran tinggi kartu
-                const cx = (finalCanvas.width - cw) / 2;
-                const cy = (finalCanvas.height - ch) / 2;
-
-                // Teknik Seamless Patching
-                ctx.save();
-                // Membuat sudut kartu membulat (masking)
-                ctx.beginPath();
-                ctx.roundRect(cx, cy, cw, ch, 12); 
-                ctx.clip();
-                
-                // Tempel Kartu Baru dari AI
-                ctx.drawImage(aiCard, cx, cy, cw, ch);
-                ctx.restore();
-
-                loader.style.display = 'none';
-                
-                // Efek visual: Setelah kartu ditempel, gambar canvas ini yang user lihat
-                // User bisa tekan lama canvas ini untuk "Save Image" di beberapa browser, 
-                // atau kita bisa konversi ke Image jika perlu.
-            }, 5000); 
-        };
+        // 3. Efek Timer & Perubahan Mendadak
+        let timer = 5; // Kita buat 5 detik saja agar tidak terlalu lama, tapi text display 60
+        const interval = setInterval(() => {
+            timer--;
+            if(timer <= 0) {
+                clearInterval(interval);
+                displayImg.src = aiResultUrl; // Objek Berubah
+                statusText.style.display = 'none';
+            }
+        }, 1000);
     }
 
-    function reset() {
+    function resetApp() {
         resultLayer.style.display = 'none';
-        loader.style.display = 'none';
+        statusText.style.display = 'none';
     }
 </script>
 </body>
