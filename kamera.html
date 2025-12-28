@@ -3,125 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Magic Camera</title>
+    <title>AI Magic Camera Pro</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html { width: 100%; height: 100%; background: #000; color: white; overflow: hidden; font-family: sans-serif; }
         
-        #setup { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        input { padding: 15px; width: 80%; border-radius: 10px; border: 1px solid #333; background: #111; color: white; margin-bottom: 20px; }
-        
-        .camera-ui { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; }
-        .top-bar { height: 60px; display: flex; justify-content: space-between; padding: 20px; font-size: 18px; }
+        /* Menu Dropdown */
+        #setup { 
+            position: fixed; inset: 0; background: #000; z-index: 1000; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+        }
+        select { 
+            padding: 15px; width: 85%; border-radius: 12px; border: 1px solid #333; 
+            background: #111; color: white; margin-bottom: 25px; font-size: 16px; 
+        }
+        .start-btn { 
+            padding: 15px 40px; border-radius: 30px; border: none; 
+            background: white; color: black; font-weight: bold; cursor: pointer; 
+        }
+
+        /* Camera UI Layout */
+        .camera-ui { width: 100%; height: 100%; display: flex; flex-direction: column; }
+        .top-bar { height: 60px; display: flex; justify-content: space-between; padding: 20px; font-size: 22px; z-index: 100; }
+        .burger-btn { cursor: pointer; padding: 5px; transition: 0.3s; }
+        .burger-btn:active { transform: scale(0.8); color: #4285f4; }
         
         .viewfinder { flex: 1; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         #webcam { width: 100%; height: 100%; object-fit: cover; }
         
-        #result-canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; z-index: 50; }
-        #ai-output-layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; z-index: 60; }
+        /* Layer Hasil Akhir */
+        #final-output { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: none; z-index: 60; cursor: pointer; }
 
-        .bottom-ui { height: 180px; background: #000; display: flex; flex-direction: column; align-items: center; padding-bottom: 20px; }
-        .modes { margin-top: 10px; color: #888; font-size: 12px; letter-spacing: 1px; }
-        .modes .active { color: white; font-weight: bold; border-bottom: 2px solid white; padding-bottom: 4px; }
+        /* Bottom UI */
+        .bottom-ui { height: 180px; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: space-evenly; }
+        .mode-text { color: white; font-size: 13px; letter-spacing: 1px; font-weight: bold; }
         
-        .controls { width: 100%; display: flex; justify-content: space-evenly; align-items: center; margin-top: 25px; }
-        .shutter-btn { width: 75px; height: 75px; background: white; border-radius: 50%; border: 5px solid #222; cursor: pointer; }
-        .flip-btn { width: 50px; height: 50px; background: #222; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; }
-
-        #timer-display { position: absolute; bottom: 100px; width: 100%; text-align: center; font-size: 24px; z-index: 100; display: none; }
+        .controls { width: 100%; display: flex; justify-content: space-evenly; align-items: center; }
+        .shutter-btn { 
+            width: 75px; height: 75px; background: white; border-radius: 50%; 
+            border: 4px solid #333; cursor: pointer; box-shadow: 0 0 0 4px white;
+        }
+        .flip-btn { width: 50px; height: 50px; background: #222; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 20px; }
     </style>
 </head>
 <body>
 
 <div id="setup">
-    <h2 style="margin-bottom:10px;">Input Perintah Kartu</h2>
-    <input type="text" id="card-cmd" placeholder="Misal: 2 Hati / Ace of Spades">
-    <button onclick="startApp()" style="padding: 12px 30px; border-radius: 20px; border:none; cursor:pointer; font-weight:bold;">START</button>
+    <h2 style="margin-bottom:20px;">Magic Config</h2>
+    <select id="card-dropdown">
+        <optgroup label="Pilih Kartu Target">
+            <option value="Ace of Spades">As Sekop (Ace of Spades)</option>
+            <option value="Ace of Hearts">As Hati (Ace of Hearts)</option>
+            <option value="King of Hearts">King Hati (King of Hearts)</option>
+            <option value="2 of Clubs">2 Keriting (2 of Clubs)</option>
+            <option value="7 of Diamonds">7 Wajik (7 of Diamonds)</option>
+        </optgroup>
+    </select>
+    <button class="start-btn" onclick="startApp()">BUKA KAMERA</button>
 </div>
 
 <div class="camera-ui">
-    <div class="top-bar"><span>⚡</span> <span>HDR</span> <span>👤</span> <span>≡</span></div>
+    <div class="top-bar">
+        <span>⚡</span> <span style="text-decoration: line-through; opacity: 0.3;">HDR</span> <span>👤</span> 
+        <span class="burger-btn" onclick="downloadResult()">≡</span>
+    </div>
     
     <div class="viewfinder">
         <video id="webcam" autoplay playsinline></video>
-        <canvas id="result-canvas"></canvas>
-        <img id="ai-output-layer" onclick="resetCam()">
-        <div id="timer-display">60 ss</div>
+        <img id="final-output" onclick="resetApp()" title="Klik untuk kembali ke kamera">
     </div>
 
     <div class="bottom-ui">
-        <div class="modes">PHOTO</div>
+        <div class="mode-text">PHOTO</div>
         <div class="controls">
             <div style="width:50px"></div>
-            <div class="shutter-btn" onclick="processMagic()"></div>
-            <div class="flip-btn" onclick="toggleCamera()">🔄</div>
+            <div class="shutter-btn" onclick="captureMagic()"></div>
+            <div class="flip-btn" onclick="flipCamera()">🔄</div>
         </div>
     </div>
 </div>
 
+<canvas id="magic-canvas" style="display:none;"></canvas>
+
 <script>
-    let currentStream;
-    let useFace = "environment";
-    let cardTarget = "";
+    let stream;
+    let facing = "environment";
+    let targetCard = "";
+    
     const video = document.getElementById('webcam');
-    const canvas = document.getElementById('result-canvas');
-    const aiImg = document.getElementById('ai-output-layer');
-    const timer = document.getElementById('timer-display');
+    const output = document.getElementById('final-output');
+    const canvas = document.getElementById('magic-canvas');
     const ctx = canvas.getContext('2d');
 
     async function startApp() {
-        cardTarget = document.getElementById('card-cmd').value;
+        targetCard = document.getElementById('card-dropdown').value;
         document.getElementById('setup').style.display = 'none';
         
-        // Minta Fullscreen
         if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
 
-        if (currentStream) currentStream.getTracks().forEach(t => t.stop());
-        currentStream = await navigator.mediaDevices.getUserMedia({ 
-            video: { facingMode: useFace, width: { ideal: 1280 }, height: { ideal: 720 } } 
-        });
-        video.srcObject = currentStream;
+        if (stream) stream.getTracks().forEach(t => t.stop());
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: facing, width: { ideal: 1280 }, height: { ideal: 720 } }
+            });
+            video.srcObject = stream;
+        } catch (e) { alert("Akses kamera ditolak."); }
     }
 
-    function toggleCamera() {
-        useFace = (useFace === "user") ? "environment" : "user";
+    function flipCamera() {
+        facing = (facing === "user") ? "environment" : "user";
         startApp();
     }
 
-    async function processMagic() {
-        // 1. Capture Foto Asli
+    function captureMagic() {
+        // 1. Ambil Foto Asli
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         ctx.drawImage(video, 0, 0);
         
-        const photoData = canvas.toDataURL('image/jpeg');
-        canvas.style.display = 'block';
-        timer.style.display = 'block';
-        timer.innerText = "60 ss";
+        // Tampilkan foto asli secara statis
+        output.src = canvas.toDataURL('image/jpeg');
+        output.style.display = 'block';
 
-        // 2. Prompt Sesuai Keinginan Anda
-        const magicPrompt = `Ubah object kartu yang di pegang di tangan dengan kartu ${cardTarget} buat realistic dan pertahankan gambar asli tanpa ada perubahan sama sekali..`;
-        
-        // 3. Memanggil API AI (Menggunakan teknik perpaduan latar belakang)
+        // 2. Siapkan Kartu AI (Inpainting Prompt)
+        const aiCard = new Image();
+        aiCard.crossOrigin = "anonymous";
+        const prompt = `Ubah object kartu yang di pegang di tangan dengan kartu ${targetCard} buat realistic dan pertahankan gambar asli tanpa ada perubahan sama sekali..`;
         const seed = Math.floor(Math.random() * 9999);
-        const aiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(magicPrompt)}?seed=${seed}&width=${canvas.width}&height=${canvas.height}&nologo=true&enhance=true`;
-
-        // Pre-load agar tidak lag
-        const tempImg = new Image();
-        tempImg.src = aiUrl;
         
-        // Tunggu simulasi proses
-        setTimeout(() => {
-            aiImg.src = aiUrl;
-            aiImg.style.display = 'block';
-            timer.style.display = 'none';
-        }, 5000); // 5 detik untuk transisi
+        aiCard.src = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?seed=${seed}&width=512&height=728&nologo=true`;
+
+        aiCard.onload = () => {
+            // 3. Gabungkan Objek ke Foto Asli (Hanya area objek yang berubah)
+            ctx.drawImage(video, 0, 0); // Pastikan background tetap asli
+
+            const w = canvas.width * 0.38;
+            const h = w * 1.45;
+            const x = (canvas.width - w) / 2;
+            const y = (canvas.height - h) / 2;
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.roundRect(x, y, w, h, 15);
+            ctx.clip();
+            ctx.drawImage(aiCard, x, y, w, h);
+            ctx.restore();
+
+            // 4. Update Tampilan setelah 3 detik
+            setTimeout(() => {
+                output.src = canvas.toDataURL('image/jpeg');
+            }, 3000);
+        };
     }
 
-    function resetCam() {
-        aiImg.style.display = 'none';
-        canvas.style.display = 'none';
-        timer.style.display = 'none';
+    // Fungsi Baru: Download lewat tombol Burger
+    function downloadResult() {
+        if (output.style.display === 'block' && output.src !== "") {
+            const link = document.createElement('a');
+            link.download = `magic-card-${new Date().getTime()}.jpg`;
+            link.href = output.src;
+            link.click();
+        } else {
+            alert("Ambil foto terlebih dahulu sebelum mengunduh.");
+        }
+    }
+
+    function resetApp() {
+        output.style.display = 'none';
+        output.src = "";
     }
 </script>
 </body>
