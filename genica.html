@@ -50,31 +50,38 @@
         /* ACAAN Styles */
         label { font-size: 10px; font-weight: 600; color: #888; text-transform: uppercase; margin-bottom: 4px; display: block; }
         select { width: 100%; padding: 12px; font-size: 16px; border-radius: 8px; border: 1px solid #333; background: #252525; color: #fff; margin-bottom: 12px; outline: none; }
-        .number-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; margin-bottom: 12px; }
-        .num-btn { aspect-ratio: 1/1; font-size: 12px; background: #2d2d2d; border: 1px solid #3d3d3d; border-radius: 4px; color: #fff; display: flex; align-items: center; justify-content: center; }
+        
+        /* Grid ACAAN dengan tombol tambahan di akhir */
+        .number-grid { 
+            display: grid; 
+            grid-template-columns: repeat(8, 1fr); 
+            gap: 4px; 
+            margin-bottom: 12px; 
+        }
+        .num-btn { aspect-ratio: 1/1; font-size: 12px; background: #2d2d2d; border: 1px solid #3d3d3d; border-radius: 4px; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .num-btn.active { background: #ffeb3b; color: #000; font-weight: bold; }
-        
-        /* Layout Hasil + Tombol Send */
-        .result-box { background: #252525; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #ffeb3b33; position: relative; }
-        .result-box h3 { font-size: 9px; color: #888; margin-bottom: 2px; }
-        .result-wrapper { display: flex; align-items: center; justify-content: center; gap: 15px; }
-        #result { font-size: 28px; font-weight: 800; color: #ffeb3b; }
-        
-        .send-ntfy-btn {
-            background: #333;
-            border: 1px solid #444;
-            color: #ffeb3b;
-            padding: 8px;
-            border-radius: 50%;
+
+        /* Tombol Reset & Send di dalam Grid */
+        .grid-action-btn {
+            grid-column: span 2; /* Mengambil sisa ruang 2 kolom */
+            height: 100%;
+            border-radius: 4px;
+            border: none;
+            font-size: 9px;
+            font-weight: 800;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: 0.2s;
-            width: 35px;
-            height: 35px;
+            text-transform: uppercase;
         }
-        .send-ntfy-btn:active { background: #ffeb3b; color: #000; }
+        .reset-btn { background: #444; color: #eee; }
+        .send-btn { background: #ffeb3b; color: #000; }
+        .send-btn svg { margin-left: 2px; }
+
+        .result-box { background: #252525; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #ffeb3b33; }
+        .result-box h3 { font-size: 9px; color: #888; margin-bottom: 2px; }
+        #result { font-size: 32px; font-weight: 800; color: #ffeb3b; min-height: 40px; }
 
         /* Mnemonica List */
         .mnemonic-list { height: 350px; overflow-y: auto; background: #181818; border-radius: 8px; padding: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
@@ -112,16 +119,14 @@
             <optgroup label="♠ SEKOP" id="opt-sekop"></optgroup>
             <optgroup label="♦ DIAMOND" id="opt-diamond" style="color:#ff5252;"></optgroup>
         </select>
+        
         <label>2. Posisi Tujuan</label>
-        <div class="number-grid" id="acaanGrid"></div>
+        <div class="number-grid" id="acaanGrid">
+            </div>
+
         <div class="result-box">
             <h3>HASIL CUT KE:</h3>
-            <div class="result-wrapper">
-                <p id="result">-</p>
-                <button class="send-ntfy-btn" onclick="sendToNtfy()" title="Send to ntfy">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-                </button>
-            </div>
+            <p id="result">-</p>
         </div>
     </div>
 
@@ -166,11 +171,13 @@
     let currentQuizCard = "";
 
     function init() {
+        // Init Dropdown
         cardData.forEach(c => {
             const opt = new Option(c.txt, c.val);
             document.getElementById(`opt-${c.group}`).appendChild(opt);
         });
 
+        // Init ACAAN Grid (1-52)
         const grid = document.getElementById('acaanGrid');
         for (let i = 1; i <= 52; i++) {
             let btn = document.createElement('div');
@@ -184,6 +191,21 @@
             grid.appendChild(btn);
         }
 
+        // Tambah Tombol RESET ke Grid (mengisi kolom ke-5 & 6 di baris terakhir)
+        let resetBtn = document.createElement('button');
+        resetBtn.innerText = "RESET";
+        resetBtn.className = "grid-action-btn reset-btn";
+        resetBtn.onclick = resetAcaan;
+        grid.appendChild(resetBtn);
+
+        // Tambah Tombol SEND ke Grid (mengisi kolom ke-7 & 8 di baris terakhir)
+        let sendBtn = document.createElement('button');
+        sendBtn.innerHTML = 'SEND <svg viewBox="0 0 24 24" width="10" height="10" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>';
+        sendBtn.className = "grid-action-btn send-btn";
+        sendBtn.onclick = sendToNtfy;
+        grid.appendChild(sendBtn);
+
+        // Init Mnemonica List
         const listDiv = document.getElementById('fullList');
         stack.forEach((card, index) => {
             listDiv.innerHTML += `<div class="list-item">${index + 1}. <span>${card}</span></div>`;
@@ -205,13 +227,29 @@
         const curPos = parseInt(cardVal) - 1;
         const tarPos = selectedAcaanTarget;
         let resIdx = (tarPos - curPos) > 0 ? (52 - (tarPos - curPos)) % 52 : ( (curPos+2) - (tarPos+2) + 52) % 52;
-        document.getElementById("result").innerText = stack[resIdx];
+        
+        const resEl = document.getElementById("result");
+        resEl.innerText = stack[resIdx];
+        
+        // Warna merah jika kartu Hati/Diamond
+        if (stack[resIdx].includes('♥') || stack[resIdx].includes('♦')) {
+            resEl.style.color = "#ff5252";
+        } else {
+            resEl.style.color = "#ffeb3b";
+        }
     }
 
-    // Fungsi Kirim ke NTFY
+    function resetAcaan() {
+        document.getElementById("card-select").selectedIndex = 0;
+        document.querySelectorAll('#acaanGrid .num-btn').forEach(b => b.classList.remove('active'));
+        selectedAcaanTarget = null;
+        document.getElementById("result").innerText = "-";
+        document.getElementById("result").style.color = "#ffeb3b";
+    }
+
     function sendToNtfy() {
         const resultText = document.getElementById("result").innerText;
-        if (resultText === "-") return;
+        if (resultText === "-" || resultText === "") return;
 
         fetch('https://ntfy.sh/aijayz', {
             method: 'POST',
@@ -219,10 +257,10 @@
             headers: { 'Title': 'Prof Jay Mnemonica' }
         })
         .then(() => {
-            // Animasi kecil saat sukses kirim
-            const btn = document.querySelector('.send-ntfy-btn');
-            btn.style.backgroundColor = "#4caf50";
-            setTimeout(() => btn.style.backgroundColor = "#333", 500);
+            const sBtn = document.querySelector('.send-btn');
+            const originalColor = sBtn.style.backgroundColor;
+            sBtn.style.backgroundColor = "#4caf50";
+            setTimeout(() => sBtn.style.backgroundColor = originalColor, 500);
         })
         .catch(err => console.error('Error ntfy:', err));
     }
@@ -250,11 +288,11 @@
 
         if (parseInt(ans) === correctPos) {
             feedback.style.color = "#4caf50";
-            feedback.innerText = "BENAR! Memuat kartu baru...";
+            feedback.innerText = "BENAR! Memuat...";
             setTimeout(newQuiz, 800);
         } else {
             feedback.style.color = "#ff5252";
-            feedback.innerText = `SALAH! Itu posisi ke-${correctPos}`;
+            feedback.innerText = `SALAH! Posisi ke-${correctPos}`;
         }
     }
 
