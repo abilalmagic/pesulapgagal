@@ -2,276 +2,222 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MNEMONICA ACAAN by Prof.JayZ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PROF JAY MNEMONICA TEST</title>
     <style>
-    /* Reset default margin, padding */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #121212;
+            color: #eee;
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+        }
 
-/* Menambahkan font Poppins */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        .container {
+            width: 100%;
+            max-width: 360px;
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
 
-/* Style untuk body */
-body {
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #1a1a1a, #444);
-    color: #fff;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 30px;
-}
+        h2 { font-size: 14px; text-align: center; color: #ffeb3b; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
 
-/* Style untuk header */
-h2 {
-    font-size: 32px;
-    font-weight: 700;
-    color: #ffeb3b;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.3);
-}
+        /* Navigasi */
+        .menu-nav { display: flex; gap: 5px; margin-bottom: 20px; }
+        .nav-btn {
+            flex: 1;
+            padding: 10px 5px;
+            font-size: 10px;
+            font-weight: 800;
+            background: #2d2d2d;
+            border: 1px solid #3d3d3d;
+            color: #888;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        .nav-btn.active { background: #ffeb3b; color: #000; border-color: #ffeb3b; }
 
-/* Style untuk container utama */
-.container {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
-    width: 90%;
-    max-width: 400px;
-    transition: all 0.3s ease;
-}
+        .page { display: none; }
+        .page.active { display: block; }
 
-/* Efek hover pada container */
-.container:hover {
-    transform: scale(1.02);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-}
+        /* ACAAN Styles */
+        label { font-size: 10px; font-weight: 600; color: #888; text-transform: uppercase; margin-bottom: 4px; display: block; }
+        select { width: 100%; padding: 12px; font-size: 16px; border-radius: 8px; border: 1px solid #333; background: #252525; color: #fff; margin-bottom: 12px; outline: none; }
+        .number-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; margin-bottom: 12px; }
+        .num-btn { aspect-ratio: 1/1; font-size: 12px; background: #2d2d2d; border: 1px solid #3d3d3d; border-radius: 4px; color: #fff; display: flex; align-items: center; justify-content: center; }
+        .num-btn.active { background: #ffeb3b; color: #000; font-weight: bold; }
+        .result-box { background: #252525; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #ffeb3b33; }
+        #result { font-size: 28px; font-weight: 800; color: #ffeb3b; }
 
-/* Style untuk label dan input */
-label {
-    font-size: 16px;
-    font-weight: 500;
-    display: block;
-    margin: 10px 0 5px;
-    color: #ffeb3b;
-}
+        /* Mnemonica List */
+        .mnemonic-list { height: 350px; overflow-y: auto; background: #181818; border-radius: 8px; padding: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+        .list-item { font-size: 12px; padding: 6px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; }
+        .list-item span { color: #ffeb3b; font-weight: bold; }
 
-select, input {
-    font-size: 16px;
-    padding: 10px 14px;
-    width: 50%;
-    border: 2px solid transparent;
-    border-radius: 25px;
-    background: rgba(255, 255, 255, 0.15);
-    color: #000;
-    text-align: center;
-    transition: all 0.3s ease;
-    outline: none;
-}
-
-/* Fokus pada input */
-select:focus, input:focus {
-    border-color: #ffeb3b;
-    background: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
-}
-
-/* Button style */
-button {
-    font-size: 25px;
-    padding: 12px 24px;
-    background: linear-gradient(135deg, #ffeb3b, #fbc02d);
-    border: none;
-    border-radius: 30px;
-    color: #333;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 20px;
-    font-weight: 600;
-    box-shadow: 0 5px 15px rgba(255, 235, 59, 0.3);
-}
-
-/* Efek hover pada button */
-button:hover {
-    background: linear-gradient(135deg, #fbc02d, #ffa000);
-    transform: scale(1.05);
-    box-shadow: 0 8px 20px rgba(255, 193, 7, 0.5);
-}
-
-/* Style untuk hasil */
-h3 {
-    font-size: 22px;
-    font-weight: 600;
-    margin-top: 20px;
-    color: #fff;
-    text-transform: uppercase;
-}
-
-p {
-    font-size: 50px;
-    font-weight: 700;
-    color: #ffeb3b;
-    margin-top: 10px;
-}
-
-/* Animasi loading */
-.loader {
-    border: 5px solid rgba(255, 255, 255, 0.3);
-    border-top: 5px solid #ffeb3b;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1.5s linear infinite;
-    margin-top: 20px;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Responsiveness */
-@media (max-width: 600px) {
-    h2 {
-        font-size: 26px;
-    }
-
-    .container {
-        width: 95%;
-        padding: 20px;
-    }
-
-    select, input {
-        font-size: 14px;
-    }
-
-    button {
-        width: 50%;
-        font-size: 16px;
-    }
-
-    .loader {
-        width: 30px;
-        height: 30px;
-    }
-}
-</style>
+        /* Memorize Test */
+        .quiz-card { background: #252525; padding: 25px; border-radius: 12px; text-align: center; margin-bottom: 15px; border: 2px solid #333; }
+        #quiz-question { font-size: 50px; font-weight: 800; margin-bottom: 5px; }
+        
+        .quiz-controls { display: flex; flex-direction: column; gap: 10px; }
+        .quiz-input { width: 100%; padding: 15px; border-radius: 8px; border: none; background: #fff; color: #000; font-size: 20px; text-align: center; font-weight: bold; }
+        
+        .btn-group { display: flex; gap: 8px; }
+        .check-btn { flex: 2; padding: 12px; background: #ffeb3b; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; color: #000; }
+        .next-btn { flex: 1; padding: 12px; background: #444; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; color: #fff; }
+        
+        #quiz-feedback { margin-top: 10px; text-align: center; font-size: 13px; font-weight: bold; min-height: 20px; }
+    </style>
 </head>
 <body>
-    <h2>MNEMONICA ACAAN <br>by Prof.JayZ</h2>
-    <!-- Dropdown untuk memilih kartu -->
-    <label for="card">Pilih Kartu:</label>
-    <select id="card">
-        <option value="1">4♣</option>
-        <option value="2">2♥</option>
-        <option value="3">7♦</option>
-        <option value="4">3♣</option>
-        <option value="5">4♥</option>
-        <option value="6">6♦</option>
-        <option value="7">As♠</option>
-        <option value="8">5♥</option>
-        <option value="9">9♠</option>
-        <option value="10">2♠</option>
-        <option value="11">Queen♥</option>
-        <option value="12">3♦</option>
-        <option value="13">Queen♣</option>
-        <option value="14">8♥</option>
-        <option value="15">6♠</option>
-        <option value="16">5♠</option>
-        <option value="17">9♥</option>
-        <option value="18">King♣</option>
-        <option value="19">2♦</option>
-        <option value="20">Jack♥</option>
-        <option value="21">3♠</option>
-        <option value="22">8♠</option>
-        <option value="23">6♥</option>
-        <option value="24">10♣</option>
-        <option value="25">5♦</option>
-        <option value="26">King♦</option>
-        <option value="27">2♣</option>
-        <option value="28">3♥</option>
-        <option value="29">8♦</option>
-        <option value="30">5♣</option>
-        <option value="31">King♠</option>
-        <option value="32">Jack♦</option>
-        <option value="33">8♣</option>
-        <option value="34">10♠</option>
-        <option value="35">King♥</option>
-        <option value="36">Jack♣</option>
-        <option value="37">7♠</option>
-        <option value="38">10♥</option>
-        <option value="39">As♦</option>
-        <option value="40">4♠</option>
-        <option value="41">7♥</option>
-        <option value="42">4♦</option>
-        <option value="43">As♣</option>
-        <option value="44">9♣</option>
-        <option value="45">Jack♠</option>
-        <option value="46">Queen♦</option>
-        <option value="47">7♣</option>
-        <option value="48">Queen♠</option>
-        <option value="49">10♦</option>
-        <option value="50">6♣</option>
-        <option value="51">As♥</option>
-        <option value="52">9♦</option>
-    </select>
 
-    <!-- Input untuk posisi tujuan -->
-    <label for="target">Posisi Tujuan:</label>
-    <input type="number" id="target" min="1" max="52" />
+<div class="container">
+    <h2>PROF JAY MNEMONICA TEST</h2>
 
-    <!-- Tombol untuk menghitung hasil -->
-    <button onclick="generateResult()">Run</button>
+    <div class="menu-nav">
+        <button class="nav-btn active" onclick="showPage('acaan', this)">ACAAN</button>
+        <button class="nav-btn" onclick="showPage('mnemonica', this)">Mnemonica</button>
+        <button class="nav-btn" onclick="showPage('memorize', this)">Memorize</button>
+    </div>
 
-    <!-- Hasil kartu yang dihitung -->
-    <h3>Hasil Kartu:</h3>
-    <p id="result"></p>
+    <div id="acaan" class="page active">
+        <label>1. Pilih Kartu</label>
+        <select id="card-select" onchange="generateAcaan()">
+            <option value="" disabled selected>-- PILIH KARTU --</option>
+            <optgroup label="♣ KRITING" id="opt-kriting"></optgroup>
+            <optgroup label="♥ HATI" id="opt-hati" style="color:#ff5252;"></optgroup>
+            <optgroup label="♠ SEKOP" id="opt-sekop"></optgroup>
+            <optgroup label="♦ DIAMOND" id="opt-diamond" style="color:#ff5252;"></optgroup>
+        </select>
+        <label>2. Posisi Tujuan</label>
+        <div class="number-grid" id="acaanGrid"></div>
+        <div class="result-box">
+            <h3>HASIL CUT KE:</h3>
+            <p id="result">-</p>
+        </div>
+    </div>
 
-    <script>
-        const cards = [
-            "4♣", "2♥", "7♦", "3♣", "4♥", "6♦", "As♠", "5♥", "9♠", "2♠",
-            "Queen♥", "3♦", "Queen♣", "8♥", "6♠", "5♠", "9♥", "King♣", "2♦",
-            "Jack♥", "3♠", "8♠", "6♥", "10♣", "5♦", "King♦", "2♣", "3♥",
-            "8♦", "5♣", "King♠", "Jack♦", "8♣", "10♠", "King♥", "Jack♣",
-            "7♠", "10♥", "As♦", "4♠", "7♥", "4♦", "As♣", "9♣", "Jack♠",
-            "Queen♦", "7♣", "Queen♠", "10♦", "6♣", "As♥", "9♦"
-        ];
+    <div id="mnemonica" class="page">
+        <div class="mnemonic-list" id="fullList"></div>
+    </div>
 
-        function generateResult() {
-            const selectedCardIndex = parseInt(document.getElementById("card").value) - 1;
-            const targetPosition = parseInt(document.getElementById("target").value);
+    <div id="memorize" class="page">
+        <div class="quiz-card">
+            <div id="quiz-question">?</div>
+            <p style="font-size: 10px; color: #888; letter-spacing: 1px;">TEBAK POSISI (1-52)</p>
+        </div>
+        <div class="quiz-controls">
+            <input type="number" id="quiz-answer" class="quiz-input" placeholder="00" inputmode="numeric">
+            <div class="btn-group">
+                <button class="check-btn" onclick="checkQuiz()">CEK HASIL</button>
+                <button class="next-btn" onclick="newQuiz()">NEXT</button>
+            </div>
+        </div>
+        <p id="quiz-feedback"></p>
+    </div>
+</div>
 
-            const currentCardPosition = selectedCardIndex + 0; // posisi kartu yang dipilih
-            const totalCards = 52;
+<script>
+    const stack = [
+        "4♣", "2♥", "7♦", "3♣", "4♥", "6♦", "As♠", "5♥", "9♠", "2♠",
+        "Q♥", "3♦", "Q♣", "8♥", "6♠", "5♠", "9♥", "K♣", "2♦",
+        "J♥", "3♠", "8♠", "6♥", "10♣", "5♦", "K♦", "2♣", "3♥",
+        "8♦", "5♣", "K♠", "J♦", "8♣", "10♠", "K♥", "J♣",
+        "7♠", "10♥", "As♦", "4♠", "7♥", "4♦", "As♣", "9♣", "J♠",
+        "Q♦", "7♣", "Q♠", "10♦", "6♣", "As♥", "9♦"
+    ];
 
-            let resultIndex;
-            const diff = targetPosition - currentCardPosition;
+    const cardData = [
+        {val: 43, txt: "As♣", group: "kriting"}, {val: 27, txt: "2♣", group: "kriting"}, {val: 4, txt: "3♣", group: "kriting"}, {val: 1, txt: "4♣", group: "kriting"}, {val: 30, txt: "5♣", group: "kriting"}, {val: 50, txt: "6♣", group: "kriting"}, {val: 47, txt: "7♣", group: "kriting"}, {val: 33, txt: "8♣", group: "kriting"}, {val: 44, txt: "9♣", group: "kriting"}, {val: 24, txt: "10♣", group: "kriting"}, {val: 36, txt: "J♣", group: "kriting"}, {val: 13, txt: "Q♣", group: "kriting"}, {val: 18, txt: "K♣", group: "kriting"},
+        {val: 51, txt: "As♥", group: "hati"}, {val: 2, txt: "2♥", group: "hati"}, {val: 28, txt: "3♥", group: "hati"}, {val: 5, txt: "4♥", group: "hati"}, {val: 8, txt: "5♥", group: "hati"}, {val: 23, txt: "6♥", group: "hati"}, {val: 41, txt: "7♥", group: "hati"}, {val: 14, txt: "8♥", group: "hati"}, {val: 17, txt: "9♥", group: "hati"}, {val: 38, txt: "10♥", group: "hati"}, {val: 20, txt: "J♥", group: "hati"}, {val: 11, txt: "Q♥", group: "hati"}, {val: 35, txt: "K♥", group: "hati"},
+        {val: 7, txt: "As♠", group: "sekop"}, {val: 10, txt: "2♠", group: "sekop"}, {val: 21, txt: "3♠", group: "sekop"}, {val: 40, txt: "4♠", group: "sekop"}, {val: 16, txt: "5♠", group: "sekop"}, {val: 15, txt: "6♠", group: "sekop"}, {val: 37, txt: "7♠", group: "sekop"}, {val: 22, txt: "8♠", group: "sekop"}, {val: 9, txt: "9♠", group: "sekop"}, {val: 34, txt: "10♠", group: "sekop"}, {val: 45, txt: "J♠", group: "sekop"}, {val: 48, txt: "Q♠", group: "sekop"}, {val: 31, txt: "K♠", group: "sekop"},
+        {val: 39, txt: "As♦", group: "diamond"}, {val: 19, txt: "2♦", group: "diamond"}, {val: 12, txt: "3♦", group: "diamond"}, {val: 42, txt: "4♦", group: "diamond"}, {val: 25, txt: "5♦", group: "diamond"}, {val: 6, txt: "6♦", group: "diamond"}, {val: 3, txt: "7♦", group: "diamond"}, {val: 29, txt: "8♦", group: "diamond"}, {val: 52, txt: "9♦", group: "diamond"}, {val: 49, txt: "10♦", group: "diamond"}, {val: 32, txt: "J♦", group: "diamond"}, {val: 46, txt: "Q♦", group: "diamond"}, {val: 26, txt: "K♦", group: "diamond"}
+    ];
 
-            if (diff > 0) {
-                // Value Besar: Kartu yang ingin diposisikan lebih besar
-                resultIndex = (totalCards - diff) % totalCards; // Menghitung kartu yang akan muncul
-            } else {
-                // Value Kecil: Kartu yang ingin diposisikan lebih kecil
-                // Dengan penambahan +2
-                const newCurrentPos = (currentCardPosition + 2) % totalCards;
-                const newTargetPos = (targetPosition + 2) % totalCards;
-                resultIndex = (newCurrentPos - newTargetPos + totalCards) % totalCards;
-            }
+    let selectedAcaanTarget = null;
+    let currentQuizCard = "";
 
-            const resultCard = cards[resultIndex];
-            document.getElementById("result").innerText = `cut di ${resultCard}`;
+    function init() {
+        cardData.forEach(c => {
+            const opt = new Option(c.txt, c.val);
+            document.getElementById(`opt-${c.group}`).appendChild(opt);
+        });
+
+        const grid = document.getElementById('acaanGrid');
+        for (let i = 1; i <= 52; i++) {
+            let btn = document.createElement('div');
+            btn.innerText = i; btn.className = 'num-btn';
+            btn.onclick = function() {
+                document.querySelectorAll('#acaanGrid .num-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedAcaanTarget = i;
+                generateAcaan();
+            };
+            grid.appendChild(btn);
         }
-    </script>
+
+        const listDiv = document.getElementById('fullList');
+        stack.forEach((card, index) => {
+            listDiv.innerHTML += `<div class="list-item">${index + 1}. <span>${card}</span></div>`;
+        });
+
+        newQuiz();
+    }
+
+    function showPage(pageId, btn) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    function generateAcaan() {
+        const cardVal = document.getElementById("card-select").value;
+        if (!selectedAcaanTarget || !cardVal) return;
+        const curPos = parseInt(cardVal) - 1;
+        const tarPos = selectedAcaanTarget;
+        let resIdx = (tarPos - curPos) > 0 ? (52 - (tarPos - curPos)) % 52 : ( (curPos+2) - (tarPos+2) + 52) % 52;
+        document.getElementById("result").innerText = stack[resIdx];
+    }
+
+    // Quiz Logic
+    function newQuiz() {
+        const randomIdx = Math.floor(Math.random() * 52);
+        currentQuizCard = stack[randomIdx];
+        document.getElementById('quiz-question').innerText = currentQuizCard;
+        document.getElementById('quiz-answer').value = "";
+        document.getElementById('quiz-feedback').innerText = "";
+        
+        if (currentQuizCard.includes('♥') || currentQuizCard.includes('♦')) {
+            document.getElementById('quiz-question').style.color = "#ff5252";
+        } else {
+            document.getElementById('quiz-question').style.color = "#fff";
+        }
+    }
+
+    function checkQuiz() {
+        const inputEl = document.getElementById('quiz-answer');
+        const ans = inputEl.value;
+        const correctPos = stack.indexOf(currentQuizCard) + 1;
+        const feedback = document.getElementById('quiz-feedback');
+
+        if (parseInt(ans) === correctPos) {
+            feedback.style.color = "#4caf50";
+            feedback.innerText = "BENAR! Memuat kartu baru...";
+            setTimeout(newQuiz, 800);
+        } else {
+            feedback.style.color = "#ff5252";
+            feedback.innerText = `SALAH! Itu posisi ke-${correctPos}`;
+        }
+    }
+
+    init();
+</script>
 </body>
 </html>
