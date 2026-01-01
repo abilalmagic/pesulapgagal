@@ -53,25 +53,42 @@
         .number-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; margin-bottom: 12px; }
         .num-btn { aspect-ratio: 1/1; font-size: 12px; background: #2d2d2d; border: 1px solid #3d3d3d; border-radius: 4px; color: #fff; display: flex; align-items: center; justify-content: center; }
         .num-btn.active { background: #ffeb3b; color: #000; font-weight: bold; }
-        .result-box { background: #252525; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #ffeb3b33; }
+        
+        /* Layout Hasil + Tombol Send */
+        .result-box { background: #252525; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #ffeb3b33; position: relative; }
+        .result-box h3 { font-size: 9px; color: #888; margin-bottom: 2px; }
+        .result-wrapper { display: flex; align-items: center; justify-content: center; gap: 15px; }
         #result { font-size: 28px; font-weight: 800; color: #ffeb3b; }
+        
+        .send-ntfy-btn {
+            background: #333;
+            border: 1px solid #444;
+            color: #ffeb3b;
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            width: 35px;
+            height: 35px;
+        }
+        .send-ntfy-btn:active { background: #ffeb3b; color: #000; }
 
         /* Mnemonica List */
         .mnemonic-list { height: 350px; overflow-y: auto; background: #181818; border-radius: 8px; padding: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
-        .list-item { font-size: 12px; padding: 6px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; }
+        .list-item { font-size: 11px; padding: 6px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; }
         .list-item span { color: #ffeb3b; font-weight: bold; }
 
         /* Memorize Test */
         .quiz-card { background: #252525; padding: 25px; border-radius: 12px; text-align: center; margin-bottom: 15px; border: 2px solid #333; }
         #quiz-question { font-size: 50px; font-weight: 800; margin-bottom: 5px; }
-        
         .quiz-controls { display: flex; flex-direction: column; gap: 10px; }
         .quiz-input { width: 100%; padding: 15px; border-radius: 8px; border: none; background: #fff; color: #000; font-size: 20px; text-align: center; font-weight: bold; }
-        
         .btn-group { display: flex; gap: 8px; }
         .check-btn { flex: 2; padding: 12px; background: #ffeb3b; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; color: #000; }
         .next-btn { flex: 1; padding: 12px; background: #444; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; color: #fff; }
-        
         #quiz-feedback { margin-top: 10px; text-align: center; font-size: 13px; font-weight: bold; min-height: 20px; }
     </style>
 </head>
@@ -99,7 +116,12 @@
         <div class="number-grid" id="acaanGrid"></div>
         <div class="result-box">
             <h3>HASIL CUT KE:</h3>
-            <p id="result">-</p>
+            <div class="result-wrapper">
+                <p id="result">-</p>
+                <button class="send-ntfy-btn" onclick="sendToNtfy()" title="Send to ntfy">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -184,6 +206,25 @@
         const tarPos = selectedAcaanTarget;
         let resIdx = (tarPos - curPos) > 0 ? (52 - (tarPos - curPos)) % 52 : ( (curPos+2) - (tarPos+2) + 52) % 52;
         document.getElementById("result").innerText = stack[resIdx];
+    }
+
+    // Fungsi Kirim ke NTFY
+    function sendToNtfy() {
+        const resultText = document.getElementById("result").innerText;
+        if (resultText === "-") return;
+
+        fetch('https://ntfy.sh/aijayz', {
+            method: 'POST',
+            body: `Hasil Cut: ${resultText}`,
+            headers: { 'Title': 'Prof Jay Mnemonica' }
+        })
+        .then(() => {
+            // Animasi kecil saat sukses kirim
+            const btn = document.querySelector('.send-ntfy-btn');
+            btn.style.backgroundColor = "#4caf50";
+            setTimeout(() => btn.style.backgroundColor = "#333", 500);
+        })
+        .catch(err => console.error('Error ntfy:', err));
     }
 
     // Quiz Logic
