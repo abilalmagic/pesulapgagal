@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tarot & Zodiak Reader</title>
+  <style>
+    :root {
+      --bg-dark: #0f0c1d;
+      --gold: #d4af37;
+      --card-bg: #1e1a33;
+      --text-light: #f8f4ff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text-light);
+      min-height: 100vh;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2.5rem;
+      color: var(--gold);
+      text-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
+    }
+
+    .input-section {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      margin-bottom: 2rem;
+    }
+
+    .input-group {
+      margin-bottom: 1.2rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.8rem;
+      border-radius: 8px;
+      background: #2a2645;
+      border: 1px solid #555;
+      color: white;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      flex: 1;
+      min-width: 120px;
+      padding: 0.9rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    #randomize { background: #5d4a9e; color: white; }
+    #generate { background: var(--gold); color: var(--bg-dark); }
+    #manual { background: #3a2a6a; color: white; }
+
+    button:hover { transform: scale(1.03); }
+
+    .results {
+      width: 90%;
+      max-width: 900px;
+      display: none;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .cards-container {
+      display: flex;
+      justify-content: center;
+      gap: 1.2rem;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      width: 140px;
+      background: #25213b;
+      border: 2px solid var(--gold);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s forwards;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.2s; }
+    .card:nth-child(2) { animation-delay: 0.4s; }
+    .card:nth-child(3) { animation-delay: 0.6s; }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .card-label {
+      padding: 0.5rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--gold);
+      font-weight: bold;
+    }
+
+    .reading, .zodiac {
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    }
+
+    .reading h2, .zodiac h2 {
+      color: var(--gold);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .date-display {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-style: italic;
+      color: #aaa;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--gold);
+    }
+
+    .tarot-narrative {
+      line-height: 1.8;
+      font-size: 1.05rem;
+    }
+
+    .tarot-narrative strong {
+      color: var(--gold);
+      font-weight: bold;
+    }
+
+    .advice {
+      background: rgba(212, 175, 55, 0.1);
+      padding: 1rem;
+      border-left: 4px solid var(--gold);
+      margin-top: 1rem;
+      border-radius: 8px;
+    }
+
+    /* Modal Manual Selection */
+    #manualModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      border-radius: 16px;
+      width: 95%;
+      max-width: 900px;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 1.5rem;
+      box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid #444;
+    }
+
+    .modal-title {
+      color: var(--gold);
+      font-size: 1.4rem;
+    }
+
+    .close-modal {
+      background: #555;
+      color: white;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 0.8rem;
+    }
+
+    .manual-card {
+      cursor: pointer;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.2s;
+      height: 140px;
+    }
+
+    .manual-card:hover {
+      transform: scale(1.05);
+      border-color: var(--gold);
+    }
+
+    .manual-card.selected {
+      border-color: var(--gold);
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+    }
+
+    .manual-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .selection-info {
+      margin-top: 1rem;
+      text-align: center;
+      color: #aaa;
+    }
+
+    .confirm-btn {
+      display: block;
+      margin: 1.5rem auto 0;
+      padding: 0.8rem 2rem;
+      background: var(--gold);
+      color: var(--bg-dark);
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .confirm-btn:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🔮 Tarot & Zodiak Reader</h1>
+
+  <div class="input-section">
+    <div class="input-group">
+      <label for="name">Nama Lengkap</label>
+      <input type="text" id="name" placeholder="Masukkan nama Anda">
+    </div>
+    <div class="input-group">
+      <label for="day">Tanggal Lahir</label>
+      <input type="number" id="day" placeholder="1–31" min="1" max="31">
+    </div>
+    <div class="input-group">
+      <label for="month">Bulan Lahir</label>
+      <select id="month">
+        <option value="">Pilih Bulan</option>
+        <option value="1">Januari</option>
+        <option value="2">Februari</option>
+        <option value="3">Maret</option>
+        <option value="4">April</option>
+        <option value="5">Mei</option>
+        <option value="6">Juni</option>
+        <option value="7">Juli</option>
+        <option value="8">Agustus</option>
+        <option value="9">September</option>
+        <option value="10">Oktober</option>
+        <option value="11">November</option>
+        <option value="12">Desember</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="year">Tahun Lahir</label>
+      <input type="number" id="year" placeholder="Contoh: 1995" min="1900" max="2025">
+    </div>
+    
+    <div class="button-group">
+      <button id="randomize">🔁 Acak Kartu</button>
+      <button id="generate">✨ Buka Takdirmu</button>
+      <button id="manual">🎨 Pilih Manual</button>
+    </div>
+  </div>
+
+  <div class="results" id="results">
+    <div class="date-display" id="date-display"></div>
+    <div class="cards-container" id="cards"></div>
+    <div class="reading" id="tarot-reading">
+      <h2>🔮 Interpretasi Tarot</h2>
+      <div class="tarot-narrative" id="reading-text"></div>
+    </div>
+    <div class="zodiac" id="zodiac-section">
+      <h2>♈ Karakter Zodiak</h2>
+      <p id="zodiac-text"></p>
+    </div>
+  </div>
+
+  <!-- Modal Pilih Manual -->
+  <div id="manualModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">Pilih 3 Kartu Tarot (78 Kartu Lengkap)</div>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="cards-grid" id="manualCardsGrid"></div>
+      <div class="selection-info">
+        Kartu terpilih: <span id="selectedCount">0</span>/3
+      </div>
+      <button class="confirm-btn" id="confirmSelection" disabled>Konfirmasi & Baca Takdir</button>
+    </div>
+  </div>
+
+  <script>
+    // === ZODIAK DETAIL (lebih panjang & personal) ===
+    const detailedZodiac = {
+      "Aries": "Sebagai Aries, kamu adalah jiwa pemberani yang lahir untuk memimpin. Energi Mars memberimu semangat tak terbendung, tekad baja, dan hasrat untuk memulai hal baru. Namun, di balik keberanianmu, ada kebutuhan mendalam akan pengakuan dan kebebasan. Saat ini, alam semesta mengajakmu menyeimbangkan antara aksi cepat dan refleksi. Jangan terburu-buru hanya karena takut ketinggalan — kadang, diam sejenak justru membawamu lebih jauh.",
+      "Taurus": "Taurus, kamu adalah fondasi yang tenang di tengah badai. Diperintah oleh Venus, kamu mencintai keindahan, stabilitas, dan kenikmatan indrawi. Kamu setia, sabar, dan sangat andal — orang-orang tahu mereka bisa bergantung padamu. Namun, keenggananmu pada perubahan kadang membuatmu melewatkan peluang emas. Saat ini, alam semesta mengundangmu untuk membuka hati pada hal baru, tanpa kehilangan akarmu. Keamanan sejati bukan hanya dari luar, tapi dari dalam.",
+      "Gemini": "Gemini, pikiranmu adalah taman bermain ide tak berujung. Kamu cerdas, adaptif, dan punya rasa ingin tahu yang tak pernah puas. Kamu bisa berbicara dengan siapa saja, tentang apa saja — dan itu adalah anugerah besar. Tapi di balik kemampuan komunikasimu, ada kerinduan akan kedalaman dan konsistensi. Saat ini, alam semesta mendorongmu untuk memilih: mana suara yang benar-benar penting? Fokus pada satu percakapan yang bermakna, bukan seribu obrolan dangkal.",
+      "Cancer": "Cancer, hatimu adalah rumah bagi banyak orang. Kamu empatik, intuitif, dan sangat protektif terhadap yang kamu cintai. Bulan sebagai penguasamu membuat emosimu dalam seperti lautan — kadang tenang, kadang bergelora. Kamu butuh ruang aman untuk merasa utuh. Saat ini, alam semesta mengingatkanmu: jangan lupa merawat dirimu sendiri. Memberi cinta itu indah, tapi kamu juga layak menerimanya. Bangun pagar emosional yang sehat — bukan untuk menutup, tapi untuk melindungi.",
+      "Leo": "Leo, kamu lahir untuk bersinar. Dengan matahari sebagai penguasamu, kamu membawa kehangatan, kreativitas, dan kepercayaan diri ke mana pun kamu pergi. Kamu murah hati, karismatik, dan punya jiwa kepemimpinan alami. Tapi di balik sorotan itu, kamu butuh validasi yang tulus. Saat ini, alam semesta mengajakmu bersinar tanpa perlu penonton. Lakukan sesuatu karena kamu mencintainya, bukan karena ingin dipuji. Kepuasan sejati datang dari dalam.",
+      "Virgo": "Virgo, kamu adalah arsitek ketelitian dan pelayanan. Diperintah oleh Merkurius, kamu analitis, terorganisir, dan selalu mencari cara untuk memperbaiki segala sesuatu. Kamu pekerja keras yang tak pernah puas sampai semuanya sempurna. Tapi kesempurnaan adalah ilusi — dan mengejarnya bisa melelahkan jiwamu. Saat ini, alam semesta mengingatkanmu: cukup sudah. Terimalah bahwa 'cukup baik' itu juga indah. Istirahat bukan kemalasan — itu bagian dari proses.",
+      "Libra": "Libra, kamu adalah penjaga keseimbangan dan harmoni. Diperintah oleh Venus, kamu mencintai keindahan, keadilan, dan hubungan yang bermakna. Kamu punya kemampuan alami untuk melihat dua sisi dan menemukan titik temu. Tapi keinginanmu untuk menyenangkan semua orang kadang membuatmu kehilangan suaramu sendiri. Saat ini, alam semesta mendorongmu untuk memilih: apa yang benar-benar kamu inginkan? Keseimbangan dimulai dari kejujuran pada diri sendiri.",
+      "Scorpio": "Scorpio, kamu adalah transformator batin yang tak terlihat. Diperintah oleh Pluto dan Mars, kamu intens, penuh gairah, dan punya kemampuan luar biasa untuk melihat kebenaran tersembunyi. Kamu tidak takut pada bayangan — justru di sanalah kamu menemukan kekuatan. Tapi kecenderunganmu untuk mengendalikan bisa menjadi belenggu. Saat ini, alam semesta mengajakmu melepaskan. Percayalah: dengan melepaskan, kamu justru mendapatkan kekuatan sejati.",
+      "Sagittarius": "Sagittarius, jiwamu adalah petualang abadi. Diperintah oleh Jupiter, kamu optimis, jujur, dan selalu mencari makna dalam segala hal. Kamu membenci rutinitas dan merindukan kebebasan untuk menjelajah — baik secara fisik maupun intelektual. Tapi keinginanmu untuk 'lari' kadang membuatmu menghindari tanggung jawab. Saat ini, alam semesta mengingatkanmu: kebebasan sejati lahir dari komitmen yang disadari, bukan dari pelarian.",
+      "Capricorn": "Capricorn, kamu adalah pembangun kerajaan dari batu-batu kecil. Diperintah oleh Saturnus, kamu disiplin, ambisius, dan sangat bertanggung jawab. Kamu percaya pada usaha keras dan kesabaran jangka panjang. Tapi di balik keteguhanmu, ada rasa takut akan kegagalan yang seringkali tak terucap. Saat ini, alam semesta mengajakmu untuk sedikit bersantai. Nikmati proses, bukan hanya hasil. Kesuksesan bukan hanya pencapaian — tapi juga kedamaian dalam perjalanan.",
+      "Aquarius": "Aquarius, kamu adalah visioner yang hidup di masa depan. Diperintah oleh Uranus, kamu inovatif, independen, dan punya kepedulian mendalam pada kemanusiaan. Kamu melihat dunia dengan cara yang unik, dan sering dianggap 'aneh' — padahal, kamu hanya berada di frekuensi yang berbeda. Tapi kecenderunganmu untuk menjauh secara emosional bisa membuatmu kesepian. Saat ini, alam semesta mengingatkanmu: koneksi manusia nyata sama pentingnya dengan ide brilianmu.",
+      "Pisces": "Pisces, kamu adalah mimpi yang berjalan di bumi. Diperintah oleh Neptunus, kamu intuitif, empatik, dan punya imajinasi tak berbatas. Kamu merasakan segalanya dengan intensitas tinggi — kadang terlalu tinggi. Kamu punya bakat seni dan spiritual yang luar biasa, tapi rentan terseret arus emosi. Saat ini, alam semesta mengajakmu untuk membangun benteng energi. Belajarlah mengatakan 'tidak' tanpa rasa bersalah. Dunia butuh cahayamu — tapi hanya jika kamu melindungi apinya."
+    };
+
+    // === Fallback: 78 Kartu Tarot Lengkap (Major + Minor Arcana) ===
+    // Sumber: https://rws-cards-api.herokuapp.com/api/v1/cards
+    const fallbackFullDeck = [
+      // Major Arcana
+      { name: "The Fool", img: "https://www.sacred-texts.com/tarot/pkt/img/ar00.jpg", meaning_up: "Awal baru, spontanitas, kebebasan" },
+      { name: "The Magician", img: "https://www.sacred-texts.com/tarot/pkt/img/ar01.jpg", meaning_up: "Kemauan, kreativitas, manifestasi" },
+      { name: "The High Priestess", img: "https://www.sacred-texts.com/tarot/pkt/img/ar02.jpg", meaning_up: "Intuisi, rahasia, alam bawah sadar" },
+      { name: "The Empress", img: "https://www.sacred-texts.com/tarot/pkt/img/ar03.jpg", meaning_up: "Kelimpahan, keibuan, kreativitas" },
+      { name: "The Emperor", img: "https://www.sacred-texts.com/tarot/pkt/img/ar04.jpg", meaning_up: "Otoritas, struktur, kepemimpinan" },
+      { name: "The Hierophant", img: "https://www.sacred-texts.com/tarot/pkt/img/ar05.jpg", meaning_up: "Tradisi, spiritualitas, bimbingan" },
+      { name: "The Lovers", img: "https://www.sacred-texts.com/tarot/pkt/img/ar06.jpg", meaning_up: "Cinta, pilihan, harmoni" },
+      { name: "The Chariot", img: "https://www.sacred-texts.com/tarot/pkt/img/ar07.jpg", meaning_up: "Kemenangan, tekad, kontrol diri" },
+      { name: "Strength", img: "https://www.sacred-texts.com/tarot/pkt/img/ar08.jpg", meaning_up: "Kekuatan batin, keberanian, belas kasih" },
+      { name: "The Hermit", img: "https://www.sacred-texts.com/tarot/pkt/img/ar09.jpg", meaning_up: "Refleksi, kebijaksanaan, pencarian" },
+      { name: "Wheel of Fortune", img: "https://www.sacred-texts.com/tarot/pkt/img/ar10.jpg", meaning_up: "Takdir, perubahan, keberuntungan" },
+      { name: "Justice", img: "https://www.sacred-texts.com/tarot/pkt/img/ar11.jpg", meaning_up: "Keadilan, keseimbangan, akuntabilitas" },
+      { name: "The Hanged Man", img: "https://www.sacred-texts.com/tarot/pkt/img/ar12.jpg", meaning_up: "Sudut pandang baru, penyerahan, jeda" },
+      { name: "Death", img: "https://www.sacred-texts.com/tarot/pkt/img/ar13.jpg", meaning_up: "Transformasi, akhir siklus, pembaruan" },
+      { name: "Temperance", img: "https://www.sacred-texts.com/tarot/pkt/img/ar14.jpg", meaning_up: "Keseimbangan, kesabaran, integrasi" },
+      { name: "The Devil", img: "https://www.sacred-texts.com/tarot/pkt/img/ar15.jpg", meaning_up: "Keterikatan, ilusi, bayangan diri" },
+      { name: "The Tower", img: "https://www.sacred-texts.com/tarot/pkt/img/ar16.jpg", meaning_up: "Krisis, kehancuran, pencerahan mendadak" },
+      { name: "The Star", img: "https://www.sacred-texts.com/tarot/pkt/img/ar17.jpg", meaning_up: "Harapan, inspirasi, penyembuhan" },
+      { name: "The Moon", img: "https://www.sacred-texts.com/tarot/pkt/img/ar18.jpg", meaning_up: "Ilusi, ketakutan, intuisi tersembunyi" },
+      { name: "The Sun", img: "https://www.sacred-texts.com/tarot/pkt/img/ar19.jpg", meaning_up: "Kesuksesan, kebahagiaan, vitalitas" },
+      { name: "Judgement", img: "https://www.sacred-texts.com/tarot/pkt/img/ar20.jpg", meaning_up: "Panggilan jiwa, penebusan, kebangkitan" },
+      { name: "The World", img: "https://www.sacred-texts.com/tarot/pkt/img/ar21.jpg", meaning_up: "Penyelesaian, integrasi, pencapaian" },
+      
+      // Minor Arcana - Cups
+      { name: "Ace of Cups", img: "https://www.sacred-texts.com/tarot/pkt/img/cu01.jpg", meaning_up: "Cinta baru, intuisi, kelimpahan emosional" },
+      { name: "Two of Cups", img: "https://www.sacred-texts.com/tarot/pkt/img/cu02.jpg", meaning_up: "Koneksi, kemitraan, harmoni" },
+      { name: "Three of Cups", img: "https://www.sacred-texts.com/tarot/pkt/img/cu03.jpg", meaning_up: "Perayaan, persahabatan, komunitas" },
+      { name: "Four of Cups", img: "https://www.sacred-texts.com/tarot/pkt/img/cu04.jpg", meaning_up: "Apati, kontemplasi, peluang yang diabaikan" },
+      { name: "Five of Cups", img: "https://www.sacred-texts.com/tarot/pkt/img/cu05.jpg", meaning_up: "Kehilangan, penyesalan, fokus pada yang hilang" },
+      { name: "Six of Cups", img: "https://www.sacred-texts.com/tarot/pkt/img/cu06.jpg", meaning_up: "Kenangan, nostalgia, kemurahan hati" },
+      { name: "Seven of Cups", img: "https://www.sacred-texts.com/tarot/pkt/img/cu07.jpg", meaning_up: "Ilusi, pilihan, fantasi" },
+      { name: "Eight of Cups", img: "https://www.sacred-texts.com/tarot/pkt/img/cu08.jpg", meaning_up: "Meninggalkan, pencarian makna, perjalanan batin" },
+      { name: "Nine of Cups", img: "https://www.sacred-texts.com/tarot/pkt/img/cu09.jpg", meaning_up: "Keinginan terpenuhi, kepuasan, syukur" },
+      { name: "Ten of Cups", img: "https://www.sacred-texts.com/tarot/pkt/img/cu10.jpg", meaning_up: "Harmoni keluarga, kebahagiaan emosional, impian terwujud" },
+      { name: "Page of Cups", img: "https://www.sacred-texts.com/tarot/pkt/img/cu11.jpg", meaning_up: "Pesan kreatif, intuisi muda, ajakan emosional" },
+      { name: "Knight of Cups", img: "https://www.sacred-texts.com/tarot/pkt/img/cu12.jpg", meaning_up: "Romantis, idealis, pengejar mimpi" },
+      { name: "Queen of Cups", img: "https://www.sacred-texts.com/tarot/pkt/img/cu13.jpg", meaning_up: "Empati, intuisi, kebijaksanaan emosional" },
+      { name: "King of Cups", img: "https://www.sacred-texts.com/tarot/pkt/img/cu14.jpg", meaning_up: "Keseimbangan emosi, kompas moral, kepemimpinan penuh kasih" },
+
+      // Minor Arcana - Pentacles
+      { name: "Ace of Pentacles", img: "https://www.sacred-texts.com/tarot/pkt/img/pe01.jpg", meaning_up: "Peluang finansial, kemakmuran, fondasi materi" },
+      { name: "Two of Pentacles", img: "https://www.sacred-texts.com/tarot/pkt/img/pe02.jpg", meaning_up: "Keseimbangan, adaptasi, prioritas" },
+      { name: "Three of Pentacles", img: "https://www.sacred-texts.com/tarot/pkt/img/pe03.jpg", meaning_up: "Kolaborasi, keterampilan, pertumbuhan" },
+      { name: "Four of Pentacles", img: "https://www.sacred-texts.com/tarot/pkt/img/pe04.jpg", meaning_up: "Kekikiran, keamanan berlebihan, stagnasi" },
+      { name: "Five of Pentacles", img: "https://www.sacred-texts.com/tarot/pkt/img/pe05.jpg", meaning_up: "Kesulitan finansial, isolasi, ujian iman" },
+      { name: "Six of Pentacles", img: "https://www.sacred-texts.com/tarot/pkt/img/pe06.jpg", meaning_up: "Kedermawanan, berbagi, keseimbangan memberi-menerima" },
+      { name: "Seven of Pentacles", img: "https://www.sacred-texts.com/tarot/pkt/img/pe07.jpg", meaning_up: "Evaluasi, kesabaran, investasi jangka panjang" },
+      { name: "Eight of Pentacles", img: "https://www.sacred-texts.com/tarot/pkt/img/pe08.jpg", meaning_up: "Ketekunan, penguasaan, dedikasi" },
+      { name: "Nine of Pentacles", img: "https://www.sacred-texts.com/tarot/pkt/img/pe09.jpg", meaning_up: "Kemandirian, kemewahan, hasil kerja keras" },
+      { name: "Ten of Pentacles", img: "https://www.sacred-texts.com/tarot/pkt/img/pe10.jpg", meaning_up: "Warisan, kekayaan keluarga, stabilitas jangka panjang" },
+      { name: "Page of Pentacles", img: "https://www.sacred-texts.com/tarot/pkt/img/pe11.jpg", meaning_up: "Peluang baru, belajar keterampilan, fokus praktis" },
+      { name: "Knight of Pentacles", img: "https://www.sacred-texts.com/tarot/pkt/img/pe12.jpg", meaning_up: "Ketekunan, keandalan, pendekatan metodis" },
+      { name: "Queen of Pentacles", img: "https://www.sacred-texts.com/tarot/pkt/img/pe13.jpg", meaning_up: "Kemurahan hati praktis, keibuan, manajemen sumber daya" },
+      { name: "King of Pentacles", img: "https://www.sacred-texts.com/tarot/pkt/img/pe14.jpg", meaning_up: "Kemakmuran, otoritas bisnis, kebijaksanaan finansial" },
+
+      // Minor Arcana - Swords
+      { name: "Ace of Swords", img: "https://www.sacred-texts.com/tarot/pkt/img/sw01.jpg", meaning_up: "Kemenangan mental, kejelasan, kebenaran" },
+      { name: "Two of Swords", img: "https://www.sacred-texts.com/tarot/pkt/img/sw02.jpg", meaning_up: "Dilema, penundaan, keputusan yang sulit" },
+      { name: "Three of Swords", img: "https://www.sacred-texts.com/tarot/pkt/img/sw03.jpg", meaning_up: "Patah hati, kesedihan, kejujuran yang menyakitkan" },
+      { name: "Four of Swords", img: "https://www.sacred-texts.com/tarot/pkt/img/sw04.jpg", meaning_up: "Istirahat, refleksi, pemulihan" },
+      { name: "Five of Swords", img: "https://www.sacred-texts.com/tarot/pkt/img/sw05.jpg", meaning_up: "Konflik, kemenangan kosong, manipulasi" },
+      { name: "Six of Swords", img: "https://www.sacred-texts.com/tarot/pkt/img/sw06.jpg", meaning_up: "Transisi, pemulihan, perjalanan menuju kedamaian" },
+      { name: "Seven of Swords", img: "https://www.sacred-texts.com/tarot/pkt/img/sw07.jpg", meaning_up: "Tipu daya, strategi, menghindari konfrontasi" },
+      { name: "Eight of Swords", img: "https://www.sacred-texts.com/tarot/pkt/img/sw08.jpg", meaning_up: "Perasaan terjebak, keterbatasan mental, ilusi" },
+      { name: "Nine of Swords", img: "https://www.sacred-texts.com/tarot/pkt/img/sw09.jpg", meaning_up: "Kecemasan, rasa bersalah, mimpi buruk" },
+      { name: "Ten of Swords", img: "https://www.sacred-texts.com/tarot/pkt/img/sw10.jpg", meaning_up: "Kehancuran total, akhir yang menyakitkan, awal baru" },
+      { name: "Page of Swords", img: "https://www.sacred-texts.com/tarot/pkt/img/sw11.jpg", meaning_up: "Rasa ingin tahu intelektual, waspada, berita" },
+      { name: "Knight of Swords", img: "https://www.sacred-texts.com/tarot/pkt/img/sw12.jpg", meaning_up: "Aksi cepat, agresi mental, tekad" },
+      { name: "Queen of Swords", img: "https://www.sacred-texts.com/tarot/pkt/img/sw13.jpg", meaning_up: "Ketegasan, kejelasan, kebijaksanaan objektif" },
+      { name: "King of Swords", img: "https://www.sacred-texts.com/tarot/pkt/img/sw14.jpg", meaning_up: "Otoritas intelektual, keadilan, logika" },
+
+      // Minor Arcana - Wands
+      { name: "Ace of Wands", img: "https://www.sacred-texts.com/tarot/pkt/img/wa01.jpg", meaning_up: "Inspirasi, energi kreatif, awal baru" },
+      { name: "Two of Wands", img: "https://www.sacred-texts.com/tarot/pkt/img/wa02.jpg", meaning_up: "Perencanaan, potensi, keputusan besar" },
+      { name: "Three of Wands", img: "https://www.sacred-texts.com/tarot/pkt/img/wa03.jpg", meaning_up: "Ekspansi, antisipasi, kolaborasi" },
+      { name: "Four of Wands", img: "https://www.sacred-texts.com/tarot/pkt/img/wa04.jpg", meaning_up: "Perayaan, harmoni, pencapaian" },
+      { name: "Five of Wands", img: "https://www.sacred-texts.com/tarot/pkt/img/wa05.jpg", meaning_up: "Persaingan, konflik ringan, tantangan" },
+      { name: "Six of Wands", img: "https://www.sacred-texts.com/tarot/pkt/img/wa06.jpg", meaning_up: "Kemenangan, pengakuan, kemajuan" },
+      { name: "Seven of Wands", img: "https://www.sacred-texts.com/tarot/pkt/img/wa07.jpg", meaning_up: "Pertahanan, tekad, berdiri teguh" },
+      { name: "Eight of Wands", img: "https://www.sacred-texts.com/tarot/pkt/img/wa08.jpg", meaning_up: "Aksi cepat, momentum, komunikasi" },
+      { name: "Nine of Wands", img: "https://www.sacred-texts.com/tarot/pkt/img/wa09.jpg", meaning_up: "Ketahanan, waspada, pengalaman" },
+      { name: "Ten of Wands", img: "https://www.sacred-texts.com/tarot/pkt/img/wa10.jpg", meaning_up: "Beban, tanggung jawab berlebihan, ketekunan" },
+      { name: "Page of Wands", img: "https://www.sacred-texts.com/tarot/pkt/img/wa11.jpg", meaning_up: "Antusiasme, eksplorasi, pesan inspiratif" },
+      { name: "Knight of Wands", img: "https://www.sacred-texts.com/tarot/pkt/img/wa12.jpg", meaning_up: "Energi, petualangan, impulsif" },
+      { name: "Queen of Wands", img: "https://www.sacred-texts.com/tarot/pkt/img/wa13.jpg", meaning_up: "Kepemimpinan hangat, kepercayaan diri, kreativitas" },
+      { name: "King of Wands", img: "https://www.sacred-texts.com/tarot/pkt/img/wa14.jpg", meaning_up: "Visi, kewirausahaan, otoritas karismatik" }
+    ];
+
+    const zodiacRanges = [
+      { sign: "Capricorn", start: [12, 22], end: [1, 19] },
+      { sign: "Aquarius", start: [1, 20], end: [2, 18] },
+      { sign: "Pisces", start: [2, 19], end: [3, 20] },
+      { sign: "Aries", start: [3, 21], end: [4, 19] },
+      { sign: "Taurus", start: [4, 20], end: [5, 20] },
+      { sign: "Gemini", start: [5, 21], end: [6, 20] },
+      { sign: "Cancer", start: [6, 21], end: [7, 22] },
+      { sign: "Leo", start: [7, 23], end: [8, 22] },
+      { sign: "Virgo", start: [8, 23], end: [9, 22] },
+      { sign: "Libra", start: [9, 23], end: [10, 22] },
+      { sign: "Scorpio", start: [10, 23], end: [11, 21] },
+      { sign: "Sagittarius", start: [11, 22], end: [12, 21] }
+    ];
+
+    // === Fungsi Umum ===
+    function getZodiacSign(day, month) {
+      for (const z of zodiacRanges) {
+        const [startMonth, startDay] = z.start;
+        const [endMonth, endDay] = z.end;
+        if ((month === startMonth && day >= startDay) || (month === endMonth && day <= endDay)) {
+          return z.sign;
+        }
+      }
+      return "Unknown";
+    }
+
+    function getIndonesianDate() {
+      const now = new Date();
+      return now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    async function fetchAllCards() {
+      try {
+        const res = await fetch('https://rws-cards-api.herokuapp.com/api/v1/cards');
+        if (!res.ok) throw new Error('API tidak merespons');
+        const data = await res.json();
+        return data.cards && data.cards.length >= 78 ? data.cards : fallbackFullDeck;
+      } catch (err) {
+        console.warn("Menggunakan fallback 78 kartu karena:", err.message);
+        return fallbackFullDeck;
+      }
+    }
+
+    function pickThreeUnique(cards) {
+      const selected = [];
+      const used = new Set();
+      while (selected.length < 3) {
+        const idx = Math.floor(Math.random() * cards.length);
+        if (!used.has(idx)) {
+          used.add(idx);
+          selected.push(cards[idx]);
+        }
+      }
+      return selected;
+    }
+
+    function renderCards(cards, container) {
+      container.innerHTML = '';
+      const positions = ["Masa Lalu", "Sekarang", "Masa Depan"];
+      cards.forEach((card, i) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = 'card';
+        cardEl.innerHTML = `
+          <img src="${card.img || card.image}" alt="${card.name}" 
+               onerror="this.src='https://via.placeholder.com/140x220/1e1a33/d4af37?text=${encodeURIComponent(card.name.substring(0,12))}'">
+          <div class="card-label">${positions[i]}</div>
+        `;
+        container.appendChild(cardEl);
+      });
+    }
+
+    function generateReading(name, cards, date, isManual = false) {
+      const [past, present, future] = cards.map(c => c.meaning_up || "Makna tidak tersedia");
+      const pastName = cards[0].name;
+      const presentName = cards[1].name;
+      const futureName = cards[2].name;
+
+      let intro = isManual 
+        ? `Berikut takdirmu berdasarkan pilihan kartu manual:` 
+        : `Halo, ${name}! Berikut takdirmu hari ini:`;
+
+      const narrative = `
+        <strong>${date}</strong><br><br>
+        ${intro}<br><br>
+
+        <strong>✧ Masa Lalu:</strong> ${pastName}<br>
+        Kamu datang dari energi ${past}. Ini adalah akar dari siapa kamu sekarang — mungkin ada pelajaran yang belum sepenuhnya dipahami, atau pengalaman yang masih membayangi. Tapi ingat, setiap jejak masa lalu adalah batu pijakan menuju versi terbaikmu.<br><br>
+
+        <strong>✧ Saat Ini:</strong> ${presentName}<br>
+        Kamu berdiri di tengah arus energi ${present}. Ini adalah waktu untuk memahami apa yang benar-benar kamu butuhkan sekarang — bukan apa yang orang lain harapkan, bukan apa yang kamu pikir harus kamu lakukan. Dengarkan hatimu. Kamu sedang dalam proses integrasi, dan itu butuh keberanian.<br><br>
+
+        <strong>✧ Masa Depan:</strong> ${futureName}<br>
+        Di depanmu, ada potensi besar: ${future}. Ini bukan takdir yang kaku, tapi undangan — undangan untuk berubah, untuk melepaskan beban lama, dan untuk menemukan kekuatan baru. Jika kamu tetap berani dan jujur pada diri sendiri, masa depan akan membawamu ke tempat yang lebih ringan, lebih bermakna, dan lebih damai.<br><br>
+
+        <div class="advice">
+          <strong>📌 Saran untukmu:</strong><br>
+          - <strong>Hadapi masa lalu tanpa rasa bersalah</strong>. Itu bukan identitasmu, tapi pelajarannya.<br>
+          - <strong>Di saat ini, prioritaskan kebutuhan batinmu</strong>. Jangan abaikan suara hati.<br>
+          - <strong>Masa depan menanti kamu yang berani berubah</strong>. Ambil langkah kecil, tapi konsisten. Keajaiban dimulai dari tindakan nyata.
+        </div><br>
+
+        Ketiga kartu ini membentuk alur transformasi: dari akar masa lalu, energi kini, hingga potensi yang menanti. 
+        Dengarkan pesan mereka dengan hati terbuka — kamu lebih kuat dari yang kamu kira.
+      `;
+
+      return narrative;
+    }
+
+    // === Event Listeners ===
+    document.getElementById('randomize').addEventListener('click', async () => {
+      const cards = await fetchAllCards();
+      const selected = pickThreeUnique(cards);
+      renderCards(selected, document.getElementById('cards'));
+      document.getElementById('results').style.display = 'flex';
+      document.getElementById('tarot-reading').style.display = 'block';
+      document.getElementById('zodiac-section').style.display = 'none';
+      document.getElementById('date-display').textContent = `📅 Dibaca pada: ${getIndonesianDate()}`;
+      const reading = generateReading("", selected, getIndonesianDate(), true);
+      document.getElementById('reading-text').innerHTML = reading;
+    });
+
+    document.getElementById('generate').addEventListener('click', async () => {
+      const name = document.getElementById('name').value.trim();
+      const day = parseInt(document.getElementById('day').value);
+      const month = parseInt(document.getElementById('month').value);
+      const year = document.getElementById('year').value;
+
+      if (!name || !day || !month || !year) {
+        alert("Harap lengkapi nama, tanggal, bulan, dan tahun lahir!");
+        return;
+      }
+
+      if (day < 1 || day > 31) {
+        alert("Tanggal lahir harus antara 1–31.");
+        return;
+      }
+
+      const dateStr = getIndonesianDate();
+      document.getElementById('date-display').textContent = `📅 Dibaca pada: ${dateStr}`;
+
+      document.getElementById('cards').innerHTML = '<div class="loading">Mengocok kartu takdir...</div>';
+      document.getElementById('results').style.display = 'flex';
+
+      const cards = await fetchAllCards();
+      const selected = pickThreeUnique(cards);
+      renderCards(selected, document.getElementById('cards'));
+
+      const reading = generateReading(name, selected, dateStr, false);
+      document.getElementById('reading-text').innerHTML = reading;
+      document.getElementById('tarot-reading').style.display = 'block';
+
+      const zodiac = getZodiacSign(day, month);
+      const desc = detailedZodiac[zodiac] || "Zodiak tidak dapat ditentukan.";
+      document.getElementById('zodiac-text').textContent = desc;
+      document.getElementById('zodiac-section').style.display = 'block';
+    });
+
+    // === Fitur Manual ===
+    let manualSelected = [];
+    const maxSelection = 3;
+
+    function openManualSelection() {
+      document.getElementById('manualModal').style.display = 'flex';
+      loadManualCards();
+    }
+
+    async function loadManualCards() {
+      const grid = document.getElementById('manualCardsGrid');
+      grid.innerHTML = '<div style="text-align:center;width:100%;padding:1rem;color:#aaa;">Memuat 78 kartu...</div>';
+      manualSelected = [];
+
+      const cards = await fetchAllCards(); // Ambil 78 kartu
+
+      grid.innerHTML = '';
+      cards.forEach(card => {
+        const cardEl = document.createElement('div');
+        cardEl.className = 'manual-card';
+        cardEl.dataset.name = card.name;
+        cardEl.innerHTML = `<img src="${card.img}" alt="${card.name}" onerror="this.src='https://via.placeholder.com/90x140/1e1a33/d4af37?text=${encodeURIComponent(card.name.split(' ').pop())}'">`;
+        cardEl.addEventListener('click', () => toggleCardSelection(cardEl, card));
+        grid.appendChild(cardEl);
+      });
+
+      updateSelectionUI();
+    }
+
+    function toggleCardSelection(el, card) {
+      const isSelected = el.classList.contains('selected');
+      if (isSelected) {
+        el.classList.remove('selected');
+        manualSelected = manualSelected.filter(c => c.name !== card.name);
+      } else {
+        if (manualSelected.length >= maxSelection) {
+          alert(`Maksimal hanya ${maxSelection} kartu yang bisa dipilih.`);
+          return;
+        }
+        el.classList.add('selected');
+        manualSelected.push(card);
+      }
+      updateSelectionUI();
+    }
+
+    function updateSelectionUI() {
+      document.getElementById('selectedCount').textContent = manualSelected.length;
+      document.getElementById('confirmSelection').disabled = manualSelected.length !== maxSelection;
+    }
+
+    document.getElementById('confirmSelection').addEventListener('click', () => {
+      if (manualSelected.length === 3) {
+        document.getElementById('manualModal').style.display = 'none';
+        renderCards(manualSelected, document.getElementById('cards'));
+        document.getElementById('results').style.display = 'flex';
+        document.getElementById('tarot-reading').style.display = 'block';
+        document.getElementById('zodiac-section').style.display = 'none';
+        document.getElementById('date-display').textContent = `📅 Dibaca pada: ${getIndonesianDate()}`;
+        const reading = generateReading("", manualSelected, getIndonesianDate(), true);
+        document.getElementById('reading-text').innerHTML = reading;
+      }
+    });
+
+    document.querySelector('.close-modal').addEventListener('click', () => {
+      document.getElementById('manualModal').style.display = 'none';
+    });
+
+    document.getElementById('manual').addEventListener('click', openManualSelection);
+
+    // Tutup modal jika klik di luar
+    window.addEventListener('click', (e) => {
+      const modal = document.getElementById('manualModal');
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
