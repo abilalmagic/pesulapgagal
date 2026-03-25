@@ -1,0 +1,1771 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PROF JAY CARD STACK MASTER</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #eee;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 10px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 360px;
+            background: rgba(30, 30, 46, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 235, 59, 0.1);
+            border: 1px solid rgba(255, 235, 59, 0.1);
+            animation: containerGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes containerGlow {
+            from { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 235, 59, 0.1); }
+            to { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 235, 59, 0.2); }
+        }
+
+        h2 { 
+            font-size: 14px; 
+            text-align: center; 
+            color: #ffeb3b; 
+            margin-bottom: 20px; 
+            text-transform: uppercase; 
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
+        }
+
+        h1 { 
+            font-size: 20px; 
+            text-align: center; 
+            color: #ffeb3b; 
+            margin: 20px 0; 
+            text-transform: uppercase; 
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, #ffeb3b, #f57f17);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titlePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .page { display: none; animation: pageFadeIn 0.4s ease; }
+        .page.active { display: block; }
+        
+        @keyframes pageFadeIn { 
+            from { opacity: 0; transform: translateY(20px) scale(0.95); } 
+            to { opacity: 1; transform: translateY(0) scale(1); } 
+        }
+
+        /* LANDING PAGE */
+        .landing-hero {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, rgba(255,235,59,0.1), rgba(33,150,243,0.1));
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,235,59,0.2);
+        }
+        .landing-hero .logo {
+            font-size: 64px;
+            margin-bottom: 15px;
+            animation: logoFloat 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(255,235,59,0.5));
+        }
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .landing-hero .subtitle {
+            font-size: 11px;
+            color: #888;
+            margin-top: 10px;
+            letter-spacing: 1px;
+        }
+
+        .main-btn {
+            width: 100%;
+            padding: 18px;
+            margin: 12px 0;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .main-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        .main-btn:hover::before { left: 100%; }
+        .main-btn:active { transform: scale(0.98); }
+        
+        .btn-random { 
+            background: linear-gradient(135deg, #2196f3, #1976d2); 
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+        }
+        .btn-random:hover { 
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.6);
+            transform: translateY(-2px);
+        }
+        
+        .btn-stack { 
+            background: linear-gradient(135deg, #ffeb3b, #fbc02d); 
+            color: #000;
+            box-shadow: 0 4px 15px rgba(255, 235, 59, 0.4);
+        }
+        .btn-stack:hover { 
+            box-shadow: 0 6px 20px rgba(255, 235, 59, 0.6);
+            transform: translateY(-2px);
+        }
+        .btn-stack svg { width: 20px; height: 20px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+
+        .secret-hint {
+            text-align: center;
+            font-size: 9px;
+            color: #555;
+            margin-top: 25px;
+            padding: 12px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(255,235,59,0.1);
+        }
+
+        /* RANDOMIZER PAGE */
+        .card-display {
+            width: 100%;
+            aspect-ratio: 3/4;
+            background: linear-gradient(135deg, #1e1e2e, #2a2a3e);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            border: 2px solid rgba(255,235,59,0.2);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        .card-display::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,235,59,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
+        .card-display img {
+            width: 90%;
+            height: 90%;
+            object-fit: contain;
+            border-radius: 8px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+        .card-display .placeholder {
+            font-size: 64px;
+            color: #444;
+            position: relative;
+            z-index: 1;
+            animation: cardShuffle 0.5s ease;
+        }
+        @keyframes cardShuffle {
+            0% { transform: rotate(-10deg) scale(0.9); }
+            50% { transform: rotate(10deg) scale(1.05); }
+            100% { transform: rotate(0deg) scale(1); }
+        }
+        .card-display .stebbin-mode {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #ffeb3b, #f57f17);
+            color: #000;
+            font-size: 9px;
+            font-weight: 900;
+            padding: 5px 10px;
+            border-radius: 6px;
+            display: none;
+            z-index: 2;
+            box-shadow: 0 2px 10px rgba(255,235,59,0.4);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .card-display.stebbin-active .stebbin-mode { display: block; }
+
+        .randomizer-controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        .randomizer-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 900;
+            cursor: pointer;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-start { 
+            background: linear-gradient(135deg, #4caf50, #388e3c); 
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+        .btn-start:hover:not(:disabled) { 
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+            transform: translateY(-2px);
+        }
+        .btn-stop { 
+            background: linear-gradient(135deg, #f44336, #d32f2f); 
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.4);
+        }
+        .btn-stop:hover:not(:disabled) { 
+            box-shadow: 0 6px 20px rgba(244, 67, 54, 0.6);
+            transform: translateY(-2px);
+        }
+        .btn-start:disabled, .btn-stop:disabled { 
+            opacity: 0.3; 
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .mode-indicator {
+            background: rgba(0,0,0,0.4);
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255,235,59,0.2);
+            margin-bottom: 15px;
+        }
+        .mode-indicator strong {
+            color: #ffeb3b;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .stebbin-hint {
+            color: #4caf50;
+            font-size: 10px;
+            margin-top: 5px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* PASSWORD MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 150;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-overlay.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .modal {
+            background: linear-gradient(135deg, #1e1e2e, #2a2a3e);
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 320px;
+            text-align: center;
+            border: 2px solid rgba(255,235,59,0.3);
+            box-shadow: 0 0 40px rgba(255,235,59,0.2);
+            animation: modalSlide 0.3s ease;
+        }
+        @keyframes modalSlide {
+            from { transform: translateY(-50px) scale(0.9); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        .modal h3 { 
+            color: #ffeb3b; 
+            margin-bottom: 20px; 
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .modal input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: 2px solid rgba(255,235,59,0.3);
+            background: rgba(0,0,0,0.4);
+            color: #fff;
+            margin-bottom: 15px;
+            font-size: 16px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .modal input:focus {
+            outline: none;
+            border-color: #ffeb3b;
+            box-shadow: 0 0 15px rgba(255,235,59,0.3);
+        }
+        .modal-btns { display: flex; gap: 10px; }
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+        .modal-cancel { 
+            background: rgba(255,255,255,0.1); 
+            color: #888;
+        }
+        .modal-cancel:hover { background: rgba(255,255,255,0.2); }
+        .modal-confirm { 
+            background: linear-gradient(135deg, #ffeb3b, #fbc02d); 
+            color: #000;
+            box-shadow: 0 4px 15px rgba(255,235,59,0.3);
+        }
+        .modal-confirm:hover { 
+            box-shadow: 0 6px 20px rgba(255,235,59,0.5);
+            transform: translateY(-2px);
+        }
+        .error-msg { 
+            color: #f44336; 
+            font-size: 11px; 
+            margin-top: 10px; 
+            display: none;
+            animation: shake 0.5s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* STACK SELECTION */
+        .stack-select {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 20px 0;
+        }
+        .stack-btn {
+            padding: 20px;
+            border: 2px solid rgba(255,235,59,0.2);
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(30,30,46,0.8), rgba(42,42,62,0.8));
+            color: #fff;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .stack-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
+            transition: width 0.3s;
+        }
+        .stack-btn:hover::before { width: 100%; opacity: 0.1; }
+        .stack-btn:hover { 
+            transform: translateX(5px);
+            border-color: rgba(255,235,59,0.5);
+        }
+        .stack-btn.stebbin { border-left: 4px solid #2196f3; }
+        .stack-btn.stebbin::before { background: #2196f3; }
+        .stack-btn.mnemonica { border-left: 4px solid #ff5252; }
+        .stack-btn.mnemonica::before { background: #ff5252; }
+
+        /* TAB NAVIGATION - FUTURISTIC */
+        .tab-container {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 5px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 5px;
+            border: 1px solid rgba(255,235,59,0.1);
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 11px;
+            font-weight: 800;
+            background: transparent;
+            border: none;
+            color: #666;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .tab-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(255,235,59,0.2), rgba(255,235,59,0.05));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, #ffeb3b, #fbc02d);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(255,235,59,0.3);
+        }
+        .tab-btn.active::before { opacity: 0; }
+        .tab-btn:not(.active):hover {
+            color: #ffeb3b;
+            background: rgba(255,235,59,0.1);
+        }
+
+        .tab-content { display: none; animation: tabFadeIn 0.4s ease; }
+        .tab-content.active { display: block; }
+        @keyframes tabFadeIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* FORM ELEMENTS */
+        label { 
+            font-size: 10px; 
+            font-weight: 700; 
+            color: #888; 
+            text-transform: uppercase; 
+            margin-bottom: 6px; 
+            display: block;
+            letter-spacing: 1px;
+        }
+        select, input[type="number"] { 
+            width: 100%; 
+            padding: 14px; 
+            font-size: 16px; 
+            border-radius: 10px; 
+            border: 2px solid rgba(255,235,59,0.2); 
+            background: rgba(0,0,0,0.4); 
+            color: #fff; 
+            margin-bottom: 15px; 
+            outline: none;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        select:focus, input[type="number"]:focus {
+            border-color: #ffeb3b;
+            box-shadow: 0 0 15px rgba(255,235,59,0.2);
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, rgba(255,235,59,0.1), rgba(33,150,243,0.1));
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #ffeb3b;
+            border: 1px solid rgba(255,235,59,0.2);
+        }
+        .info-box p { 
+            font-size: 11px; 
+            color: #aaa; 
+            line-height: 1.6; 
+        }
+        .info-box strong { 
+            color: #ffeb3b;
+            text-shadow: 0 0 5px rgba(255,235,59,0.3);
+        }
+        
+        .result-box { 
+            background: linear-gradient(135deg, rgba(30,30,46,0.9), rgba(42,42,62,0.9));
+            padding: 20px; 
+            border-radius: 12px; 
+            text-align: center; 
+            border: 2px solid rgba(255,235,59,0.2);
+            margin-top: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .result-box::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,235,59,0.05) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+        .result-box > * { position: relative; z-index: 1; }
+        .result-box h3 { 
+            font-size: 10px; 
+            color: #666; 
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .result-value { 
+            font-size: 42px; 
+            font-weight: 900; 
+            color: #ffeb3b; 
+            min-height: 60px; 
+            margin: 15px 0;
+            text-shadow: 0 0 20px rgba(255,235,59,0.5);
+            animation: resultGlow 2s ease-in-out infinite;
+        }
+        @keyframes resultGlow {
+            0%, 100% { text-shadow: 0 0 20px rgba(255,235,59,0.5); }
+            50% { text-shadow: 0 0 30px rgba(255,235,59,0.8), 0 0 40px rgba(255,235,59,0.4); }
+        }
+        
+        .category-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: badgePulse 2s ease-in-out infinite;
+        }
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .badge-besar { 
+            background: linear-gradient(135deg, #f44336, #d32f2f); 
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.4);
+        }
+        .badge-kecil { 
+            background: linear-gradient(135deg, #4caf50, #388e3c); 
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+        .badge-maju { 
+            background: linear-gradient(135deg, #2196f3, #1976d2); 
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+        }
+        .badge-mundur { 
+            background: linear-gradient(135deg, #ff9800, #f57c00); 
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4);
+        }
+
+        .bottom-cards-display {
+            background: rgba(0,0,0,0.4);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,235,59,0.1);
+        }
+        .bottom-cards-display .title { 
+            font-size: 9px; 
+            color: #666; 
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .bottom-cards-display .cards {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            font-size: 24px;
+        }
+        .bottom-cards-display .card-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 20px;
+            padding: 8px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            transition: all 0.3s;
+        }
+        .bottom-cards-display .card-item:hover {
+            background: rgba(255,235,59,0.1);
+            transform: translateY(-3px);
+        }
+        .bottom-cards-display .card-index { 
+            font-size: 8px; 
+            color: #555; 
+            margin-top: 4px;
+            font-weight: 700;
+        }
+        .bottom-cards-display .card-item.highlight {
+            background: linear-gradient(135deg, rgba(255,235,59,0.2), rgba(255,235,59,0.1));
+            border: 2px solid #ffeb3b;
+            box-shadow: 0 0 15px rgba(255,235,59,0.3);
+            animation: highlightPulse 1.5s ease-in-out infinite;
+        }
+        @keyframes highlightPulse {
+            0%, 100% { box-shadow: 0 0 15px rgba(255,235,59,0.3); }
+            50% { box-shadow: 0 0 25px rgba(255,235,59,0.6); }
+        }
+
+        .calculation-steps {
+            background: rgba(0,0,0,0.4);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-size: 11px;
+            line-height: 2;
+            text-align: left;
+            border: 1px solid rgba(255,235,59,0.1);
+        }
+        .calculation-steps .step { 
+            margin: 5px 0;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        .calculation-steps .step:hover {
+            background: rgba(255,235,59,0.05);
+        }
+        .calculation-steps .highlight { 
+            color: #ffeb3b; 
+            font-weight: 900;
+            text-shadow: 0 0 5px rgba(255,235,59,0.3);
+        }
+        .calculation-steps .formula { 
+            font-family: 'Courier New', monospace; 
+            margin-top: 12px; 
+            padding-top: 12px; 
+            border-top: 2px solid rgba(255,235,59,0.2);
+            color: #aaa;
+            font-size: 10px;
+        }
+
+        .chsd-info {
+            background: rgba(0,0,0,0.4);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,235,59,0.1);
+        }
+        .chsd-info .sequence {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 10px;
+            font-size: 20px;
+        }
+        .chsd-info .sequence span { 
+            padding: 8px 12px; 
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            transition: all 0.3s;
+        }
+        .chsd-info .sequence span.active { 
+            background: linear-gradient(135deg, #ffeb3b, #fbc02d); 
+            color: #000; 
+            font-weight: 900;
+            box-shadow: 0 4px 15px rgba(255,235,59,0.4);
+            transform: scale(1.1);
+        }
+
+        .acaan-summary {
+            background: linear-gradient(135deg, rgba(255,235,59,0.1), rgba(33,150,243,0.1));
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 1px solid rgba(255,235,59,0.2);
+        }
+        .acaan-summary .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 11px;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        .acaan-summary .summary-item:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        .acaan-summary .summary-item .label { 
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .acaan-summary .summary-item .value { 
+            color: #ffeb3b; 
+            font-weight: 900;
+            text-shadow: 0 0 5px rgba(255,235,59,0.3);
+        }
+
+        /* MNEMONICA STYLES */
+        .number-grid { 
+            display: grid; 
+            grid-template-columns: repeat(8, 1fr); 
+            gap: 6px; 
+            margin-bottom: 15px; 
+        }
+        .num-btn { 
+            aspect-ratio: 1/1; 
+            font-size: 12px; 
+            background: rgba(255,255,255,0.05); 
+            border: 2px solid rgba(255,235,59,0.2); 
+            border-radius: 8px; 
+            color: #888; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 700;
+        }
+        .num-btn:hover {
+            background: rgba(255,235,59,0.1);
+            border-color: rgba(255,235,59,0.4);
+            transform: scale(1.05);
+        }
+        .num-btn.active { 
+            background: linear-gradient(135deg, #ffeb3b, #fbc02d); 
+            color: #000; 
+            font-weight: 900;
+            box-shadow: 0 4px 15px rgba(255,235,59,0.4);
+            transform: scale(1.1);
+        }
+
+        .grid-action-btn {
+            grid-column: span 2;
+            height: 100%;
+            border-radius: 8px;
+            border: 2px solid rgba(255,235,59,0.2);
+            font-size: 9px;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+        .reset-btn { 
+            background: rgba(255,255,255,0.05); 
+            color: #888;
+        }
+        .reset-btn:hover { 
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.3);
+        }
+        .send-btn { 
+            background: linear-gradient(135deg, #ffeb3b, #fbc02d); 
+            color: #000;
+            border: none;
+            box-shadow: 0 4px 15px rgba(255,235,59,0.3);
+        }
+        .send-btn:hover { 
+            box-shadow: 0 6px 20px rgba(255,235,59,0.5);
+            transform: translateY(-2px);
+        }
+        .send-btn svg { margin-left: 4px; }
+
+        .mnemonic-list { 
+            height: 350px; 
+            overflow-y: auto; 
+            background: rgba(0,0,0,0.4); 
+            border-radius: 12px; 
+            padding: 12px; 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 8px;
+            border: 1px solid rgba(255,235,59,0.1);
+        }
+        .mnemonic-list::-webkit-scrollbar { width: 6px; }
+        .mnemonic-list::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 3px; }
+        .mnemonic-list::-webkit-scrollbar-thumb { background: rgba(255,235,59,0.3); border-radius: 3px; }
+        .list-item { 
+            font-size: 11px; 
+            padding: 8px; 
+            border-radius: 6px;
+            background: rgba(255,255,255,0.03);
+            display: flex; 
+            justify-content: space-between;
+            transition: all 0.3s;
+            border: 1px solid rgba(255,235,59,0.05);
+        }
+        .list-item:hover {
+            background: rgba(255,235,59,0.1);
+            transform: translateX(3px);
+        }
+        .list-item span { 
+            color: #ffeb3b; 
+            font-weight: 900;
+            text-shadow: 0 0 5px rgba(255,235,59,0.3);
+        }
+        .list-item.red { 
+            color: #ff5252;
+        }
+        .list-item.red span {
+            color: #ff5252;
+            text-shadow: 0 0 5px rgba(255,82,82,0.3);
+        }
+
+        .quiz-card { 
+            background: linear-gradient(135deg, rgba(30,30,46,0.9), rgba(42,42,62,0.9)); 
+            padding: 30px; 
+            border-radius: 16px; 
+            text-align: center; 
+            margin-bottom: 20px; 
+            border: 2px solid rgba(255,235,59,0.2);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        #quiz-question { 
+            font-size: 56px; 
+            font-weight: 900; 
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(255,235,59,0.5);
+            animation: quizPulse 2s ease-in-out infinite;
+        }
+        @keyframes quizPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .quiz-controls { display: flex; flex-direction: column; gap: 12px; }
+        .quiz-input { 
+            width: 100%; 
+            padding: 18px; 
+            border-radius: 12px; 
+            border: 2px solid rgba(255,235,59,0.3); 
+            background: rgba(0,0,0,0.4); 
+            color: #000; 
+            font-size: 24px; 
+            text-align: center; 
+            font-weight: 900;
+            transition: all 0.3s;
+        }
+        .quiz-input:focus {
+            outline: none;
+            border-color: #ffeb3b;
+            box-shadow: 0 0 20px rgba(255,235,59,0.3);
+        }
+        .btn-group { display: flex; gap: 10px; }
+        .check-btn { 
+            flex: 2; 
+            padding: 15px; 
+            background: linear-gradient(135deg, #ffeb3b, #fbc02d); 
+            border: none; 
+            border-radius: 10px; 
+            font-weight: 900; 
+            cursor: pointer; 
+            color: #000;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(255,235,59,0.3);
+            transition: all 0.3s;
+        }
+        .check-btn:hover { 
+            box-shadow: 0 6px 20px rgba(255,235,59,0.5);
+            transform: translateY(-2px);
+        }
+        .next-btn { 
+            flex: 1; 
+            padding: 15px; 
+            background: rgba(255,255,255,0.1); 
+            border: 2px solid rgba(255,235,59,0.2); 
+            border-radius: 10px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+        .next-btn:hover { 
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,235,59,0.4);
+        }
+        #quiz-feedback { 
+            margin-top: 15px; 
+            text-align: center; 
+            font-size: 14px; 
+            font-weight: 900; 
+            min-height: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.05);
+            color: #888;
+            border: 2px solid rgba(255,235,59,0.2);
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .back-btn:hover { 
+            background: rgba(255,235,59,0.1);
+            border-color: rgba(255,235,59,0.4);
+            color: #ffeb3b;
+            transform: translateX(-3px);
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 9px;
+            color: #444;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,235,59,0.1);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .footer strong { 
+            color: #ffeb3b;
+            text-shadow: 0 0 10px rgba(255,235,59,0.3);
+        }
+
+        /* Secret Zone */
+        .secret-zone {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 100vh;
+            z-index: 100;
+        }
+        .secret-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #ffeb3b, #fbc02d);
+            color: #000;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 900;
+            display: none;
+            z-index: 200;
+            box-shadow: 0 8px 30px rgba(255,235,59,0.4);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: toastSlide 0.5s ease;
+        }
+        @keyframes toastSlide {
+            from { transform: translateX(-50%) translateY(50px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- LANDING PAGE -->
+    <div id="landing" class="page active">
+        <div class="landing-hero">
+            <div class="logo">🃏</div>
+            <h1>PROF JAY<br>CARD STACK MASTER</h1>
+            <p class="subtitle">Advanced Card Stack Calculator & Randomizer</p>
+        </div>
+
+        <button class="main-btn btn-random" onclick="showPage('randomizer')">
+            <span>🎲</span> Generate Kartu
+        </button>
+        <button class="main-btn btn-stack" onclick="openPasswordModal()">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+            Card Stack
+        </button>
+
+        <p class="secret-hint">💡 Secret: Swipe up di sisi kanan layar untuk mode spesial</p>
+    </div>
+
+    <!-- RANDOMIZER PAGE -->
+    <div id="randomizer" class="page">
+        <button class="back-btn" onclick="showPage('landing')">← Kembali</button>
+        <h2>🎲 Random Card Generator</h2>
+        
+        <div class="card-display" id="cardDisplay">
+            <div class="stebbin-mode">STEBBIN MODE</div>
+            <div class="placeholder">🃏</div>
+        </div>
+
+        <div class="randomizer-controls">
+            <button class="randomizer-btn btn-start" id="btnStart" onclick="startRandomizer()">START</button>
+            <button class="randomizer-btn btn-stop" id="btnStop" onclick="stopRandomizer()" disabled>STOP</button>
+        </div>
+
+        <div class="mode-indicator">
+            <strong>Mode:</strong> <span id="modeIndicator" style="color:#fff">Random</span>
+            <div class="stebbin-hint" id="stebbinHint">🔓 Stebbin Stack Active - CHSD Order</div>
+        </div>
+    </div>
+
+    <!-- PASSWORD MODAL -->
+    <div class="modal-overlay" id="passwordModal">
+        <div class="modal">
+            <h3>🔐 Enter Password</h3>
+            <input type="password" id="passwordInput" placeholder="••••••••" maxlength="20">
+            <p class="error-msg" id="passwordError">Password salah!</p>
+            <div class="modal-btns">
+                <button class="modal-btn modal-cancel" onclick="closePasswordModal()">Cancel</button>
+                <button class="modal-btn modal-confirm" onclick="checkPassword()">Unlock</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STACK SELECTION -->
+    <div id="stackSelect" class="page">
+        <button class="back-btn" onclick="showPage('landing')">← Kembali</button>
+        <h2>🔓 Card Stack System</h2>
+        
+        <div class="stack-select">
+            <button class="stack-btn stebbin" onclick="showPage('stebbin')">
+                <span style="font-size:24px">🔷</span>
+                <div style="text-align:left">
+                    <div style="font-size:14px;margin-bottom:3px">Stebbin Stack</div>
+                    <div style="font-size:9px;color:#888">CHSD System + Tracking</div>
+                </div>
+            </button>
+            <button class="stack-btn mnemonica" onclick="showPage('mnemonica')">
+                <span style="font-size:24px">❤️</span>
+                <div style="text-align:left">
+                    <div style="font-size:14px;margin-bottom:3px">Mnemonica Stack</div>
+                    <div style="font-size:9px;color:#888">Classic Memory System</div>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <!-- STEBBIN STACK -->
+    <div id="stebbin" class="page">
+        <button class="back-btn" onclick="showPage('stackSelect')">← Kembali</button>
+        <h2>🔷 PROF JAY STEBBIN STACK</h2>
+
+        <!-- TAB NAVIGATION -->
+        <div class="tab-container">
+            <button class="tab-btn active" onclick="switchStebbinTab('tracking', this)">TRACKING</button>
+            <button class="tab-btn" onclick="switchStebbinTab('acaan', this)">ACAAN</button>
+        </div>
+
+        <!-- TRACKING TAB -->
+        <div id="stebbin-tracking" class="tab-content active">
+            <div class="info-box">
+                <p><strong>TRACKING MODE:</strong><br>Rumus CHSD System untuk tracking posisi kartu</p>
+            </div>
+
+            <label>Kartu Paling Bawah</label>
+            <select id="tracking-bottom" onchange="calculateTracking()">
+                <option value="" disabled selected>-- PILIH KARTU BAWAH --</option>
+                <optgroup label="♣ KLUB" id="track-opt-club"></optgroup>
+                <optgroup label="♥ HATI" id="track-opt-heart" style="color:#ff5252;"></optgroup>
+                <optgroup label="♠ SEKOP" id="track-opt-spade"></optgroup>
+                <optgroup label="♦ WAJIK" id="track-opt-diamond" style="color:#ff5252;"></optgroup>
+            </select>
+            
+            <label>Kartu yang Dicari</label>
+            <select id="tracking-target" onchange="calculateTracking()">
+                <option value="" disabled selected>-- PILIH KARTU --</option>
+                <optgroup label="♣ KLUB" id="track-target-club"></optgroup>
+                <optgroup label="♥ HATI" id="track-target-heart" style="color:#ff5252;"></optgroup>
+                <optgroup label="♠ SEKOP" id="track-target-spade"></optgroup>
+                <optgroup label="♦ WAJIK" id="track-target-diamond" style="color:#ff5252;"></optgroup>
+            </select>
+
+            <div class="chsd-info" id="chsd-display" style="display:none;">
+                <div style="font-size:9px;color:#666;text-transform:uppercase;letter-spacing:1px">Urutan CHSD dari Bawah:</div>
+                <div class="sequence" id="chsd-sequence"></div>
+            </div>
+
+            <div class="bottom-cards-display" id="bottom-display" style="display:none;">
+                <div class="title">4 Kartu Bawah (dari bawah ke atas):</div>
+                <div class="cards" id="bottom-cards"></div>
+            </div>
+
+            <div class="result-box">
+                <div id="tracking-category"></div>
+                <h3>POSISI KARTU DARI ATAS:</h3>
+                <div class="result-value" id="tracking-result">-</div>
+                <div class="calculation-steps" id="tracking-steps"></div>
+            </div>
+        </div>
+
+        <!-- ACAAN TAB -->
+        <div id="stebbin-acaan" class="tab-content">
+            <div class="info-box">
+                <p><strong>ACAAN MODE:</strong><br>Kartu bebas + Posisi bebas = Hitung Cut</p>
+            </div>
+
+            <label>1. Kartu Paling Bawah</label>
+            <select id="acaan-bottom" onchange="calculateAcaan()">
+                <option value="" disabled selected>-- PILIH KARTU BAWAH --</option>
+                <optgroup label="♣ KLUB" id="acaan-opt-club"></optgroup>
+                <optgroup label="♥ HATI" id="acaan-opt-heart" style="color:#ff5252;"></optgroup>
+                <optgroup label="♠ SEKOP" id="acaan-opt-spade"></optgroup>
+                <optgroup label="♦ WAJIK" id="acaan-opt-diamond" style="color:#ff5252;"></optgroup>
+            </select>
+            
+            <label>2. Kartu yang Diminta</label>
+            <select id="acaan-requested" onchange="calculateAcaan()">
+                <option value="" disabled selected>-- PILIH KARTU --</option>
+                <optgroup label="♣ KLUB" id="acaan-req-club"></optgroup>
+                <optgroup label="♥ HATI" id="acaan-req-heart" style="color:#ff5252;"></optgroup>
+                <optgroup label="♠ SEKOP" id="acaan-req-spade"></optgroup>
+                <optgroup label="♦ WAJIK" id="acaan-req-diamond" style="color:#ff5252;"></optgroup>
+            </select>
+
+            <label>3. Posisi yang Diminta (1-52)</label>
+            <input type="number" id="acaan-position" min="1" max="52" placeholder="Contoh: 15" onchange="calculateAcaan()">
+
+            <div class="result-box">
+                <div id="acaan-category"></div>
+                <h3>CUT / PINDAHKAN KARTU:</h3>
+                <div class="result-value" id="acaan-result">-</div>
+                <div class="calculation-steps" id="acaan-steps"></div>
+                
+                <div class="acaan-summary" id="acaan-summary" style="display:none;">
+                    <div class="summary-item">
+                        <span class="label">Kartu Bawah Baru:</span>
+                        <span class="value" id="new-bottom-card">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MNEMONICA STACK -->
+    <div id="mnemonica" class="page">
+        <button class="back-btn" onclick="showPage('stackSelect')">← Kembali</button>
+        <h2>❤️ PROF JAY MNEMONICA</h2>
+
+        <!-- TAB NAVIGATION -->
+        <div class="tab-container">
+            <button class="tab-btn active" onclick="switchMnemonicaTab('acaan', this)">ACAAN</button>
+            <button class="tab-btn" onclick="switchMnemonicaTab('list', this)">LIST</button>
+            <button class="tab-btn" onclick="switchMnemonicaTab('memorize', this)">MEMORIZE</button>
+        </div>
+
+        <!-- ACAAN TAB - Menggunakan rumus ORIGINAL Mnemonica -->
+        <div id="mnemo-acaan" class="tab-content active">
+            <label>1. Pilih Kartu</label>
+            <select id="card-select" onchange="generateMnemoAcaan()">
+                <option value="" disabled selected>-- PILIH KARTU --</option>
+                <optgroup label="♣ KLUB" id="opt-kriting"></optgroup>
+                <optgroup label="♥ HATI" id="opt-hati" style="color:#ff5252;"></optgroup>
+                <optgroup label="♠ SEKOP" id="opt-sekop"></optgroup>
+                <optgroup label="♦ WAJIK" id="opt-diamond" style="color:#ff5252;"></optgroup>
+            </select>
+            
+            <label>2. Posisi Tujuan</label>
+            <div class="number-grid" id="mnemoGrid"></div>
+
+            <div class="result-box">
+                <h3>HASIL CUT KE:</h3>
+                <p id="result" style="font-size:36px;font-weight:900;color:#ffeb3b;min-height:50px;margin:15px 0;text-shadow:0 0 20px rgba(255,235,59,0.5)">-</p>
+            </div>
+        </div>
+
+        <!-- LIST TAB -->
+        <div id="mnemo-list" class="tab-content">
+            <div class="mnemonic-list" id="fullList"></div>
+        </div>
+
+        <!-- MEMORIZE TAB -->
+        <div id="mnemo-memorize" class="tab-content">
+            <div class="quiz-card">
+                <div id="quiz-question">?</div>
+                <p style="font-size: 10px; color: #666; letter-spacing: 2px; text-transform:uppercase">TEBAK POSISI (1-52)</p>
+            </div>
+            <div class="quiz-controls">
+                <input type="number" id="quiz-answer" class="quiz-input" placeholder="00" inputmode="numeric">
+                <div class="btn-group">
+                    <button class="check-btn" onclick="checkQuiz()">CEK HASIL</button>
+                    <button class="next-btn" onclick="newQuiz()">NEXT</button>
+                </div>
+            </div>
+            <p id="quiz-feedback"></p>
+        </div>
+    </div>
+
+    <div class="footer">
+        Designed by <strong>Prof. Jayz</strong> • Card Stack Master
+    </div>
+</div>
+
+<!-- Secret Zone for Swipe -->
+<div class="secret-zone" id="secretZone"></div>
+<div class="secret-toast" id="secretToast">🔓 STEBBIN MODE ACTIVATED!</div>
+
+<script>
+    // ==================== GLOBAL STATE ====================
+    let isRandomizing = false;
+    let randomInterval = null;
+    let isStebbinMode = false;
+    let stebbinIndex = 0;
+
+    // ==================== STEBBIN STACK DATA ====================
+    const suits = ['♣', '♥', '♠', '♦'];
+    const cardValues = {'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13};
+    let stebbinStack = [];
+    let cardPositions = {};
+
+    function buildStebbinStack() {
+        stebbinStack = [];
+        cardPositions = {};
+        let currentValue = 1, currentSuitIndex = 0;
+        for (let i = 0; i < 52; i++) {
+            let suit = suits[currentSuitIndex], value = currentValue;
+            let card = formatCard(value, suit);
+            stebbinStack.push(card);
+            cardPositions[card] = i + 1;
+            currentValue += 3;
+            if (currentValue > 13) currentValue -= 13;
+            currentSuitIndex = (currentSuitIndex + 1) % 4;
+        }
+    }
+
+    function formatCard(value, suit) {
+        let rank = value;
+        if (value === 1) rank = 'A';
+        else if (value === 11) rank = 'J';
+        else if (value === 12) rank = 'Q';
+        else if (value === 13) rank = 'K';
+        return rank + suit;
+    }
+
+    function getCardValue(card) {
+        const match = card.match(/^([A2-9]|10|J|Q|K)/);
+        return match ? cardValues[match[1]] : 0;
+    }
+
+    function getCardSuit(card) { return card.slice(-1); }
+    function getCardColor(card) { return (card.includes('♥') || card.includes('♦')) ? 'red' : 'black'; }
+    function getSuitIndex(suit) { return suits.indexOf(suit); }
+
+    function getBottom4Cards(bottomCard) {
+        const bottomPos = cardPositions[bottomCard];
+        const bottom4 = [];
+        for (let i = 0; i < 4; i++) {
+            let pos = bottomPos - i;
+            if (pos < 1) pos += 52;
+            bottom4.unshift({ card: stebbinStack[pos - 1], position: pos, index: i });
+        }
+        return bottom4;
+    }
+
+    function getCHSDSequence(bottomCard) {
+        const bottomSuit = getCardSuit(bottomCard);
+        const bottomSuitIndex = getSuitIndex(bottomSuit);
+        const sequence = [];
+        for (let i = 0; i < 4; i++) {
+            let suitIndex = (bottomSuitIndex + i) % 4;
+            sequence.push({ suit: suits[suitIndex], index: i, isBottom: (i === 0) });
+        }
+        return sequence;
+    }
+
+    function findReferenceInBottom4(bottomCard, targetCard) {
+        const bottom4 = getBottom4Cards(bottomCard);
+        const targetSuit = getCardSuit(targetCard);
+        let refCard = null;
+        for (let item of bottom4) {
+            if (getCardSuit(item.card) === targetSuit) { refCard = item; break; }
+        }
+        return { refCard, bottom4 };
+    }
+
+    function calculateCurrentPosition(bottomCard, targetCard) {
+        const { refCard } = findReferenceInBottom4(bottomCard, targetCard);
+        if (!refCard) return 0;
+        const refValue = getCardValue(refCard.card), targetValue = getCardValue(targetCard);
+        const urutanSetelah = refCard.index;
+        let result;
+        if (refValue > targetValue) {
+            const selisih = refValue - targetValue;
+            result = (selisih * 4) - urutanSetelah;
+        } else {
+            const adjustedRef = refValue + 13;
+            const selisih = adjustedRef - targetValue;
+            result = (selisih * 4) - urutanSetelah;
+        }
+        while (result <= 0) result += 52;
+        while (result > 52) result -= 52;
+        return result;
+    }
+
+    // ==================== MNEMONICA DATA - ORIGINAL ====================
+    const mnemoStack = [
+        "4♣", "2♥", "7♦", "3♣", "4♥", "6♦", "As♠", "5♥", "9♠", "2♠",
+        "Q♥", "3♦", "Q♣", "8♥", "6♠", "5♠", "9♥", "K♣", "2♦",
+        "J♥", "3♠", "8♠", "6♥", "10♣", "5♦", "K♦", "2♣", "3♥",
+        "8♦", "5♣", "K♠", "J♦", "8♣", "10♠", "K♥", "J♣",
+        "7♠", "10♥", "As♦", "4♠", "7♥", "4♦", "As♣", "9♣", "J♠",
+        "Q♦", "7♣", "Q♠", "10♦", "6♣", "As♥", "9♦"
+    ];
+
+    // CardData dengan nilai posisi asli dari rumus Mnemonica
+    const mnemoCardData = [
+        {val: 43, txt: "As♣", group: "kriting"}, {val: 27, txt: "2♣", group: "kriting"}, {val: 4, txt: "3♣", group: "kriting"}, {val: 1, txt: "4♣", group: "kriting"}, {val: 30, txt: "5♣", group: "kriting"}, {val: 50, txt: "6♣", group: "kriting"}, {val: 47, txt: "7♣", group: "kriting"}, {val: 33, txt: "8♣", group: "kriting"}, {val: 44, txt: "9♣", group: "kriting"}, {val: 24, txt: "10♣", group: "kriting"}, {val: 36, txt: "J♣", group: "kriting"}, {val: 13, txt: "Q♣", group: "kriting"}, {val: 18, txt: "K♣", group: "kriting"},
+        {val: 51, txt: "As♥", group: "hati"}, {val: 2, txt: "2♥", group: "hati"}, {val: 28, txt: "3♥", group: "hati"}, {val: 5, txt: "4♥", group: "hati"}, {val: 8, txt: "5♥", group: "hati"}, {val: 23, txt: "6♥", group: "hati"}, {val: 41, txt: "7♥", group: "hati"}, {val: 14, txt: "8♥", group: "hati"}, {val: 17, txt: "9♥", group: "hati"}, {val: 38, txt: "10♥", group: "hati"}, {val: 20, txt: "J♥", group: "hati"}, {val: 11, txt: "Q♥", group: "hati"}, {val: 35, txt: "K♥", group: "hati"},
+        {val: 7, txt: "As♠", group: "sekop"}, {val: 10, txt: "2♠", group: "sekop"}, {val: 21, txt: "3♠", group: "sekop"}, {val: 40, txt: "4♠", group: "sekop"}, {val: 16, txt: "5♠", group: "sekop"}, {val: 15, txt: "6♠", group: "sekop"}, {val: 37, txt: "7♠", group: "sekop"}, {val: 22, txt: "8♠", group: "sekop"}, {val: 9, txt: "9♠", group: "sekop"}, {val: 34, txt: "10♠", group: "sekop"}, {val: 45, txt: "J♠", group: "sekop"}, {val: 48, txt: "Q♠", group: "sekop"}, {val: 31, txt: "K♠", group: "sekop"},
+        {val: 39, txt: "As♦", group: "diamond"}, {val: 19, txt: "2♦", group: "diamond"}, {val: 12, txt: "3♦", group: "diamond"}, {val: 42, txt: "4♦", group: "diamond"}, {val: 25, txt: "5♦", group: "diamond"}, {val: 6, txt: "6♦", group: "diamond"}, {val: 3, txt: "7♦", group: "diamond"}, {val: 29, txt: "8♦", group: "diamond"}, {val: 52, txt: "9♦", group: "diamond"}, {val: 49, txt: "10♦", group: "diamond"}, {val: 32, txt: "J♦", group: "diamond"}, {val: 46, txt: "Q♦", group: "diamond"}, {val: 26, txt: "K♦", group: "diamond"}
+    ];
+
+    let selectedMnemoTarget = null;
+    let currentQuizCard = "";
+
+    // ==================== PAGE NAVIGATION ====================
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        if (pageId === 'randomizer') initRandomizer();
+        if (pageId === 'stebbin') initStebbin();
+        if (pageId === 'mnemonica') initMnemonica();
+    }
+
+    // ==================== TAB SWITCHING ====================
+    function switchStebbinTab(tabName, btn) {
+        document.querySelectorAll('#stebbin .tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('#stebbin .tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('stebbin-' + tabName).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    function switchMnemonicaTab(tabName, btn) {
+        document.querySelectorAll('#mnemonica .tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('#mnemonica .tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('mnemo-' + tabName).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    // ==================== PASSWORD MODAL ====================
+    function openPasswordModal() {
+        document.getElementById('passwordModal').classList.add('active');
+        document.getElementById('passwordInput').value = '';
+        document.getElementById('passwordError').style.display = 'none';
+        document.getElementById('passwordInput').focus();
+    }
+
+    function closePasswordModal() {
+        document.getElementById('passwordModal').classList.remove('active');
+    }
+
+    function checkPassword() {
+        const pwd = document.getElementById('passwordInput').value;
+        if (pwd === 'nocprofz') {
+            closePasswordModal();
+            showPage('stackSelect');
+        } else {
+            document.getElementById('passwordError').style.display = 'block';
+        }
+    }
+
+    document.getElementById('passwordInput')?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') checkPassword();
+    });
+
+    // ==================== RANDOMIZER ====================
+    function initRandomizer() {
+        isStebbinMode = false;
+        updateModeIndicator();
+        document.getElementById('cardDisplay').classList.remove('stebbin-active');
+        document.getElementById('cardDisplay').innerHTML = '<div class="stebbin-mode">STEBBIN MODE</div><div class="placeholder">🃏</div>';
+    }
+
+    function startRandomizer() {
+        if (isRandomizing) return;
+        isRandomizing = true;
+        document.getElementById('btnStart').disabled = true;
+        document.getElementById('btnStop').disabled = false;
+        
+        randomInterval = setInterval(() => {
+            if (isStebbinMode) {
+                const card = stebbinStack[stebbinIndex];
+                displayCardImage(card);
+                stebbinIndex = (stebbinIndex + 1) % 52;
+            } else {
+                fetch('https://deckofcardsapi.com/api/deck/new/draw/?count=1')
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.cards && data.cards[0]) {
+                            const card = data.cards[0];
+                            document.getElementById('cardDisplay').innerHTML = 
+                                '<div class="stebbin-mode">STEBBIN MODE</div><img src="' + card.image + '" alt="card">';
+                        }
+                    })
+                    .catch(() => {
+                        document.getElementById('cardDisplay').innerHTML = 
+                            '<div class="stebbin-mode">STEBBIN MODE</div><div class="placeholder">❌</div>';
+                    });
+            }
+        }, 100);
+    }
+
+    function stopRandomizer() {
+        if (!isRandomizing) return;
+        isRandomizing = false;
+        clearInterval(randomInterval);
+        document.getElementById('btnStart').disabled = false;
+        document.getElementById('btnStop').disabled = true;
+    }
+
+    function displayCardImage(cardCode) {
+        const suitMap = {'♣': 'CLUBS', '♥': 'HEARTS', '♠': 'SPADES', '♦': 'DIAMONDS'};
+        const rankMap = {'A': 'ACE', 'J': 'JACK', 'Q': 'QUEEN', 'K': 'KING'};
+        
+        const suit = getCardSuit(cardCode);
+        let rank = cardCode.slice(0, -1);
+        if (rankMap[rank]) rank = rankMap[rank];
+        
+        const apiSuit = suitMap[suit];
+        const url = `https://deckofcardsapi.com/static/img/${rank}${apiSuit[0]}.png`;
+        
+        document.getElementById('cardDisplay').innerHTML = 
+            '<div class="stebbin-mode">STEBBIN MODE</div><img src="' + url + '" alt="' + cardCode + '">';
+    }
+
+    function updateModeIndicator() {
+        document.getElementById('modeIndicator').innerText = isStebbinMode ? 'Stebbin Stack' : 'Random';
+        document.getElementById('stebbinHint').style.display = isStebbinMode ? 'block' : 'none';
+    }
+
+    // ==================== SECRET SWIPE ====================
+    let touchStartY = 0;
+    const secretZone = document.getElementById('secretZone');
+    
+    secretZone.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+    });
+
+    secretZone.addEventListener('touchend', (e) => {
+        const touchEndY = e.changedTouches[0].clientY;
+        const diff = touchStartY - touchEndY;
+        
+        if (diff > 100 && document.getElementById('randomizer').classList.contains('active')) {
+            isStebbinMode = !isStebbinMode;
+            updateModeIndicator();
+            
+            if (isStebbinMode) {
+                document.getElementById('cardDisplay').classList.add('stebbin-active');
+                showToast('🔓 STEBBIN MODE ACTIVATED!');
+                stebbinIndex = 0;
+            } else {
+                document.getElementById('cardDisplay').classList.remove('stebbin-active');
+                showToast('🎲 Back to Random Mode');
+            }
+        }
+    });
+
+    function showToast(msg) {
+        const toast = document.getElementById('secretToast');
+        toast.innerText = msg;
+        toast.style.display = 'block';
+        setTimeout(() => toast.style.display = 'none', 2000);
+    }
+
+    // ==================== STEBBIN INIT & FUNCTIONS ====================
+    function initStebbin() {
+        buildStebbinStack();
+        populateStebbinDropdowns();
+    }
+
+    function populateStebbinDropdowns() {
+        const suitGroups = [
+            {group: 'club', symbol: '♣'}, {group: 'heart', symbol: '♥'},
+            {group: 'spade', symbol: '♠'}, {group: 'diamond', symbol: '♦'}
+        ];
+        const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+        
+        function populate(prefix) {
+            suitGroups.forEach(suit => {
+                ranks.forEach(rank => {
+                    const card = rank + suit.symbol;
+                    const opt = new Option(card, card);
+                    const elem = document.getElementById(`${prefix}-${suit.group}`);
+                    if (elem) elem.appendChild(opt);
+                });
+            });
+        }
+        populate('track-opt'); populate('track-target');
+        populate('acaan-opt'); populate('acaan-req');
+    }
+
+    function calculateTracking() {
+        const bottomCard = document.getElementById("tracking-bottom").value;
+        const targetCard = document.getElementById("tracking-target").value;
+        if (!bottomCard || !targetCard) return;
+
+        const chsdSeq = getCHSDSequence(bottomCard);
+        document.getElementById("chsd-display").style.display = "block";
+        document.getElementById("chsd-sequence").innerHTML = chsdSeq.map((item, idx) => {
+            const color = getCardColor(item.suit) === 'red' ? '#ff5252' : '#fff';
+            const active = item.isBottom ? 'active' : '';
+            return `<span class="${active}" style="color:${color}">${item.suit}<br><small style="font-size:8px">${idx}</small></span>`;
+        }).join('');
+
+        const { refCard, bottom4 } = findReferenceInBottom4(bottomCard, targetCard);
+        if (!refCard) { document.getElementById("tracking-result").innerText = "Error"; return; }
+
+        document.getElementById("bottom-display").style.display = "block";
+        document.getElementById("bottom-cards").innerHTML = bottom4.map((item, idx) => {
+            const color = getCardColor(item.card) === 'red' ? '#ff5252' : '#fff';
+            const isRef = (item.card === refCard.card) ? 'highlight' : '';
+            return `<div class="card-item ${isRef}"><div style="color:${color}">${item.card}</div><div class="card-index">${idx}</div></div>`;
+        }).join('');
+
+        const refValue = getCardValue(refCard.card), targetValue = getCardValue(targetCard);
+        const urutanSetelah = refCard.index;
+        let result, category, formula;
+
+        if (refValue > targetValue) {
+            category = "VALUE BESAR";
+            const selisih = refValue - targetValue;
+            result = (selisih * 4) - urutanSetelah;
+            formula = `(${refValue} - ${targetValue}) × 4 - ${urutanSetelah} = ${result}`;
+        } else {
+            category = "VALUE KECIL";
+            const adjustedRef = refValue + 13;
+            const selisih = adjustedRef - targetValue;
+            result = (selisih * 4) - urutanSetelah;
+            formula = `(${refValue} + 13 - ${targetValue}) × 4 - ${urutanSetelah} = ${result}`;
+        }
+
+        while (result <= 0) result += 52;
+        while (result > 52) result -= 52;
+
+        const categoryClass = category === "VALUE BESAR" ? "badge-besar" : "badge-kecil";
+        document.getElementById("tracking-category").innerHTML = `<div class="${categoryClass}" style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px">${category}</div>`;
+        document.getElementById("tracking-result").innerText = `Posisi ${result}`;
+        document.getElementById("tracking-steps").innerHTML = `
+            <div class="step">Referensi: <span class="highlight">${refCard.card}</span> (value: ${refValue})</div>
+            <div class="step">Target: <span class="highlight">${targetCard}</span> (value: ${targetValue})</div>
+            <div class="step">Urutan setelah: <span class="highlight">${urutanSetelah}</span></div>
+            <div class="formula">${formula}</div>`;
+    }
+
+    function calculateAcaan() {
+        const bottomCard = document.getElementById("acaan-bottom").value;
+        const requestedCard = document.getElementById("acaan-requested").value;
+        const requestedPos = parseInt(document.getElementById("acaan-position").value);
+        if (!bottomCard || !requestedCard || !requestedPos) return;
+
+        const currentPos = calculateCurrentPosition(bottomCard, requestedCard);
+        let difference = requestedPos - currentPos;
+        let cutAmount, direction, newBottomCard;
+
+        if (difference > 0) {
+            direction = "MAJU";
+            cutAmount = 52 - difference;
+            const bottomPos = cardPositions[bottomCard];
+            let newBottomPos = bottomPos + cutAmount;
+            while (newBottomPos > 52) newBottomPos -= 52;
+            newBottomCard = stebbinStack[newBottomPos - 1];
+        } else if (difference < 0) {
+            direction = "MUNDUR";
+            cutAmount = Math.abs(difference);
+            const bottomPos = cardPositions[bottomCard];
+            let newBottomPos = bottomPos - cutAmount;
+            while (newBottomPos < 1) newBottomPos += 52;
+            newBottomCard = stebbinStack[newBottomPos - 1];
+        } else {
+            direction = "SUDAH PAS";
+            cutAmount = 0;
+            newBottomCard = bottomCard;
+        }
+
+        const categoryClass = direction === "MAJU" ? "badge-maju" : (direction === "MUNDUR" ? "badge-mundur" : "badge-kecil");
+        document.getElementById("acaan-category").innerHTML = `<div class="${categoryClass}" style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px">${direction}</div>`;
+        document.getElementById("acaan-result").innerText = `${cutAmount} Kartu`;
+        document.getElementById("acaan-steps").innerHTML = `
+            <div class="step">Bawah saat ini: <span class="highlight">${bottomCard}</span></div>
+            <div class="step">Diminta: <span class="highlight">${requestedCard}</span></div>
+            <div class="step">Posisi saat ini: <span class="highlight">${currentPos}</span></div>
+            <div class="step">Posisi diminta: <span class="highlight">${requestedPos}</span></div>
+            <div class="step" style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,235,59,0.2)">
+                ${direction === 'MAJU' ? `${requestedPos} - ${currentPos} = ${difference} (MAJU)<br>Cut = 52 - ${difference} = <span class="highlight">${cutAmount}</span>` : 
+                  (direction === 'MUNDUR' ? `${currentPos} - ${requestedPos} = <span class="highlight">${cutAmount}</span> (MUNDUR)<br>Cut = <span class="highlight">${cutAmount}</span>` : 'Sudah di posisi!')}
+            </div>`;
+        document.getElementById("acaan-summary").style.display = "block";
+        document.getElementById("new-bottom-card").innerText = newBottomCard;
+        document.getElementById("new-bottom-card").style.color = getCardColor(newBottomCard) === 'red' ? '#ff5252' : '#ffeb3b';
+    }
+
+    // ==================== MNEMONICA INIT & FUNCTIONS ====================
+    function initMnemonica() {
+        // Populate dropdowns dengan cardData asli
+        mnemoCardData.forEach(c => {
+            const opt = new Option(c.txt, c.val);
+            document.getElementById(`opt-${c.group}`).appendChild(opt);
+        });
+
+        // Init Grid 1-52
+        const grid = document.getElementById('mnemoGrid');
+        grid.innerHTML = '';
+        for (let i = 1; i <= 52; i++) {
+            let btn = document.createElement('div');
+            btn.innerText = i; btn.className = 'num-btn';
+            btn.onclick = function() {
+                document.querySelectorAll('#mnemoGrid .num-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedMnemoTarget = i;
+                generateMnemoAcaan();
+            };
+            grid.appendChild(btn);
+        }
+
+        // Tambah Tombol RESET
+        let resetBtn = document.createElement('button');
+        resetBtn.innerText = "RESET";
+        resetBtn.className = "grid-action-btn reset-btn";
+        resetBtn.onclick = resetMnemoAcaan;
+        grid.appendChild(resetBtn);
+
+        // Tambah Tombol SEND
+        let sendBtn = document.createElement('button');
+        sendBtn.innerHTML = 'SEND <svg viewBox="0 0 24 24" width="10" height="10" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>';
+        sendBtn.className = "grid-action-btn send-btn";
+        sendBtn.onclick = sendToNtfy;
+        grid.appendChild(sendBtn);
+
+        // Init List
+        const listDiv = document.getElementById('fullList');
+        listDiv.innerHTML = '';
+        mnemoStack.forEach((card, index) => {
+            const colorClass = getCardColor(card) === 'red' ? 'red' : '';
+            listDiv.innerHTML += `<div class="list-item ${colorClass}">${index + 1}. <span>${card}</span></div>`;
+        });
+
+        newQuiz();
+    }
+
+    // *** RUMUS ACAAN MNEMONICA ASLI - TIDAK DIUBAH ***
+    function generateMnemoAcaan() {
+        const cardVal = document.getElementById("card-select").value;
+        if (!selectedMnemoTarget || !cardVal) return;
+        
+        // RUMUS ORIGINAL: curPos = parseInt(cardVal) - 1
+        const curPos = parseInt(cardVal) - 1;
+        const tarPos = selectedMnemoTarget;
+        
+        // RUMUS ORIGINAL: resIdx calculation
+        let resIdx = (tarPos - curPos) > 0 
+            ? (52 - (tarPos - curPos)) % 52 
+            : ((curPos + 2) - (tarPos + 2) + 52) % 52;
+        
+        const resEl = document.getElementById("result");
+        resEl.innerText = mnemoStack[resIdx];
+        
+        // Warna merah jika kartu Hati/Diamond
+        if (mnemoStack[resIdx].includes('♥') || mnemoStack[resIdx].includes('♦')) {
+            resEl.style.color = "#ff5252";
+        } else {
+            resEl.style.color = "#ffeb3b";
+        }
+    }
+
+    function resetMnemoAcaan() {
+        document.getElementById("card-select").selectedIndex = 0;
+        document.querySelectorAll('#mnemoGrid .num-btn').forEach(b => b.classList.remove('active'));
+        selectedMnemoTarget = null;
+        document.getElementById("result").innerText = "-";
+        document.getElementById("result").style.color = "#ffeb3b";
+    }
+
+    function sendToNtfy() {
+        const resultText = document.getElementById("result").innerText;
+        if (resultText === "-" || resultText === "") return;
+        fetch('https://ntfy.sh/aijayz', {
+            method: 'POST',
+            body: `Hasil Cut: ${resultText}`,
+            headers: { 'Title': 'Prof Jay Mnemonica' }
+        }).then(() => {
+            const sBtn = document.querySelector('.send-btn');
+            const originalBg = sBtn.style.backgroundColor;
+            sBtn.style.backgroundColor = "#4caf50";
+            setTimeout(() => sBtn.style.backgroundColor = originalBg, 500);
+        }).catch(err => console.error('Error ntfy:', err));
+    }
+
+    function newQuiz() {
+        const randomIdx = Math.floor(Math.random() * 52);
+        currentQuizCard = mnemoStack[randomIdx];
+        document.getElementById('quiz-question').innerText = currentQuizCard;
+        document.getElementById('quiz-answer').value = "";
+        document.getElementById('quiz-feedback').innerText = "";
+        document.getElementById('quiz-question').style.color = (currentQuizCard.includes('♥') || currentQuizCard.includes('♦')) ? "#ff5252" : "#fff";
+    }
+
+    function checkQuiz() {
+        const ans = parseInt(document.getElementById('quiz-answer').value);
+        const correctPos = mnemoStack.indexOf(currentQuizCard) + 1;
+        const feedback = document.getElementById('quiz-feedback');
+        if (ans === correctPos) {
+            feedback.style.color = "#4caf50";
+            feedback.innerText = "BENAR! Memuat...";
+            setTimeout(newQuiz, 800);
+        } else {
+            feedback.style.color = "#f44336";
+            feedback.innerText = `SALAH! Posisi ke-${correctPos}`;
+        }
+    }
+
+    // ==================== INIT ====================
+    buildStebbinStack();
+</script>
+</body>
+</html>
