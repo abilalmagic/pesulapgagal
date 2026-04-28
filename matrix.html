@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Forcing Matrix</title>
+<title>Forcing Matrix Pro</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
@@ -13,34 +13,35 @@ body {
   background: radial-gradient(circle at top, #0f2027, #0a0f1a);
   color: #fff;
   text-align: center;
+  padding: 20px;
 }
 
 h1 {
-  font-weight: 300;
-  letter-spacing: 2px;
   color: #00f7ff;
-}
-
-input, button {
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  margin: 5px;
+  letter-spacing: 2px;
+  font-weight: 300;
 }
 
 input {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
   background: #1a1a1a;
   color: white;
 }
 
 button {
+  padding: 10px 15px;
+  margin: 5px;
+  border: none;
+  border-radius: 8px;
   background: linear-gradient(45deg, #00f7ff, #0066ff);
   color: white;
   cursor: pointer;
 }
 
 table {
-  margin: 20px auto;
+  margin: 25px auto;
   border-collapse: collapse;
 }
 
@@ -49,9 +50,9 @@ td {
   height: 55px;
   border: 1px solid #00f7ff33;
   text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
   font-size: 18px;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
 td:hover {
@@ -72,6 +73,7 @@ td:hover {
 
 .header {
   opacity: 0.4;
+  pointer-events: none;
 }
 </style>
 </head>
@@ -82,13 +84,11 @@ td:hover {
 
 <input type="number" id="number-input" placeholder="Target number">
 <button onclick="generate()">Generate</button>
-<button onclick="downloadTable()">Download</button>
+<button id="downloadBtn" onclick="downloadTable()" style="display:none;">Download</button>
 
 <div id="table-container"></div>
 
 <script>
-let selectedCells = [];
-
 function generate() {
   const number = parseInt(document.getElementById("number-input").value);
   if (!number || number <= 10) return;
@@ -128,6 +128,9 @@ function generate() {
   document.getElementById("table-container").innerHTML = html;
 
   attachEvents();
+
+  // Munculkan tombol download
+  document.getElementById("downloadBtn").style.display = "inline-block";
 }
 
 function attachEvents() {
@@ -162,14 +165,35 @@ function selectCell(cell) {
 }
 
 function downloadTable() {
-  const table = document.getElementById("matrix");
-  if (!table) return;
+  const original = document.getElementById("matrix");
+  if (!original) return;
 
-  html2canvas(table).then(canvas => {
-    let link = document.createElement("a");
-    link.download = "matrix.jpg";
-    link.href = canvas.toDataURL("image/jpeg");
+  const clone = original.cloneNode(true);
+
+  // Bersihkan semua efek
+  clone.querySelectorAll("td").forEach(td => {
+    td.classList.remove("blocked", "selected", "header");
+    td.style.opacity = "1";
+    td.style.pointerEvents = "auto";
+    td.style.background = "#111";
+    td.style.color = "#fff";
+    td.style.fontWeight = "bold";
+  });
+
+  clone.style.position = "absolute";
+  clone.style.left = "-9999px";
+  document.body.appendChild(clone);
+
+  html2canvas(clone, {
+    backgroundColor: "#0a0f1a",
+    scale: 2
+  }).then(canvas => {
+    const link = document.createElement("a");
+    link.download = "matrix-full.jpg";
+    link.href = canvas.toDataURL("image/jpeg", 1.0);
     link.click();
+
+    document.body.removeChild(clone);
   });
 }
 </script>
