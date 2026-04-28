@@ -3,22 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Forcing Matrix Pro</title>
+<title>Forcing Matrix</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
+<!-- FONT UNIK -->
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+
 <style>
 body {
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #0f2027, #2c5364);
-  color: white;
+  font-family: 'Fredoka', sans-serif;
+  background: #f9fbff;
   text-align: center;
   padding: 20px;
+  color: #333;
 }
 
 h1 {
-  font-size: 2rem;
-  background: linear-gradient(90deg, #00f7ff, #ff00c8);
+  font-size: 2.2rem;
+  background: linear-gradient(90deg, #ff7a18, #32d2aa, #7a5cff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -26,10 +29,9 @@ h1 {
 input {
   padding: 12px;
   border-radius: 12px;
-  border: none;
-  background: #111;
-  color: white;
-  width: 180px;
+  border: 2px solid #eee;
+  background: white;
+  font-size: 16px;
 }
 
 button {
@@ -37,16 +39,16 @@ button {
   border-radius: 12px;
   border: none;
   margin: 5px;
-  background: linear-gradient(45deg, #00f7ff, #ff00c8);
+  font-weight: 600;
   color: white;
   cursor: pointer;
-  font-weight: bold;
+  background: linear-gradient(45deg, #ff7a18, #32d2aa);
   transition: 0.3s;
 }
 
 button:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 15px #00f7ff;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
 table {
@@ -58,26 +60,27 @@ td {
   width: 60px;
   height: 60px;
   text-align: center;
-  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
   font-size: 18px;
   cursor: pointer;
-  transition: 0.3s;
-  border-radius: 8px;
+  transition: 0.25s;
+  background: white;
+  border: 1px solid #eee;
 }
 
 td:hover {
-  background: rgba(255,255,255,0.1);
+  background: #f3f7ff;
 }
 
 .selected {
-  background: linear-gradient(45deg, #00f7ff, #ff00c8);
-  color: black;
+  background: linear-gradient(45deg, #ff7a18, #7a5cff);
+  color: white;
   font-weight: bold;
-  box-shadow: 0 0 20px #00f7ff;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
 .blocked {
-  opacity: 0.15;
+  opacity: 0.2;
   pointer-events: none;
 }
 
@@ -148,9 +151,7 @@ function generate() {
 }
 
 function attachEvents() {
-  const cells = document.querySelectorAll("#matrix td");
-
-  cells.forEach(cell => {
+  document.querySelectorAll("#matrix td").forEach(cell => {
     if (!cell.classList.contains("header")) {
       cell.addEventListener("click", () => selectCell(cell));
     }
@@ -182,15 +183,15 @@ function downloadTable() {
 
   const clone = original.cloneNode(true);
 
-  // HAPUS HEADER (sesuai garis merah kamu)
+  // hapus header (yang kamu tandai merah)
   clone.querySelectorAll(".exclude-download").forEach(el => el.remove());
 
-  // Bersihkan style biar jelas
+  // bersihkan efek
   clone.querySelectorAll("td").forEach(td => {
     td.classList.remove("blocked", "selected");
     td.style.opacity = "1";
-    td.style.background = "#111";
-    td.style.color = "#fff";
+    td.style.background = "white";
+    td.style.color = "#333";
     td.style.fontWeight = "bold";
   });
 
@@ -199,7 +200,7 @@ function downloadTable() {
   document.body.appendChild(clone);
 
   html2canvas(clone, {
-    backgroundColor: "#0f2027",
+    backgroundColor: "#ffffff",
     scale: 2
   }).then(canvas => {
     const link = document.createElement("a");
