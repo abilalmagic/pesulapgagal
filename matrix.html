@@ -9,70 +9,80 @@
 
 <style>
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background: radial-gradient(circle at top, #0f2027, #0a0f1a);
-  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #0f2027, #2c5364);
+  color: white;
   text-align: center;
   padding: 20px;
 }
 
 h1 {
-  color: #00f7ff;
-  letter-spacing: 2px;
-  font-weight: 300;
+  font-size: 2rem;
+  background: linear-gradient(90deg, #00f7ff, #ff00c8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 input {
-  padding: 10px;
-  border-radius: 8px;
+  padding: 12px;
+  border-radius: 12px;
   border: none;
-  background: #1a1a1a;
+  background: #111;
   color: white;
+  width: 180px;
 }
 
 button {
-  padding: 10px 15px;
-  margin: 5px;
+  padding: 12px 18px;
+  border-radius: 12px;
   border: none;
-  border-radius: 8px;
-  background: linear-gradient(45deg, #00f7ff, #0066ff);
+  margin: 5px;
+  background: linear-gradient(45deg, #00f7ff, #ff00c8);
   color: white;
   cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #00f7ff;
 }
 
 table {
-  margin: 25px auto;
+  margin: 30px auto;
   border-collapse: collapse;
 }
 
 td {
-  width: 55px;
-  height: 55px;
-  border: 1px solid #00f7ff33;
+  width: 60px;
+  height: 60px;
   text-align: center;
+  border: 1px solid rgba(255,255,255,0.1);
   font-size: 18px;
   cursor: pointer;
   transition: 0.3s;
+  border-radius: 8px;
 }
 
 td:hover {
-  background: #00f7ff22;
+  background: rgba(255,255,255,0.1);
 }
 
 .selected {
-  background: #00f7ff;
+  background: linear-gradient(45deg, #00f7ff, #ff00c8);
   color: black;
   font-weight: bold;
-  box-shadow: 0 0 15px #00f7ff;
+  box-shadow: 0 0 20px #00f7ff;
 }
 
 .blocked {
-  opacity: 0.2;
+  opacity: 0.15;
   pointer-events: none;
 }
 
 .header {
-  opacity: 0.4;
+  opacity: 0.3;
   pointer-events: none;
 }
 </style>
@@ -113,11 +123,17 @@ function generate() {
     for (let c = 0; c < 6; c++) {
 
       if (r === 0 && c === 0) {
-        html += "<td class='header'></td>";
+        html += "<td class='header exclude-download'></td>";
       } else {
         const val = (c>0?horizontal[c-1]:0)+(r>0?vertical[r-1]:0);
-        const type = (r===0 || c===0) ? "header" : "";
-        html += `<td class="${type}" data-row="${r}" data-col="${c}">${val}</td>`;
+        const isHeader = (r===0 || c===0);
+
+        html += `<td 
+          class="${isHeader ? 'header exclude-download' : ''}" 
+          data-row="${r}" 
+          data-col="${c}">
+          ${val}
+        </td>`;
       }
 
     }
@@ -128,8 +144,6 @@ function generate() {
   document.getElementById("table-container").innerHTML = html;
 
   attachEvents();
-
-  // Munculkan tombol download
   document.getElementById("downloadBtn").style.display = "inline-block";
 }
 
@@ -151,13 +165,11 @@ function selectCell(cell) {
   const row = cell.dataset.row;
   const col = cell.dataset.col;
 
-  const all = document.querySelectorAll("#matrix td");
-
-  all.forEach(c => {
+  document.querySelectorAll("#matrix td").forEach(c => {
     if (
       c.dataset &&
-      (c.dataset.row === row || c.dataset.col === col)
-      && c !== cell
+      (c.dataset.row === row || c.dataset.col === col) &&
+      c !== cell
     ) {
       c.classList.add("blocked");
     }
@@ -170,11 +182,13 @@ function downloadTable() {
 
   const clone = original.cloneNode(true);
 
-  // Bersihkan semua efek
+  // HAPUS HEADER (sesuai garis merah kamu)
+  clone.querySelectorAll(".exclude-download").forEach(el => el.remove());
+
+  // Bersihkan style biar jelas
   clone.querySelectorAll("td").forEach(td => {
-    td.classList.remove("blocked", "selected", "header");
+    td.classList.remove("blocked", "selected");
     td.style.opacity = "1";
-    td.style.pointerEvents = "auto";
     td.style.background = "#111";
     td.style.color = "#fff";
     td.style.fontWeight = "bold";
@@ -185,11 +199,11 @@ function downloadTable() {
   document.body.appendChild(clone);
 
   html2canvas(clone, {
-    backgroundColor: "#0a0f1a",
+    backgroundColor: "#0f2027",
     scale: 2
   }).then(canvas => {
     const link = document.createElement("a");
-    link.download = "matrix-full.jpg";
+    link.download = "matrix-clean.jpg";
     link.href = canvas.toDataURL("image/jpeg", 1.0);
     link.click();
 
