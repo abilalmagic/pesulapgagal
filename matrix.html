@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forcing Matrix</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: radial-gradient(circle at top, #0f2027, #0a0f1a);
+  color: #fff;
+  text-align: center;
+}
+
+h1 {
+  font-weight: 300;
+  letter-spacing: 2px;
+  color: #00f7ff;
+}
+
+input, button {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  margin: 5px;
+}
+
+input {
+  background: #1a1a1a;
+  color: white;
+}
+
+button {
+  background: linear-gradient(45deg, #00f7ff, #0066ff);
+  color: white;
+  cursor: pointer;
+}
+
+table {
+  margin: 20px auto;
+  border-collapse: collapse;
+}
+
+td {
+  width: 55px;
+  height: 55px;
+  border: 1px solid #00f7ff33;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 18px;
+}
+
+td:hover {
+  background: #00f7ff22;
+}
+
+.selected {
+  background: #00f7ff;
+  color: black;
+  font-weight: bold;
+  box-shadow: 0 0 15px #00f7ff;
+}
+
+.blocked {
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.header {
+  opacity: 0.4;
+}
+</style>
+</head>
+
+<body>
+
+<h1>FORCING MATRIX</h1>
+
+<input type="number" id="number-input" placeholder="Target number">
+<button onclick="generate()">Generate</button>
+<button onclick="downloadTable()">Download</button>
+
+<div id="table-container"></div>
+
+<script>
+let selectedCells = [];
+
+function generate() {
+  const number = parseInt(document.getElementById("number-input").value);
+  if (!number || number <= 10) return;
+
+  let numbers = [];
+  let remaining = number;
+
+  for (let i = 0; i < 9; i++) {
+    let val = Math.floor(Math.random() * remaining / 2) + 1;
+    numbers.push(val);
+    remaining -= val;
+  }
+  numbers.push(remaining);
+
+  const horizontal = numbers.slice(0, 5);
+  const vertical = numbers.slice(5);
+
+  let html = "<table id='matrix'>";
+
+  for (let r = 0; r < 6; r++) {
+    html += "<tr>";
+    for (let c = 0; c < 6; c++) {
+
+      if (r === 0 && c === 0) {
+        html += "<td class='header'></td>";
+      } else {
+        const val = (c>0?horizontal[c-1]:0)+(r>0?vertical[r-1]:0);
+        const type = (r===0 || c===0) ? "header" : "";
+        html += `<td class="${type}" data-row="${r}" data-col="${c}">${val}</td>`;
+      }
+
+    }
+    html += "</tr>";
+  }
+
+  html += "</table>";
+  document.getElementById("table-container").innerHTML = html;
+
+  attachEvents();
+}
+
+function attachEvents() {
+  const cells = document.querySelectorAll("#matrix td");
+
+  cells.forEach(cell => {
+    if (!cell.classList.contains("header")) {
+      cell.addEventListener("click", () => selectCell(cell));
+    }
+  });
+}
+
+function selectCell(cell) {
+  if (cell.classList.contains("blocked")) return;
+
+  cell.classList.add("selected");
+
+  const row = cell.dataset.row;
+  const col = cell.dataset.col;
+
+  const all = document.querySelectorAll("#matrix td");
+
+  all.forEach(c => {
+    if (
+      c.dataset &&
+      (c.dataset.row === row || c.dataset.col === col)
+      && c !== cell
+    ) {
+      c.classList.add("blocked");
+    }
+  });
+}
+
+function downloadTable() {
+  const table = document.getElementById("matrix");
+  if (!table) return;
+
+  html2canvas(table).then(canvas => {
+    let link = document.createElement("a");
+    link.download = "matrix.jpg";
+    link.href = canvas.toDataURL("image/jpeg");
+    link.click();
+  });
+}
+</script>
+
+</body>
+</html>
