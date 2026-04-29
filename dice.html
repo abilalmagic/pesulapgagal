@@ -1,895 +1,616 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎲 Mnemonica Dice Generator</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;600;700&display=swap');
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  :root {
-    --bg-primary: #0a0a1a;
-    --bg-secondary: #12122a;
-    --accent: #ff6b35;
-    --accent-glow: #ff6b3566;
-    --gold: #ffd700;
-    --text: #e0e0e0;
-    --dice-bg: #f5f5f5;
-    --dice-dot: #1a1a2e;
-  }
-
-  body {
-    font-family: 'Inter', sans-serif;
-    background: var(--bg-primary);
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* Animated background */
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: 
-      radial-gradient(ellipse at 20% 50%, #1a0a2e 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 20%, #2e1a0a 0%, transparent 50%),
-      radial-gradient(ellipse at 50% 80%, #0a1a2e 0%, transparent 50%);
-    z-index: -1;
-    animation: bgPulse 8s ease-in-out infinite alternate;
-  }
-
-  @keyframes bgPulse {
-    0% { opacity: 0.5; }
-    100% { opacity: 1; }
-  }
-
-  .container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-
-  /* Header */
-  .header {
-    text-align: center;
-    padding: 30px 0 20px;
-  }
-
-  .header h1 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 2rem;
-    font-weight: 900;
-    background: linear-gradient(135deg, var(--accent), var(--gold));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: none;
-    margin-bottom: 8px;
-  }
-
-  .header p {
-    color: #888;
-    font-size: 0.9rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-
-  /* Dice Count Selector */
-  .selector-section {
-    background: var(--bg-secondary);
-    border: 1px solid #2a2a4a;
-    border-radius: 16px;
-    padding: 24px;
-    margin: 20px 0;
-    text-align: center;
-  }
-
-  .selector-section label {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1rem;
-    color: var(--accent);
-    display: block;
-    margin-bottom: 16px;
-    letter-spacing: 1px;
-  }
-
-  .dice-count-selector {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .dice-count-btn {
-    width: 48px;
-    height: 48px;
-    border: 2px solid #3a3a5a;
-    border-radius: 12px;
-    background: transparent;
-    color: var(--text);
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .dice-count-btn:hover {
-    border-color: var(--accent);
-    background: var(--accent-glow);
-    transform: translateY(-2px);
-  }
-
-  .dice-count-btn.active {
-    border-color: var(--accent);
-    background: var(--accent);
-    color: #fff;
-    box-shadow: 0 0 20px var(--accent-glow);
-  }
-
-  .range-info {
-    margin-top: 12px;
-    font-size: 0.85rem;
-    color: #666;
-  }
-
-  .range-info span {
-    color: var(--gold);
-    font-weight: 700;
-  }
-
-  /* Dice Display Area */
-  .dice-area {
-    background: var(--bg-secondary);
-    border: 1px solid #2a2a4a;
-    border-radius: 16px;
-    padding: 30px 20px;
-    margin: 20px 0;
-    min-height: 180px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .dice-area::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: conic-gradient(from 0deg, transparent, var(--accent-glow), transparent, transparent);
-    animation: none;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  .dice-area.rolling::before {
-    animation: rotateBorder 1s linear infinite;
-    opacity: 1;
-  }
-
-  @keyframes rotateBorder {
-    100% { transform: rotate(360deg); }
-  }
-
-  .dice-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    z-index: 1;
-    position: relative;
-  }
-
-  /* Individual Dice */
-  .die {
-    width: 70px;
-    height: 70px;
-    background: linear-gradient(145deg, #ffffff, #e6e6e6);
-    border-radius: 14px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    padding: 10px;
-    gap: 2px;
-    box-shadow: 
-      0 4px 15px rgba(0,0,0,0.4),
-      inset 0 1px 0 rgba(255,255,255,0.8);
-    transition: transform 0.2s ease;
-    position: relative;
-  }
-
-  .die.rolling {
-    animation: dieRoll 0.15s ease-in-out infinite;
-  }
-
-  @keyframes dieRoll {
-    0% { transform: rotateX(0deg) rotateY(0deg) scale(1); }
-    25% { transform: rotateX(90deg) rotateY(45deg) scale(0.9); }
-    50% { transform: rotateX(180deg) rotateY(90deg) scale(1.05); }
-    75% { transform: rotateX(270deg) rotateY(135deg) scale(0.95); }
-    100% { transform: rotateX(360deg) rotateY(180deg) scale(1); }
-  }
-
-  .die.result-pop {
-    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
-
-  @keyframes popIn {
-    0% { transform: scale(0.3) rotate(180deg); opacity: 0; }
-    60% { transform: scale(1.15) rotate(-10deg); opacity: 1; }
-    100% { transform: scale(1) rotate(0deg); opacity: 1; }
-  }
-
-  .dot {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: transparent;
-    transition: background 0.2s;
-  }
-
-  .dot.show {
-    background: var(--dice-dot);
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
-  }
-
-  /* Total Display */
-  .total-display {
-    z-index: 1;
-    position: relative;
-    margin-top: 20px;
-    text-align: center;
-  }
-
-  .total-label {
-    font-size: 0.8rem;
-    color: #666;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-  }
-
-  .total-number {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 3.5rem;
-    font-weight: 900;
-    background: linear-gradient(135deg, var(--accent), var(--gold));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    line-height: 1.2;
-  }
-
-  .total-number.hidden {
-    visibility: hidden;
-  }
-
-  /* Roll Button */
-  .roll-btn-container {
-    text-align: center;
-    margin: 20px 0;
-  }
-
-  .roll-btn {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.2rem;
-    font-weight: 700;
-    padding: 16px 60px;
-    border: none;
-    border-radius: 50px;
-    background: linear-gradient(135deg, var(--accent), #ff8c42);
-    color: #fff;
-    cursor: pointer;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 25px var(--accent-glow);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .roll-btn::before {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%;
-    width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s;
-  }
-
-  .roll-btn:hover::before {
-    left: 100%;
-  }
-
-  .roll-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 35px var(--accent-glow);
-  }
-
-  .roll-btn:active {
-    transform: translateY(0);
-  }
-
-  .roll-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  /* Status / Notification Log */
-  .status-section {
-    background: var(--bg-secondary);
-    border: 1px solid #2a2a4a;
-    border-radius: 16px;
-    padding: 20px;
-    margin: 20px 0;
-  }
-
-  .status-section h3 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.85rem;
-    color: #666;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-
-  .log-entry {
-    padding: 10px 14px;
-    border-left: 3px solid var(--accent);
-    background: rgba(255, 107, 53, 0.05);
-    border-radius: 0 8px 8px 0;
-    margin-bottom: 8px;
-    font-size: 0.85rem;
-    animation: slideIn 0.3s ease;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .log-entry .log-dice {
-    color: var(--accent);
-    font-weight: 700;
-    font-family: 'Orbitron', sans-serif;
-  }
-
-  .log-entry .log-status {
-    font-size: 0.75rem;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-weight: 600;
-  }
-
-  .log-entry .log-status.sent {
-    background: rgba(0, 200, 83, 0.15);
-    color: #00c853;
-  }
-
-  .log-entry .log-status.failed {
-    background: rgba(255, 0, 0, 0.15);
-    color: #ff5252;
-  }
-
-  .log-entry .log-status.sending {
-    background: rgba(255, 193, 7, 0.15);
-    color: #ffc107;
-  }
-
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateX(-20px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-
-  .empty-log {
-    text-align: center;
-    color: #444;
-    font-style: italic;
-    padding: 20px;
-    font-size: 0.85rem;
-  }
-
-  /* Toast notification */
-  .toast {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 14px 24px;
-    border-radius: 12px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    z-index: 9999;
-    transform: translateX(120%);
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-  }
-
-  .toast.show {
-    transform: translateX(0);
-  }
-
-  .toast.success {
-    background: linear-gradient(135deg, #00c853, #00e676);
-    color: #fff;
-  }
-
-  .toast.error {
-    background: linear-gradient(135deg, #ff1744, #ff5252);
-    color: #fff;
-  }
-
-  /* Mnemonica Reference (hidden toggle) */
-  .ref-toggle {
-    text-align: center;
-    margin-top: 10px;
-  }
-
-  .ref-toggle button {
-    background: none;
-    border: 1px solid #333;
-    color: #555;
-    padding: 8px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.75rem;
-    letter-spacing: 1px;
-    transition: all 0.3s;
-  }
-
-  .ref-toggle button:hover {
-    border-color: #555;
-    color: #888;
-  }
-
-  .mnemonica-ref {
-    display: none;
-    background: var(--bg-secondary);
-    border: 1px solid #2a2a4a;
-    border-radius: 16px;
-    padding: 20px;
-    margin: 16px 0;
-    max-height: 400px;
-    overflow-y: auto;
-  }
-
-  .mnemonica-ref.show {
-    display: block;
-  }
-
-  .mnemonica-ref h3 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.85rem;
-    color: var(--gold);
-    letter-spacing: 2px;
-    margin-bottom: 12px;
-    text-align: center;
-  }
-
-  .ref-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 6px;
-  }
-
-  .ref-item {
-    font-size: 0.8rem;
-    padding: 6px 10px;
-    border-radius: 6px;
-    background: rgba(255,255,255,0.03);
-    display: flex;
-    gap: 8px;
-  }
-
-  .ref-item .pos {
-    color: var(--accent);
-    font-weight: 700;
-    font-family: 'Orbitron', sans-serif;
-    min-width: 28px;
-  }
-
-  .ref-item .card {
-    color: #aaa;
-  }
-
-  .ref-item.red .card { color: #ff6b6b; }
-  .ref-item.black .card { color: #aaa; }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg-primary); }
-  ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-
-  /* Responsive */
-  @media (max-width: 600px) {
-    .header h1 { font-size: 1.4rem; }
-    .die { width: 55px; height: 55px; padding: 8px; }
-    .total-number { font-size: 2.5rem; }
-    .roll-btn { padding: 14px 40px; font-size: 1rem; }
-    .dice-count-btn { width: 40px; height: 40px; font-size: 0.95rem; }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>DICE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: #000000;
+            color: #fff;
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .top-bar {
+            width: 100%;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            z-index: 10;
+            position: absolute;
+            top: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+        }
+
+        .dice-count-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dice-count-wrap label {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.7rem;
+            color: #444;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .dice-count-wrap select {
+            background: rgba(255,255,255,0.05);
+            color: #a855f7;
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .dice-count-wrap select option {
+            background: #000;
+            color: #a855f7;
+        }
+
+        #canvas-container {
+            width: 100%;
+            flex: 1;
+            position: relative;
+            background: #000;
+        }
+
+        #canvas-container canvas {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .tap-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .tap-overlay.hidden { opacity: 0; pointer-events: none; }
+
+        .tap-icon {
+            width: 70px;
+            height: 70px;
+            border: 2px solid rgba(168, 85, 247, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            animation: tapPulse 2s ease-in-out infinite;
+            backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.5);
+        }
+
+        @keyframes tapPulse {
+            0%, 100% { transform: scale(1); border-color: rgba(168,85,247,0.4); box-shadow: 0 0 20px rgba(168,85,247,0.1); }
+            50% { transform: scale(1.1); border-color: rgba(168,85,247,0.8); box-shadow: 0 0 40px rgba(168,85,247,0.3); }
+        }
+
+        .tap-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 4px;
+            color: rgba(168, 85, 247, 0.6);
+            margin-top: 15px;
+            text-transform: uppercase;
+        }
+
+        .rolling-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 6;
+            pointer-events: none;
+            display: none;
+        }
+
+        .rolling-indicator.show { display: flex; }
+
+        .rolling-ring {
+            width: 80px;
+            height: 80px;
+            border: 2px solid transparent;
+            border-top: 2px solid #a855f7;
+            border-right: 2px solid #00f0ff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .bottom-bar {
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            z-index: 10;
+            background: linear-gradient(0deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 60%, transparent 100%);
+            padding: 20px 20px 30px;
+        }
+
+        .dice-results {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+            min-height: 32px;
+        }
+
+        .dice-chip {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.25);
+            border-radius: 8px;
+            padding: 4px 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #a855f7;
+            animation: chipIn 0.3s ease-out backwards;
+        }
+
+        @keyframes chipIn {
+            from { opacity: 0; transform: scale(0.5) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .total-line { text-align: center; }
+
+        .total-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, #00f0ff, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .total-pos {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            color: #555;
+            letter-spacing: 2px;
+            margin-top: 2px;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .status-dot.sent { background: #00ff88; box-shadow: 0 0 8px #00ff88; }
+        .status-dot.pending { background: #f0c27f; box-shadow: 0 0 8px #f0c27f; animation: blink 1s infinite; }
+        .status-dot.error { background: #ff4466; box-shadow: 0 0 8px #ff4466; }
+
+        @keyframes blink { 50% { opacity: 0.3; } }
+
+        .status-text {
+            font-size: 0.7rem;
+            color: #444;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 6px;
+            gap: 4px;
+        }
+
+        .line-glow {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(168,85,247,0.3), transparent);
+        }
+
+        @media (max-width: 600px) {
+            .dice-chip { padding: 3px 8px; font-size: 0.75rem; }
+            .total-value { font-size: 1.3rem; }
+            .tap-icon { width: 60px; height: 60px; font-size: 1.5rem; }
+        }
+    </style>
 </head>
 <body>
 
-<div class="container">
-  <!-- Header -->
-  <div class="header">
-    <h1>🎲 MNEMONICA DICE</h1>
-    <p>Dice → Position → Card → Ntfy</p>
-  </div>
-
-  <!-- Dice Count Selector -->
-  <div class="selector-section">
-    <label>JUMLAH DADU</label>
-    <div class="dice-count-selector">
-      <button class="dice-count-btn active" data-count="1">1</button>
-      <button class="dice-count-btn" data-count="2">2</button>
-      <button class="dice-count-btn" data-count="3">3</button>
-      <button class="dice-count-btn" data-count="4">4</button>
-      <button class="dice-count-btn" data-count="5">5</button>
-      <button class="dice-count-btn" data-count="6">6</button>
-      <button class="dice-count-btn" data-count="7">7</button>
-      <button class="dice-count-btn" data-count="8">8</button>
-      <button class="dice-count-btn" data-count="9">9</button>
-      <button class="dice-count-btn" data-count="10">10</button>
+    <div class="top-bar">
+        <div class="dice-count-wrap">
+            <label>Dice</label>
+            <select id="diceCount">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10" selected>10</option>
+            </select>
+        </div>
     </div>
-    <div class="range-info">
-      Range: <span id="rangeMin">1</span> — <span id="rangeMax">6</span>
+
+    <div id="canvas-container">
+        <div class="tap-overlay" id="tapOverlay">
+            <div class="tap-icon">🎲</div>
+            <div class="tap-text">Tap anywhere to roll</div>
+        </div>
+        <div class="rolling-indicator" id="rollingIndicator">
+            <div class="rolling-ring"></div>
+        </div>
     </div>
-  </div>
 
-  <!-- Dice Display -->
-  <div class="dice-area" id="diceArea">
-    <div class="dice-container" id="diceContainer">
-      <!-- Dice will be injected here -->
+    <div class="bottom-bar">
+        <div class="dice-results" id="diceResults"></div>
+        <div class="total-line" id="totalLine" style="display:none;">
+            <div class="total-value" id="totalValue"></div>
+            <div class="total-pos" id="totalPos"></div>
+        </div>
+        <div class="status-text" id="statusText"></div>
+        <div class="line-glow"></div>
     </div>
-    <div class="total-display">
-      <div class="total-label">Total</div>
-      <div class="total-number hidden" id="totalNumber">—</div>
-    </div>
-  </div>
 
-  <!-- Roll Button -->
-  <div class="roll-btn-container">
-    <button class="roll-btn" id="rollBtn" onclick="rollDice()">🎲 ROLL</button>
-  </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js"></script>
 
-  <!-- Status Log -->
-  <div class="status-section">
-    <h3>📡 Ntfy Notification Log</h3>
-    <div id="logContainer">
-      <div class="empty-log">Belum ada roll. Tap ROLL untuk mulai.</div>
-    </div>
-  </div>
+    <script>
+        const MNEMONICA = [
+            "4 of Clubs","2 of Hearts","7 of Diamonds","3 of Clubs",
+            "4 of Hearts","6 of Diamonds","Ace of Spades","5 of Hearts",
+            "9 of Spades","2 of Spades","Queen of Hearts","3 of Diamonds",
+            "Queen of Clubs","8 of Hearts","6 of Spades","5 of Spades",
+            "9 of Hearts","King of Clubs","2 of Diamonds","Jack of Hearts",
+            "3 of Spades","8 of Spades","6 of Hearts","10 of Clubs",
+            "5 of Diamonds","King of Diamonds","2 of Clubs","3 of Hearts",
+            "8 of Diamonds","5 of Clubs","King of Spades","Jack of Diamonds",
+            "8 of Clubs","10 of Spades","King of Hearts","Jack of Clubs",
+            "7 of Spades","10 of Hearts","Ace of Diamonds","4 of Spades",
+            "7 of Hearts","4 of Diamonds","Ace of Clubs","9 of Clubs",
+            "Jack of Spades","Queen of Diamonds","7 of Clubs","Queen of Spades",
+            "10 of Diamonds","6 of Clubs","Ace of Hearts","9 of Diamonds"
+        ];
 
-  <!-- Mnemonica Reference (toggle) -->
-  <div class="ref-toggle">
-    <button onclick="toggleRef()">📋 Tampilkan/Sembunyikan Mnemonica Stack</button>
-  </div>
-  <div class="mnemonica-ref" id="mnemoRef">
-    <h3>MNEMONICA STACK (52 CARDS)</h3>
-    <div class="ref-grid" id="refGrid"></div>
-  </div>
-</div>
+        function getCard(total) {
+            const pos = ((total - 1) % 52) + 1;
+            return { pos, card: MNEMONICA[pos - 1] };
+        }
 
-<!-- Toast -->
-<div class="toast" id="toast"></div>
+        async function sendNtfy(card, total, diceValues) {
+            const statusText = document.getElementById('statusText');
+            statusText.innerHTML = '<span class="status-dot pending"></span> SENDING...';
 
-<script>
-// ========================
-// MNEMONICA STACK (52 cards, 1-indexed)
-// ========================
-const mnemonicaStack = [
-  { pos: 1,  card: "4 of Clubs",        suit: "c" },
-  { pos: 2,  card: "2 of Hearts",       suit: "h" },
-  { pos: 3,  card: "7 of Diamonds",     suit: "d" },
-  { pos: 4,  card: "3 of Clubs",        suit: "c" },
-  { pos: 5,  card: "4 of Hearts",       suit: "h" },
-  { pos: 6,  card: "6 of Diamonds",     suit: "d" },
-  { pos: 7,  card: "Ace of Spades",     suit: "s" },
-  { pos: 8,  card: "5 of Hearts",       suit: "h" },
-  { pos: 9,  card: "9 of Spades",       suit: "s" },
-  { pos: 10, card: "2 of Spades",       suit: "s" },
-  { pos: 11, card: "Queen of Hearts",   suit: "h" },
-  { pos: 12, card: "3 of Diamonds",     suit: "d" },
-  { pos: 13, card: "Queen of Clubs",    suit: "c" },
-  { pos: 14, card: "8 of Hearts",       suit: "h" },
-  { pos: 15, card: "6 of Spades",       suit: "s" },
-  { pos: 16, card: "5 of Spades",       suit: "s" },
-  { pos: 17, card: "9 of Hearts",       suit: "h" },
-  { pos: 18, card: "King of Clubs",     suit: "c" },
-  { pos: 19, card: "2 of Diamonds",     suit: "d" },
-  { pos: 20, card: "Jack of Hearts",    suit: "h" },
-  { pos: 21, card: "3 of Spades",       suit: "s" },
-  { pos: 22, card: "8 of Spades",       suit: "s" },
-  { pos: 23, card: "6 of Hearts",       suit: "h" },
-  { pos: 24, card: "10 of Clubs",       suit: "c" },
-  { pos: 25, card: "5 of Diamonds",     suit: "d" },
-  { pos: 26, card: "King of Diamonds",  suit: "d" },
-  { pos: 27, card: "2 of Clubs",        suit: "c" },
-  { pos: 28, card: "3 of Hearts",       suit: "h" },
-  { pos: 29, card: "8 of Diamonds",     suit: "d" },
-  { pos: 30, card: "5 of Clubs",        suit: "c" },
-  { pos: 31, card: "King of Spades",    suit: "s" },
-  { pos: 32, card: "Jack of Diamonds",  suit: "d" },
-  { pos: 33, card: "8 of Clubs",        suit: "c" },
-  { pos: 34, card: "10 of Spades",      suit: "s" },
-  { pos: 35, card: "King of Hearts",    suit: "h" },
-  { pos: 36, card: "Jack of Clubs",     suit: "c" },
-  { pos: 37, card: "7 of Spades",       suit: "s" },
-  { pos: 38, card: "10 of Hearts",      suit: "h" },
-  { pos: 39, card: "Ace of Diamonds",   suit: "d" },
-  { pos: 40, card: "4 of Spades",       suit: "s" },
-  { pos: 41, card: "7 of Hearts",       suit: "h" },
-  { pos: 42, card: "4 of Diamonds",     suit: "d" },
-  { pos: 43, card: "Ace of Clubs",      suit: "c" },
-  { pos: 44, card: "9 of Clubs",        suit: "c" },
-  { pos: 45, card: "Jack of Spades",    suit: "s" },
-  { pos: 46, card: "Queen of Diamonds", suit: "d" },
-  { pos: 47, card: "7 of Clubs",        suit: "c" },
-  { pos: 48, card: "Queen of Spades",   suit: "s" },
-  { pos: 49, card: "10 of Diamonds",    suit: "d" },
-  { pos: 50, card: "6 of Clubs",        suit: "c" },
-  { pos: 51, card: "Ace of Hearts",     suit: "h" },
-  { pos: 52, card: "9 of Diamonds",     suit: "d" }
-];
+            const body = `Dice: [${diceValues.join(', ')}] | Total: ${total} | Position: #${card.pos} | Card: ${card.card}`;
 
-// ========================
-// STATE
-// ========================
-let diceCount = 1;
-let isRolling = false;
+            try {
+                const res = await fetch('https://ntfy.sh/aijayz', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain',
+                        'Title': 'Dice Result'
+                    },
+                    body: body
+                });
 
-// ========================
-// DOT PATTERNS for dice faces (3x3 grid positions)
-// Index 0-8: 0=top-left, 4=center, 8=bottom-right
-// ========================
-const dotPatterns = {
-  1: [4],
-  2: [2, 6],
-  3: [2, 4, 6],
-  4: [0, 2, 6, 8],
-  5: [0, 2, 4, 6, 8],
-  6: [0, 2, 3, 5, 6, 8]
-};
+                if (res.ok) {
+                    statusText.innerHTML = '<span class="status-dot sent"></span> SENT';
+                } else {
+                    statusText.innerHTML = '<span class="status-dot error"></span> ERROR ' + res.status;
+                }
+            } catch (e) {
+                statusText.innerHTML = '<span class="status-dot error"></span> ' + e.message;
+            }
+        }
 
-// ========================
-// INIT
-// ========================
-function init() {
-  setupDiceCountButtons();
-  renderDice();
-  renderReference();
-}
+        let scene, camera, renderer, world;
+        let diceBodies = [], diceMeshes = [];
+        let isRolling = false;
+        const BOUND = 3.8;
 
-function setupDiceCountButtons() {
-  document.querySelectorAll('.dice-count-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (isRolling) return;
-      document.querySelectorAll('.dice-count-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      diceCount = parseInt(btn.dataset.count);
-      document.getElementById('rangeMin').textContent = diceCount;
-      document.getElementById('rangeMax').textContent = diceCount * 6;
-      renderDice();
-    });
-  });
-}
+        function init() {
+            const container = document.getElementById('canvas-container');
 
-function renderDice() {
-  const container = document.getElementById('diceContainer');
-  container.innerHTML = '';
-  for (let i = 0; i < diceCount; i++) {
-    container.appendChild(createDieElement(1));
-  }
-  document.getElementById('totalNumber').classList.add('hidden');
-  document.getElementById('totalNumber').textContent = '—';
-}
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x000000);
 
-function createDieElement(value = 1) {
-  const die = document.createElement('div');
-  die.className = 'die';
-  die.dataset.value = value;
+            camera = new THREE.PerspectiveCamera(55, container.clientWidth / container.clientHeight, 0.1, 100);
+            camera.position.set(0, 9, 6);
+            camera.lookAt(0, 0.5, 0);
 
-  // Create 9 dot positions
-  for (let i = 0; i < 9; i++) {
-    const dot = document.createElement('div');
-    dot.className = 'dot';
-    die.appendChild(dot);
-  }
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
 
-  setDieFace(die, value);
-  return die;
-}
+            scene.add(new THREE.AmbientLight(0xffffff, 0.45));
 
-function setDieFace(die, value) {
-  const dots = die.querySelectorAll('.dot');
-  dots.forEach(d => d.classList.remove('show'));
-  const pattern = dotPatterns[value] || dotPatterns[1];
-  pattern.forEach(idx => dots[idx].classList.add('show'));
-  die.dataset.value = value;
-}
+            const dl = new THREE.DirectionalLight(0xffffff, 0.7);
+            dl.position.set(2, 12, 2);
+            dl.castShadow = true;
+            dl.shadow.mapSize.set(1024, 1024);
+            scene.add(dl);
 
-function renderReference() {
-  const grid = document.getElementById('refGrid');
-  grid.innerHTML = '';
-  mnemonicaStack.forEach(item => {
-    const div = document.createElement('div');
-    const isRed = item.suit === 'h' || item.suit === 'd';
-    div.className = `ref-item ${isRed ? 'red' : 'black'}`;
-    div.innerHTML = `<span class="pos">${String(item.pos).padStart(2, '0')}</span><span class="card">${item.card}</span>`;
-    grid.appendChild(div);
-  });
-}
+            scene.add(Object.assign(new THREE.PointLight(0xa855f7, 0.3, 15), { position: new THREE.Vector3(-4, 3, -3) }));
+            scene.add(Object.assign(new THREE.PointLight(0x00f0ff, 0.25, 15), { position: new THREE.Vector3(4, 3, 3) }));
 
-function toggleRef() {
-  document.getElementById('mnemoRef').classList.toggle('show');
-}
+            world = new CANNON.World();
+            world.gravity.set(0, -25, 0);
+            world.broadphase = new CANNON.NaiveBroadphase();
+            world.solver.iterations = 10;
 
-// ========================
-// ROLL LOGIC
-// ========================
-async function rollDice() {
-  if (isRolling) return;
-  isRolling = true;
+            // Ground
+            const gMat = new CANNON.Material();
+            const gBody = new CANNON.Body({ mass: 0, material: gMat });
+            gBody.addShape(new CANNON.Plane());
+            gBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0), -Math.PI/2);
+            world.addBody(gBody);
 
-  const btn = document.getElementById('rollBtn');
-  btn.disabled = true;
-  btn.textContent = '🎲 ROLLING...';
+            const gGeo = new THREE.PlaneGeometry(40, 40);
+            const gMesh = new THREE.Mesh(gGeo, new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.9 }));
+            gMesh.rotation.x = -Math.PI / 2;
+            gMesh.receiveShadow = true;
+            scene.add(gMesh);
 
-  const diceArea = document.getElementById('diceArea');
-  diceArea.classList.add('rolling');
+            // Subtle grid
+            const grid = new THREE.GridHelper(8, 8, 0x0d0d0d, 0x080808);
+            grid.position.y = 0.005;
+            scene.add(grid);
 
-  const diceElements = document.querySelectorAll('.die');
-  diceElements.forEach(d => {
-    d.classList.add('rolling');
-    d.classList.remove('result-pop');
-  });
+            // ====== BOUNDARY WALLS ======
+            const wallMat = new CANNON.Material();
+            const wh = 1.5;
+            const hw = 0.5;
 
-  // Generate final results
-  const results = [];
-  for (let i = 0; i < diceCount; i++) {
-    results.push(Math.floor(Math.random() * 6) + 1);
-  }
-  const total = results.reduce((a, b) => a + b, 0);
+            // 4 solid box walls
+            const wallDefs = [
+                { x: 0, y: wh/2, z: -BOUND, sx: BOUND*2, sy: wh, sz: hw },
+                { x: 0, y: wh/2, z: BOUND,  sx: BOUND*2, sy: wh, sz: hw },
+                { x: -BOUND, y: wh/2, z: 0, sx: hw, sy: wh, sz: BOUND*2 },
+                { x: BOUND,  y: wh/2, z: 0, sx: hw, sy: wh, sz: BOUND*2 },
+            ];
 
-  // Animate: rapid random faces
-  const rollDuration = 1200; // ms
-  const intervalTime = 80;
-  let elapsed = 0;
+            wallDefs.forEach(d => {
+                const wb = new CANNON.Body({ mass: 0, material: wallMat });
+                wb.addShape(new CANNON.Box(new CANNON.Vec3(d.sx/2, d.sy/2, d.sz/2)));
+                wb.position.set(d.x, d.y, d.z);
+                world.addBody(wb);
+            });
 
-  await new Promise(resolve => {
-    const interval = setInterval(() => {
-      elapsed += intervalTime;
-      diceElements.forEach(d => {
-        const randomFace = Math.floor(Math.random() * 6) + 1;
-        setDieFace(d, randomFace);
-      });
+            const dMat = new CANNON.Material();
+            world.addContactMaterial(new CANNON.ContactMaterial(gMat, dMat, { friction: 0.4, restitution: 0.35 }));
+            world.addContactMaterial(new CANNON.ContactMaterial(wallMat, dMat, { friction: 0.3, restitution: 0.3 }));
 
-      if (elapsed >= rollDuration) {
-        clearInterval(interval);
-        resolve();
-      }
-    }, intervalTime);
-  });
+            window.addEventListener('resize', () => {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
 
-  // Stop rolling, show final values
-  diceArea.classList.remove('rolling');
-  diceElements.forEach(d => d.classList.remove('rolling'));
+            container.addEventListener('pointerdown', (e) => {
+                if (!isRolling) rollDice();
+            });
+        }
 
-  // Reveal one by one with pop animation
-  for (let i = 0; i < diceCount; i++) {
-    await delay(150);
-    setDieFace(diceElements[i], results[i]);
-    diceElements[i].classList.add('result-pop');
-  }
+        function createDiceTexture(val) {
+            const c = document.createElement('canvas');
+            c.width = 256; c.height = 256;
+            const x = c.getContext('2d');
 
-  // Show total
-  await delay(300);
-  const totalEl = document.getElementById('totalNumber');
-  totalEl.classList.remove('hidden');
-  totalEl.textContent = total;
+            x.fillStyle = '#ffffff';
+            x.fillRect(0, 0, 256, 256);
 
-  // Determine card
-  let cardInfo = null;
-  if (total >= 1 && total <= 52) {
-    cardInfo = mnemonicaStack[total - 1];
-  }
+            x.strokeStyle = '#e0e0e0';
+            x.lineWidth = 3;
+            x.strokeRect(6, 6, 244, 244);
 
-  // Send to ntfy
-  const logEntry = addLogEntry(total, cardInfo, 'sending');
+            const r = 16;
+            const pts = {
+                1: [[128,128]],
+                2: [[72,72],[184,184]],
+                3: [[72,72],[128,128],[184,184]],
+                4: [[72,72],[184,72],[72,184],[184,184]],
+                5: [[72,72],[184,72],[128,128],[72,184],[184,184]],
+                6: [[72,56],[184,56],[72,128],[184,128],[72,200],[184,200]]
+            };
 
-  try {
-    const message = cardInfo
-      ? `🎲 Dice: ${results.join('+')} = ${total} | 🃏 Card: ${cardInfo.card} (Pos #${cardInfo.pos})`
-      : `🎲 Dice: ${results.join('+')} = ${total} | ⚠️ Out of range (1-52)`;
+            pts[val].forEach(([px,py]) => {
+                x.shadowColor = '#a855f7';
+                x.shadowBlur = 8;
+                x.fillStyle = '#a855f7';
+                x.beginPath();
+                x.arc(px, py, r, 0, Math.PI*2);
+                x.fill();
+                x.shadowBlur = 0;
+            });
 
-    await fetch('https://ntfy.sh/aijayz', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain',
-      },
-      body: message
-    });
+            const tex = new THREE.CanvasTexture(c);
+            tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+            return tex;
+        }
 
-    updateLogEntry(logEntry, 'sent');
-    showToast('✅ Notifikasi terkirim ke ntfy!', 'success');
-  } catch (err) {
-    updateLogEntry(logEntry, 'failed');
-    showToast('❌ Gagal kirim notifikasi: ' + err.message, 'error');
-  }
+        function createDiceMats() {
+            return [1,6,2,5,3,4].map(v => new THREE.MeshStandardMaterial({
+                map: createDiceTexture(v), roughness: 0.3, metalness: 0.05
+            }));
+        }
 
-  btn.disabled = false;
-  btn.textContent = '🎲 ROLL';
-  isRolling = false;
-}
+        function clearDice() {
+            diceBodies.forEach(b => world.removeBody(b));
+            diceMeshes.forEach(m => { scene.remove(m); m.geometry.dispose(); m.material.forEach(mt => mt.dispose()); });
+            diceBodies = []; diceMeshes = [];
+        }
 
-function delay(ms) {
-  return new Promise(r => setTimeout(r, ms));
-}
+        function getFaceValue(body) {
+            const q = new THREE.Quaternion(body.quaternion.x, body.quaternion.y, body.quaternion.z, body.quaternion.w);
+            const m = new THREE.Matrix4().makeRotationFromQuaternion(q);
+            const normals = [
+                new THREE.Vector3(1,0,0), new THREE.Vector3(-1,0,0),
+                new THREE.Vector3(0,1,0), new THREE.Vector3(0,-1,0),
+                new THREE.Vector3(0,0,1), new THREE.Vector3(0,0,-1)
+            ];
+            const vals = [1,6,2,5,3,4];
+            let best = 1, maxDot = -Infinity;
+            normals.forEach((n, i) => {
+                const d = n.clone().applyMatrix4(m).dot(new THREE.Vector3(0,1,0));
+                if (d > maxDot) { maxDot = d; best = vals[i]; }
+            });
+            return best;
+        }
 
-// ========================
-// LOG
-// ========================
-let logId = 0;
+        async function rollDice() {
+            if (isRolling) return;
+            isRolling = true;
 
-function addLogEntry(total, cardInfo, status) {
-  const container = document.getElementById('logContainer');
-  const emptyMsg = container.querySelector('.empty-log');
-  if (emptyMsg) emptyMsg.remove();
+            document.getElementById('tapOverlay').classList.add('hidden');
+            document.getElementById('rollingIndicator').classList.add('show');
+            document.getElementById('diceResults').innerHTML = '';
+            document.getElementById('totalLine').style.display = 'none';
+            document.getElementById('statusText').innerHTML = '';
 
-  const id = ++logId;
-  const entry = document.createElement('div');
-  entry.className = 'log-entry';
-  entry.id = `log-${id}`;
+            clearDice();
 
-  const cardText = cardInfo ? `→ ${cardInfo.card}` : '→ Out of range';
+            const count = parseInt(document.getElementById('diceCount').value);
 
-  entry.innerHTML = `
-    <div>
-      <span class="log-dice">${total}</span>
-      <span style="color:#888; margin-left:6px;">${cardText}</span>
-    </div>
-    <span class="log-status ${status}">${status === 'sending' ? '⏳ Mengirim...' : ''}</span>
-  `;
+            // Arrange dice in a circle/grid pattern so they don't overlap
+            const positions = [];
+            for (let i = 0; i < count; i++) {
+                const angle = (i / count) * Math.PI * 2;
+                const radius = count > 1 ? Math.min(1.5, 0.6 * count) : 0;
+                positions.push({
+                    x: Math.cos(angle) * radius + (Math.random()-0.5)*0.2,
+                    y: 4 + i * 0.8,
+                    z: Math.sin(angle) * radius + (Math.random()-0.5)*0.2
+                });
+            }
 
-  container.insertBefore(entry, container.firstChild);
-  return id;
-}
+            for (let i = 0; i < count; i++) {
+                const size = 1.0;
+                const body = new CANNON.Body({
+                    mass: 1,
+                    shape: new CANNON.Box(new CANNON.Vec3(size/2, size/2, size/2))
+                });
 
-function updateLogEntry(logEntryId, status) {
-  const entry = document.getElementById(`log-${logEntryId}`);
-  if (!entry) return;
-  const statusEl = entry.querySelector('.log-status');
-  statusEl.className = `log-status ${status}`;
-  statusEl.textContent = status === 'sent' ? '✅ Terkirim' : '❌ Gagal';
-}
+                body.position.set(positions[i].x, positions[i].y, positions[i].z);
+                body.quaternion.setFromEuler(Math.random()*Math.PI*2, Math.random()*Math.PI*2, Math.random()*Math.PI*2);
+                world.addBody(body);
+                diceBodies.push(body);
 
-// ========================
-// TOAST
-// ========================
-function showToast(message, type) {
-  const toast = document.getElementById('toast');
-  toast.textContent = message;
-  toast.className = `toast ${type} show`;
-  setTimeout(() => {
-    toast.classList.remove('show');
-  }, 3000);
-}
+                const geo = new THREE.BoxGeometry(size, size, size);
+                const mats = createDiceMats();
+                const mesh = new THREE.Mesh(geo, mats);
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                scene.add(mesh);
+                diceMeshes.push(mesh);
+            }
 
-// ========================
-// START
-// ========================
-init();
-</script>
+            // Gentle downward impulse - keeps dice in bounds
+            diceBodies.forEach(b => {
+                b.applyImpulse(new CANNON.Vec3(
+                    (Math.random()-0.5) * 5,
+                    -2,
+                    (Math.random()-0.5) * 5
+                ), b.position);
+                b.angularVelocity.set(
+                    (Math.random()-0.5) * 12,
+                    (Math.random()-0.5) * 12,
+                    (Math.random()-0.5) * 12
+                );
+            });
 
+            const start = Date.now();
+            await new Promise(resolve => {
+                function loop() {
+                    requestAnimationFrame(loop);
+                    world.step(1/60);
+                    diceBodies.forEach((b, i) => {
+                        diceMeshes[i].position.copy(b.position);
+                        diceMeshes[i].quaternion.copy(new THREE.Quaternion(b.quaternion.x, b.quaternion.y, b.quaternion.z, b.quaternion.w));
+                    });
+
+                    const elapsed = Date.now() - start;
+                    const t = Date.now() * 0.0003;
+                    camera.position.set(Math.sin(t) * 1.5, 9, 6);
+                    camera.lookAt(0, 0.5, 0);
+                    renderer.render(scene, camera);
+
+                    if (elapsed > 1500) {
+                        const settled = diceBodies.every(b =>
+                            b.velocity.length() < 0.15 && b.angularVelocity.length() < 0.15
+                        );
+                        if (settled || elapsed > 5000) resolve();
+                    }
+                }
+                loop();
+            });
+
+            document.getElementById('rollingIndicator').classList.remove('show');
+
+            const values = diceBodies.map(b => getFaceValue(b));
+            const total = values.reduce((a,b) => a+b, 0);
+            const card = getCard(total);
+
+            values.forEach((v, i) => {
+                const chip = document.createElement('div');
+                chip.className = 'dice-chip';
+                chip.style.animationDelay = (i * 0.06) + 's';
+                chip.textContent = v;
+                document.getElementById('diceResults').appendChild(chip);
+            });
+
+            document.getElementById('totalLine').style.display = 'block';
+            document.getElementById('totalValue').textContent = `TOTAL ${total}`;
+            document.getElementById('totalPos').textContent = `POSITION #${card.pos}`;
+
+            await sendNtfy(card, total, values);
+
+            isRolling = false;
+        }
+
+        init();
+
+        function idleLoop() {
+            if (!isRolling) {
+                const t = Date.now() * 0.0002;
+                camera.position.set(Math.sin(t) * 0.5, 9, 6);
+                camera.lookAt(0, 0.5, 0);
+                renderer.render(scene, camera);
+            }
+            requestAnimationFrame(idleLoop);
+        }
+        idleLoop();
+    </script>
 </body>
 </html>
