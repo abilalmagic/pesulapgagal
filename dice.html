@@ -308,7 +308,7 @@
 
         async function sendNtfy(card, total, diceValues) {
             const statusText = document.getElementById('statusText');
-            statusText.innerHTML = '<span class="status-dot pending"></span> SENDING...';
+            statusText.innerHTML = '<span class="status-dot pending"></span> ';
 
             const body = `Dice: [${diceValues.join(', ')}] | Total: ${total} | Card: ${card.card}`;
 
