@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎲 Mnemonica Dice Generator</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-primary: #0a0a1a;
+    --bg-secondary: #12122a;
+    --accent: #ff6b35;
+    --accent-glow: #ff6b3566;
+    --gold: #ffd700;
+    --text: #e0e0e0;
+    --dice-bg: #f5f5f5;
+    --dice-dot: #1a1a2e;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: 
+      radial-gradient(ellipse at 20% 50%, #1a0a2e 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, #2e1a0a 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, #0a1a2e 0%, transparent 50%);
+    z-index: -1;
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 30px 0 20px;
+  }
+
+  .header h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--accent), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    margin-bottom: 8px;
+  }
+
+  .header p {
+    color: #888;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* Dice Count Selector */
+  .selector-section {
+    background: var(--bg-secondary);
+    border: 1px solid #2a2a4a;
+    border-radius: 16px;
+    padding: 24px;
+    margin: 20px 0;
+    text-align: center;
+  }
+
+  .selector-section label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+  }
+
+  .dice-count-selector {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .dice-count-btn {
+    width: 48px;
+    height: 48px;
+    border: 2px solid #3a3a5a;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--text);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .dice-count-btn:hover {
+    border-color: var(--accent);
+    background: var(--accent-glow);
+    transform: translateY(-2px);
+  }
+
+  .dice-count-btn.active {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+
+  .range-info {
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: #666;
+  }
+
+  .range-info span {
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  /* Dice Display Area */
+  .dice-area {
+    background: var(--bg-secondary);
+    border: 1px solid #2a2a4a;
+    border-radius: 16px;
+    padding: 30px 20px;
+    margin: 20px 0;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dice-area::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg, transparent, var(--accent-glow), transparent, transparent);
+    animation: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .dice-area.rolling::before {
+    animation: rotateBorder 1s linear infinite;
+    opacity: 1;
+  }
+
+  @keyframes rotateBorder {
+    100% { transform: rotate(360deg); }
+  }
+
+  .dice-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    z-index: 1;
+    position: relative;
+  }
+
+  /* Individual Dice */
+  .die {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    border-radius: 14px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    padding: 10px;
+    gap: 2px;
+    box-shadow: 
+      0 4px 15px rgba(0,0,0,0.4),
+      inset 0 1px 0 rgba(255,255,255,0.8);
+    transition: transform 0.2s ease;
+    position: relative;
+  }
+
+  .die.rolling {
+    animation: dieRoll 0.15s ease-in-out infinite;
+  }
+
+  @keyframes dieRoll {
+    0% { transform: rotateX(0deg) rotateY(0deg) scale(1); }
+    25% { transform: rotateX(90deg) rotateY(45deg) scale(0.9); }
+    50% { transform: rotateX(180deg) rotateY(90deg) scale(1.05); }
+    75% { transform: rotateX(270deg) rotateY(135deg) scale(0.95); }
+    100% { transform: rotateX(360deg) rotateY(180deg) scale(1); }
+  }
+
+  .die.result-pop {
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0.3) rotate(180deg); opacity: 0; }
+    60% { transform: scale(1.15) rotate(-10deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  .dot {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: transparent;
+    transition: background 0.2s;
+  }
+
+  .dot.show {
+    background: var(--dice-dot);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+  }
+
+  /* Total Display */
+  .total-display {
+    z-index: 1;
+    position: relative;
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .total-label {
+    font-size: 0.8rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+  }
+
+  .total-number {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--accent), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+  }
+
+  .total-number.hidden {
+    visibility: hidden;
+  }
+
+  /* Roll Button */
+  .roll-btn-container {
+    text-align: center;
+    margin: 20px 0;
+  }
+
+  .roll-btn {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    padding: 16px 60px;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(135deg, var(--accent), #ff8c42);
+    color: #fff;
+    cursor: pointer;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 25px var(--accent-glow);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .roll-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .roll-btn:hover::before {
+    left: 100%;
+  }
+
+  .roll-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 35px var(--accent-glow);
+  }
+
+  .roll-btn:active {
+    transform: translateY(0);
+  }
+
+  .roll-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Status / Notification Log */
+  .status-section {
+    background: var(--bg-secondary);
+    border: 1px solid #2a2a4a;
+    border-radius: 16px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+
+  .status-section h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85rem;
+    color: #666;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .log-entry {
+    padding: 10px 14px;
+    border-left: 3px solid var(--accent);
+    background: rgba(255, 107, 53, 0.05);
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+    animation: slideIn 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .log-entry .log-dice {
+    color: var(--accent);
+    font-weight: 700;
+    font-family: 'Orbitron', sans-serif;
+  }
+
+  .log-entry .log-status {
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  .log-entry .log-status.sent {
+    background: rgba(0, 200, 83, 0.15);
+    color: #00c853;
+  }
+
+  .log-entry .log-status.failed {
+    background: rgba(255, 0, 0, 0.15);
+    color: #ff5252;
+  }
+
+  .log-entry .log-status.sending {
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .empty-log {
+    text-align: center;
+    color: #444;
+    font-style: italic;
+    padding: 20px;
+    font-size: 0.85rem;
+  }
+
+  /* Toast notification */
+  .toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    z-index: 9999;
+    transform: translateX(120%);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  }
+
+  .toast.show {
+    transform: translateX(0);
+  }
+
+  .toast.success {
+    background: linear-gradient(135deg, #00c853, #00e676);
+    color: #fff;
+  }
+
+  .toast.error {
+    background: linear-gradient(135deg, #ff1744, #ff5252);
+    color: #fff;
+  }
+
+  /* Mnemonica Reference (hidden toggle) */
+  .ref-toggle {
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  .ref-toggle button {
+    background: none;
+    border: 1px solid #333;
+    color: #555;
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+  }
+
+  .ref-toggle button:hover {
+    border-color: #555;
+    color: #888;
+  }
+
+  .mnemonica-ref {
+    display: none;
+    background: var(--bg-secondary);
+    border: 1px solid #2a2a4a;
+    border-radius: 16px;
+    padding: 20px;
+    margin: 16px 0;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .mnemonica-ref.show {
+    display: block;
+  }
+
+  .mnemonica-ref h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85rem;
+    color: var(--gold);
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .ref-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 6px;
+  }
+
+  .ref-item {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.03);
+    display: flex;
+    gap: 8px;
+  }
+
+  .ref-item .pos {
+    color: var(--accent);
+    font-weight: 700;
+    font-family: 'Orbitron', sans-serif;
+    min-width: 28px;
+  }
+
+  .ref-item .card {
+    color: #aaa;
+  }
+
+  .ref-item.red .card { color: #ff6b6b; }
+  .ref-item.black .card { color: #aaa; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-primary); }
+  ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .header h1 { font-size: 1.4rem; }
+    .die { width: 55px; height: 55px; padding: 8px; }
+    .total-number { font-size: 2.5rem; }
+    .roll-btn { padding: 14px 40px; font-size: 1rem; }
+    .dice-count-btn { width: 40px; height: 40px; font-size: 0.95rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <div class="header">
+    <h1>🎲 MNEMONICA DICE</h1>
+    <p>Dice → Position → Card → Ntfy</p>
+  </div>
+
+  <!-- Dice Count Selector -->
+  <div class="selector-section">
+    <label>JUMLAH DADU</label>
+    <div class="dice-count-selector">
+      <button class="dice-count-btn active" data-count="1">1</button>
+      <button class="dice-count-btn" data-count="2">2</button>
+      <button class="dice-count-btn" data-count="3">3</button>
+      <button class="dice-count-btn" data-count="4">4</button>
+      <button class="dice-count-btn" data-count="5">5</button>
+      <button class="dice-count-btn" data-count="6">6</button>
+      <button class="dice-count-btn" data-count="7">7</button>
+      <button class="dice-count-btn" data-count="8">8</button>
+      <button class="dice-count-btn" data-count="9">9</button>
+      <button class="dice-count-btn" data-count="10">10</button>
+    </div>
+    <div class="range-info">
+      Range: <span id="rangeMin">1</span> — <span id="rangeMax">6</span>
+    </div>
+  </div>
+
+  <!-- Dice Display -->
+  <div class="dice-area" id="diceArea">
+    <div class="dice-container" id="diceContainer">
+      <!-- Dice will be injected here -->
+    </div>
+    <div class="total-display">
+      <div class="total-label">Total</div>
+      <div class="total-number hidden" id="totalNumber">—</div>
+    </div>
+  </div>
+
+  <!-- Roll Button -->
+  <div class="roll-btn-container">
+    <button class="roll-btn" id="rollBtn" onclick="rollDice()">🎲 ROLL</button>
+  </div>
+
+  <!-- Status Log -->
+  <div class="status-section">
+    <h3>📡 Ntfy Notification Log</h3>
+    <div id="logContainer">
+      <div class="empty-log">Belum ada roll. Tap ROLL untuk mulai.</div>
+    </div>
+  </div>
+
+  <!-- Mnemonica Reference (toggle) -->
+  <div class="ref-toggle">
+    <button onclick="toggleRef()">📋 Tampilkan/Sembunyikan Mnemonica Stack</button>
+  </div>
+  <div class="mnemonica-ref" id="mnemoRef">
+    <h3>MNEMONICA STACK (52 CARDS)</h3>
+    <div class="ref-grid" id="refGrid"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ========================
+// MNEMONICA STACK (52 cards, 1-indexed)
+// ========================
+const mnemonicaStack = [
+  { pos: 1,  card: "4 of Clubs",        suit: "c" },
+  { pos: 2,  card: "2 of Hearts",       suit: "h" },
+  { pos: 3,  card: "7 of Diamonds",     suit: "d" },
+  { pos: 4,  card: "3 of Clubs",        suit: "c" },
+  { pos: 5,  card: "4 of Hearts",       suit: "h" },
+  { pos: 6,  card: "6 of Diamonds",     suit: "d" },
+  { pos: 7,  card: "Ace of Spades",     suit: "s" },
+  { pos: 8,  card: "5 of Hearts",       suit: "h" },
+  { pos: 9,  card: "9 of Spades",       suit: "s" },
+  { pos: 10, card: "2 of Spades",       suit: "s" },
+  { pos: 11, card: "Queen of Hearts",   suit: "h" },
+  { pos: 12, card: "3 of Diamonds",     suit: "d" },
+  { pos: 13, card: "Queen of Clubs",    suit: "c" },
+  { pos: 14, card: "8 of Hearts",       suit: "h" },
+  { pos: 15, card: "6 of Spades",       suit: "s" },
+  { pos: 16, card: "5 of Spades",       suit: "s" },
+  { pos: 17, card: "9 of Hearts",       suit: "h" },
+  { pos: 18, card: "King of Clubs",     suit: "c" },
+  { pos: 19, card: "2 of Diamonds",     suit: "d" },
+  { pos: 20, card: "Jack of Hearts",    suit: "h" },
+  { pos: 21, card: "3 of Spades",       suit: "s" },
+  { pos: 22, card: "8 of Spades",       suit: "s" },
+  { pos: 23, card: "6 of Hearts",       suit: "h" },
+  { pos: 24, card: "10 of Clubs",       suit: "c" },
+  { pos: 25, card: "5 of Diamonds",     suit: "d" },
+  { pos: 26, card: "King of Diamonds",  suit: "d" },
+  { pos: 27, card: "2 of Clubs",        suit: "c" },
+  { pos: 28, card: "3 of Hearts",       suit: "h" },
+  { pos: 29, card: "8 of Diamonds",     suit: "d" },
+  { pos: 30, card: "5 of Clubs",        suit: "c" },
+  { pos: 31, card: "King of Spades",    suit: "s" },
+  { pos: 32, card: "Jack of Diamonds",  suit: "d" },
+  { pos: 33, card: "8 of Clubs",        suit: "c" },
+  { pos: 34, card: "10 of Spades",      suit: "s" },
+  { pos: 35, card: "King of Hearts",    suit: "h" },
+  { pos: 36, card: "Jack of Clubs",     suit: "c" },
+  { pos: 37, card: "7 of Spades",       suit: "s" },
+  { pos: 38, card: "10 of Hearts",      suit: "h" },
+  { pos: 39, card: "Ace of Diamonds",   suit: "d" },
+  { pos: 40, card: "4 of Spades",       suit: "s" },
+  { pos: 41, card: "7 of Hearts",       suit: "h" },
+  { pos: 42, card: "4 of Diamonds",     suit: "d" },
+  { pos: 43, card: "Ace of Clubs",      suit: "c" },
+  { pos: 44, card: "9 of Clubs",        suit: "c" },
+  { pos: 45, card: "Jack of Spades",    suit: "s" },
+  { pos: 46, card: "Queen of Diamonds", suit: "d" },
+  { pos: 47, card: "7 of Clubs",        suit: "c" },
+  { pos: 48, card: "Queen of Spades",   suit: "s" },
+  { pos: 49, card: "10 of Diamonds",    suit: "d" },
+  { pos: 50, card: "6 of Clubs",        suit: "c" },
+  { pos: 51, card: "Ace of Hearts",     suit: "h" },
+  { pos: 52, card: "9 of Diamonds",     suit: "d" }
+];
+
+// ========================
+// STATE
+// ========================
+let diceCount = 1;
+let isRolling = false;
+
+// ========================
+// DOT PATTERNS for dice faces (3x3 grid positions)
+// Index 0-8: 0=top-left, 4=center, 8=bottom-right
+// ========================
+const dotPatterns = {
+  1: [4],
+  2: [2, 6],
+  3: [2, 4, 6],
+  4: [0, 2, 6, 8],
+  5: [0, 2, 4, 6, 8],
+  6: [0, 2, 3, 5, 6, 8]
+};
+
+// ========================
+// INIT
+// ========================
+function init() {
+  setupDiceCountButtons();
+  renderDice();
+  renderReference();
+}
+
+function setupDiceCountButtons() {
+  document.querySelectorAll('.dice-count-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (isRolling) return;
+      document.querySelectorAll('.dice-count-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      diceCount = parseInt(btn.dataset.count);
+      document.getElementById('rangeMin').textContent = diceCount;
+      document.getElementById('rangeMax').textContent = diceCount * 6;
+      renderDice();
+    });
+  });
+}
+
+function renderDice() {
+  const container = document.getElementById('diceContainer');
+  container.innerHTML = '';
+  for (let i = 0; i < diceCount; i++) {
+    container.appendChild(createDieElement(1));
+  }
+  document.getElementById('totalNumber').classList.add('hidden');
+  document.getElementById('totalNumber').textContent = '—';
+}
+
+function createDieElement(value = 1) {
+  const die = document.createElement('div');
+  die.className = 'die';
+  die.dataset.value = value;
+
+  // Create 9 dot positions
+  for (let i = 0; i < 9; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot';
+    die.appendChild(dot);
+  }
+
+  setDieFace(die, value);
+  return die;
+}
+
+function setDieFace(die, value) {
+  const dots = die.querySelectorAll('.dot');
+  dots.forEach(d => d.classList.remove('show'));
+  const pattern = dotPatterns[value] || dotPatterns[1];
+  pattern.forEach(idx => dots[idx].classList.add('show'));
+  die.dataset.value = value;
+}
+
+function renderReference() {
+  const grid = document.getElementById('refGrid');
+  grid.innerHTML = '';
+  mnemonicaStack.forEach(item => {
+    const div = document.createElement('div');
+    const isRed = item.suit === 'h' || item.suit === 'd';
+    div.className = `ref-item ${isRed ? 'red' : 'black'}`;
+    div.innerHTML = `<span class="pos">${String(item.pos).padStart(2, '0')}</span><span class="card">${item.card}</span>`;
+    grid.appendChild(div);
+  });
+}
+
+function toggleRef() {
+  document.getElementById('mnemoRef').classList.toggle('show');
+}
+
+// ========================
+// ROLL LOGIC
+// ========================
+async function rollDice() {
+  if (isRolling) return;
+  isRolling = true;
+
+  const btn = document.getElementById('rollBtn');
+  btn.disabled = true;
+  btn.textContent = '🎲 ROLLING...';
+
+  const diceArea = document.getElementById('diceArea');
+  diceArea.classList.add('rolling');
+
+  const diceElements = document.querySelectorAll('.die');
+  diceElements.forEach(d => {
+    d.classList.add('rolling');
+    d.classList.remove('result-pop');
+  });
+
+  // Generate final results
+  const results = [];
+  for (let i = 0; i < diceCount; i++) {
+    results.push(Math.floor(Math.random() * 6) + 1);
+  }
+  const total = results.reduce((a, b) => a + b, 0);
+
+  // Animate: rapid random faces
+  const rollDuration = 1200; // ms
+  const intervalTime = 80;
+  let elapsed = 0;
+
+  await new Promise(resolve => {
+    const interval = setInterval(() => {
+      elapsed += intervalTime;
+      diceElements.forEach(d => {
+        const randomFace = Math.floor(Math.random() * 6) + 1;
+        setDieFace(d, randomFace);
+      });
+
+      if (elapsed >= rollDuration) {
+        clearInterval(interval);
+        resolve();
+      }
+    }, intervalTime);
+  });
+
+  // Stop rolling, show final values
+  diceArea.classList.remove('rolling');
+  diceElements.forEach(d => d.classList.remove('rolling'));
+
+  // Reveal one by one with pop animation
+  for (let i = 0; i < diceCount; i++) {
+    await delay(150);
+    setDieFace(diceElements[i], results[i]);
+    diceElements[i].classList.add('result-pop');
+  }
+
+  // Show total
+  await delay(300);
+  const totalEl = document.getElementById('totalNumber');
+  totalEl.classList.remove('hidden');
+  totalEl.textContent = total;
+
+  // Determine card
+  let cardInfo = null;
+  if (total >= 1 && total <= 52) {
+    cardInfo = mnemonicaStack[total - 1];
+  }
+
+  // Send to ntfy
+  const logEntry = addLogEntry(total, cardInfo, 'sending');
+
+  try {
+    const message = cardInfo
+      ? `🎲 Dice: ${results.join('+')} = ${total} | 🃏 Card: ${cardInfo.card} (Pos #${cardInfo.pos})`
+      : `🎲 Dice: ${results.join('+')} = ${total} | ⚠️ Out of range (1-52)`;
+
+    await fetch('https://ntfy.sh/aijayz', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+      body: message
+    });
+
+    updateLogEntry(logEntry, 'sent');
+    showToast('✅ Notifikasi terkirim ke ntfy!', 'success');
+  } catch (err) {
+    updateLogEntry(logEntry, 'failed');
+    showToast('❌ Gagal kirim notifikasi: ' + err.message, 'error');
+  }
+
+  btn.disabled = false;
+  btn.textContent = '🎲 ROLL';
+  isRolling = false;
+}
+
+function delay(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+// ========================
+// LOG
+// ========================
+let logId = 0;
+
+function addLogEntry(total, cardInfo, status) {
+  const container = document.getElementById('logContainer');
+  const emptyMsg = container.querySelector('.empty-log');
+  if (emptyMsg) emptyMsg.remove();
+
+  const id = ++logId;
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  entry.id = `log-${id}`;
+
+  const cardText = cardInfo ? `→ ${cardInfo.card}` : '→ Out of range';
+
+  entry.innerHTML = `
+    <div>
+      <span class="log-dice">${total}</span>
+      <span style="color:#888; margin-left:6px;">${cardText}</span>
+    </div>
+    <span class="log-status ${status}">${status === 'sending' ? '⏳ Mengirim...' : ''}</span>
+  `;
+
+  container.insertBefore(entry, container.firstChild);
+  return id;
+}
+
+function updateLogEntry(logEntryId, status) {
+  const entry = document.getElementById(`log-${logEntryId}`);
+  if (!entry) return;
+  const statusEl = entry.querySelector('.log-status');
+  statusEl.className = `log-status ${status}`;
+  statusEl.textContent = status === 'sent' ? '✅ Terkirim' : '❌ Gagal';
+}
+
+// ========================
+// TOAST
+// ========================
+function showToast(message, type) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = `toast ${type} show`;
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
+
+// ========================
+// START
+// ========================
+init();
+</script>
+
+</body>
+</html>
