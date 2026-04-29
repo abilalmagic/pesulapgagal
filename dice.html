@@ -336,7 +336,7 @@
         let diceBodies = [], diceMeshes = [];
         let isRolling = false;
         let animFrameId = null;
-        const BOUND = 4;
+        const BOUND = 2.0; // Dinding diperketat agar tidak outframe
 
         function init() {
             const container = document.getElementById('canvas-container');
@@ -344,9 +344,10 @@
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x000000);
 
-            camera = new THREE.PerspectiveCamera(55, container.clientWidth / container.clientHeight, 0.1, 100);
-            camera.position.set(0, 8, 6);
-            camera.lookAt(0, 0.5, 0);
+            // Camera diatur lebih tinggi & mundur sedikit agar 10 dadu muat full di HP
+            camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 100);
+            camera.position.set(0, 7.5, 5.5);
+            camera.lookAt(0, 0.2, 0);
 
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
@@ -372,7 +373,7 @@
             scene.add(pl2);
 
             world = new CANNON.World();
-            world.gravity.set(0, -25, 0);
+            world.gravity.set(0, -28, 0);
             world.broadphase = new CANNON.NaiveBroadphase();
             world.solver.iterations = 10;
 
@@ -388,13 +389,13 @@
             gMesh.receiveShadow = true;
             scene.add(gMesh);
 
-            const grid = new THREE.GridHelper(8, 8, 0x0d0d0d, 0x080808);
+            const grid = new THREE.GridHelper(4, 4, 0x0d0d0d, 0x080808);
             grid.position.y = 0.005;
             scene.add(grid);
 
             // WALLS
             const wallMat = new CANNON.Material();
-            const wh = 1.5;
+            const wh = 1.2;
             const hw = 0.5;
 
             const wallDefs = [
@@ -412,8 +413,8 @@
             });
 
             const dMat = new CANNON.Material();
-            world.addContactMaterial(new CANNON.ContactMaterial(gMat, dMat, { friction: 0.4, restitution: 0.35 }));
-            world.addContactMaterial(new CANNON.ContactMaterial(wallMat, dMat, { friction: 0.3, restitution: 0.3 }));
+            world.addContactMaterial(new CANNON.ContactMaterial(gMat, dMat, { friction: 0.5, restitution: 0.2 }));
+            world.addContactMaterial(new CANNON.ContactMaterial(wallMat, dMat, { friction: 0.4, restitution: 0.2 }));
 
             window.addEventListener('resize', () => {
                 camera.aspect = container.clientWidth / container.clientHeight;
@@ -438,8 +439,8 @@
             animFrameId = requestAnimationFrame(renderLoop);
             if (!isRolling) {
                 const t = Date.now() * 0.0002;
-                camera.position.set(Math.sin(t) * 0.5, 8, 6);
-                camera.lookAt(0, 0.5, 0);
+                camera.position.set(Math.sin(t) * 0.3, 7.5, 5.5);
+                camera.lookAt(0, 0.2, 0);
                 renderer.render(scene, camera);
             }
         }
@@ -524,24 +525,27 @@
 
             const count = parseInt(document.getElementById('diceCount').value);
 
-            // Spread dice
+            // --- PERBAIKAN POSISI JATUH ---
+            // Spawn dalam grid rapat tepat di atas tengah
+            const size = 0.42; // Ukuran diperkecil agar 10 muat di HP
             const positions = [];
-            // Radius adjusted slightly smaller for better packing of smaller dice
-            const radius = count > 1 ? Math.min(1.8, 0.35 * count) : 0; 
+            const gap = size * 1.6;
+            const cols = Math.ceil(Math.sqrt(count));
+            const rows = Math.ceil(count / cols);
+            
             for (let i = 0; i < count; i++) {
-                const angle = (i / count) * Math.PI * 2;
+                const c = i % cols;
+                const r = Math.floor(i / cols);
+                const offsetX = (c - (cols - 1) / 2) * gap;
+                const offsetZ = (r - (rows - 1) / 2) * gap;
                 positions.push({
-                    x: Math.cos(angle) * radius,
-                    y: 5 + Math.random() * 2,
-                    z: Math.sin(angle) * radius
+                    x: offsetX + (Math.random() - 0.5) * 0.05,
+                    y: 3.0 + Math.random() * 0.3, // Jatuh dari ketinggian rendah
+                    z: offsetZ + (Math.random() - 0.5) * 0.05
                 });
             }
 
             for (let i = 0; i < count; i++) {
-                // --- UBAH DISINI (SIZE) ---
-                const size = 0.55; // Dikecilkan agar 10 muat di layar HP
-                // -------------------------
-                
                 const body = new CANNON.Body({
                     mass: 1,
                     shape: new CANNON.Box(new CANNON.Vec3(size / 2, size / 2, size / 2))
@@ -553,6 +557,11 @@
                     Math.random() * Math.PI * 2,
                     Math.random() * Math.PI * 2
                 );
+                
+                // Damping tinggi agar langsung berhenti & tidak meluncur jauh
+                body.linearDamping = 0.6;
+                body.angularDamping = 0.6;
+                
                 world.addBody(body);
                 diceBodies.push(body);
 
@@ -565,19 +574,20 @@
                 diceMeshes.push(mesh);
             }
 
+            // Impulse sangat kecil & terkontrol (hampir jatuh lurus)
             diceBodies.forEach(b => {
                 b.applyImpulse(
                     new CANNON.Vec3(
-                        (Math.random() - 0.5) * 4,
-                        -3,
-                        (Math.random() - 0.5) * 4
+                        (Math.random() - 0.5) * 0.5, // Gerak samping minimal
+                        -1.0,                        // Gravitasi tambahan ke bawah
+                        (Math.random() - 0.5) * 0.5
                     ),
                     b.position
                 );
                 b.angularVelocity.set(
-                    (Math.random() - 0.5) * 10,
-                    (Math.random() - 0.5) * 10,
-                    (Math.random() - 0.5) * 10
+                    (Math.random() - 0.5) * 2,
+                    (Math.random() - 0.5) * 2,
+                    (Math.random() - 0.5) * 2
                 );
             });
 
@@ -595,15 +605,15 @@
 
                     const elapsed = Date.now() - start;
                     const t = Date.now() * 0.0003;
-                    camera.position.set(Math.sin(t) * 1.5, 8, 6);
-                    camera.lookAt(0, 0.5, 0);
+                    camera.position.set(Math.sin(t) * 0.5, 7.5, 5.5);
+                    camera.lookAt(0, 0.2, 0);
                     renderer.render(scene, camera);
 
-                    if (elapsed > 1500) {
+                    if (elapsed > 1200) {
                         const settled = diceBodies.every(b =>
-                            b.velocity.length() < 0.15 && b.angularVelocity.length() < 0.15
+                            b.velocity.length() < 0.08 && b.angularVelocity.length() < 0.08
                         );
-                        if (settled || elapsed > 5000) {
+                        if (settled || elapsed > 4000) {
                             resolve();
                             return;
                         }
