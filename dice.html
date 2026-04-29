@@ -323,7 +323,7 @@
                 });
 
                 if (res.ok) {
-                    statusText.innerHTML = '<span class="status-dot sent"></span> SENT';
+                    statusText.innerHTML = '<span class="status-dot sent"></span> ';
                 } else {
                     statusText.innerHTML = '<span class="status-dot error"></span> ERROR ' + res.status;
                 }
@@ -639,7 +639,6 @@
 
             document.getElementById('totalLine').style.display = 'block';
             document.getElementById('totalValue').textContent = `TOTAL ${total}`;
-            document.getElementById('totalPos').textContent = `POSITION #${card.pos}`;
 
             await sendNtfy(card, total, values);
 
