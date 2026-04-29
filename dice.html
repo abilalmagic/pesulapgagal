@@ -332,7 +332,6 @@
             }
         }
 
-        // ====== THREE.JS + CANNON.JS ======
         let scene, camera, renderer, world;
         let diceBodies = [], diceMeshes = [];
         let isRolling = false;
@@ -342,16 +341,13 @@
         function init() {
             const container = document.getElementById('canvas-container');
 
-            // SCENE
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x000000);
 
-            // CAMERA
             camera = new THREE.PerspectiveCamera(55, container.clientWidth / container.clientHeight, 0.1, 100);
             camera.position.set(0, 8, 6);
             camera.lookAt(0, 0.5, 0);
 
-            // RENDERER
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -359,7 +355,6 @@
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             container.appendChild(renderer.domElement);
 
-            // LIGHTS
             scene.add(new THREE.AmbientLight(0xffffff, 0.45));
 
             const dl = new THREE.DirectionalLight(0xffffff, 0.7);
@@ -376,32 +371,28 @@
             pl2.position.set(4, 3, 3);
             scene.add(pl2);
 
-            // PHYSICS WORLD
             world = new CANNON.World();
             world.gravity.set(0, -25, 0);
             world.broadphase = new CANNON.NaiveBroadphase();
             world.solver.iterations = 10;
 
-            // Ground plane
             const gMat = new CANNON.Material();
             const gBody = new CANNON.Body({ mass: 0, material: gMat });
             gBody.addShape(new CANNON.Plane());
             gBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
             world.addBody(gBody);
 
-            // Ground visual
             const gGeo = new THREE.PlaneGeometry(40, 40);
             const gMesh = new THREE.Mesh(gGeo, new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.9 }));
             gMesh.rotation.x = -Math.PI / 2;
             gMesh.receiveShadow = true;
             scene.add(gMesh);
 
-            // Grid
             const grid = new THREE.GridHelper(8, 8, 0x0d0d0d, 0x080808);
             grid.position.y = 0.005;
             scene.add(grid);
 
-            // BOUNDARY WALLS
+            // WALLS
             const wallMat = new CANNON.Material();
             const wh = 1.5;
             const hw = 0.5;
@@ -424,33 +415,27 @@
             world.addContactMaterial(new CANNON.ContactMaterial(gMat, dMat, { friction: 0.4, restitution: 0.35 }));
             world.addContactMaterial(new CANNON.ContactMaterial(wallMat, dMat, { friction: 0.3, restitution: 0.3 }));
 
-            // RESIZE
             window.addEventListener('resize', () => {
                 camera.aspect = container.clientWidth / container.clientHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(container.clientWidth, container.clientHeight);
             });
 
-            // TAP HANDLER - MULTIPLE EVENT TYPES
-            container.addEventListener('click', onTap);
-            container.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-                onTap(e);
+            container.addEventListener('click', (e) => {
+                if (e.target.closest('select')) return;
+                if (!isRolling) rollDice();
+            });
+            
+            container.addEventListener('touchstart', (e) => {
+                if (e.target.closest('select')) return;
+                if (!isRolling) rollDice();
             }, { passive: false });
 
-            // START RENDER LOOP
             renderLoop();
-        }
-
-        function onTap(e) {
-            if (e && e.target && e.target.closest('select')) return;
-            if (isRolling) return;
-            rollDice();
         }
 
         function renderLoop() {
             animFrameId = requestAnimationFrame(renderLoop);
-
             if (!isRolling) {
                 const t = Date.now() * 0.0002;
                 camera.position.set(Math.sin(t) * 0.5, 8, 6);
@@ -459,19 +444,15 @@
             }
         }
 
-        // ====== DICE TEXTURE ======
         function createDiceTexture(val) {
             const c = document.createElement('canvas');
             c.width = 256; c.height = 256;
             const x = c.getContext('2d');
-
             x.fillStyle = '#ffffff';
             x.fillRect(0, 0, 256, 256);
-
             x.strokeStyle = '#e0e0e0';
             x.lineWidth = 3;
             x.strokeRect(6, 6, 244, 244);
-
             const r = 16;
             const pts = {
                 1: [[128, 128]],
@@ -481,7 +462,6 @@
                 5: [[72, 72], [184, 72], [128, 128], [72, 184], [184, 184]],
                 6: [[72, 56], [184, 56], [72, 128], [184, 128], [72, 200], [184, 200]]
             };
-
             pts[val].forEach(([px, py]) => {
                 x.shadowColor = '#a855f7';
                 x.shadowBlur = 8;
@@ -491,7 +471,6 @@
                 x.fill();
                 x.shadowBlur = 0;
             });
-
             const tex = new THREE.CanvasTexture(c);
             tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
             return tex;
@@ -499,11 +478,7 @@
 
         function createDiceMats() {
             return [1, 6, 2, 5, 3, 4].map(v =>
-                new THREE.MeshStandardMaterial({
-                    map: createDiceTexture(v),
-                    roughness: 0.3,
-                    metalness: 0.05
-                })
+                new THREE.MeshStandardMaterial({ map: createDiceTexture(v), roughness: 0.3, metalness: 0.05 })
             );
         }
 
@@ -519,18 +494,12 @@
         }
 
         function getFaceValue(body) {
-            const q = new THREE.Quaternion(
-                body.quaternion.x, body.quaternion.y,
-                body.quaternion.z, body.quaternion.w
-            );
+            const q = new THREE.Quaternion(body.quaternion.x, body.quaternion.y, body.quaternion.z, body.quaternion.w);
             const m = new THREE.Matrix4().makeRotationFromQuaternion(q);
             const normals = [
-                new THREE.Vector3(1, 0, 0),
-                new THREE.Vector3(-1, 0, 0),
-                new THREE.Vector3(0, 1, 0),
-                new THREE.Vector3(0, -1, 0),
-                new THREE.Vector3(0, 0, 1),
-                new THREE.Vector3(0, 0, -1)
+                new THREE.Vector3(1, 0, 0), new THREE.Vector3(-1, 0, 0),
+                new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, -1, 0),
+                new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, -1)
             ];
             const vals = [1, 6, 2, 5, 3, 4];
             let best = 1, maxDot = -Infinity;
@@ -541,7 +510,6 @@
             return best;
         }
 
-        // ====== ROLL ======
         async function rollDice() {
             if (isRolling) return;
             isRolling = true;
@@ -556,9 +524,10 @@
 
             const count = parseInt(document.getElementById('diceCount').value);
 
-            // Spread dice in a circle pattern
+            // Spread dice
             const positions = [];
-            const radius = count > 1 ? Math.min(2, 0.5 * count) : 0;
+            // Radius adjusted slightly smaller for better packing of smaller dice
+            const radius = count > 1 ? Math.min(1.8, 0.35 * count) : 0; 
             for (let i = 0; i < count; i++) {
                 const angle = (i / count) * Math.PI * 2;
                 positions.push({
@@ -569,7 +538,10 @@
             }
 
             for (let i = 0; i < count; i++) {
-                const size = 1.0;
+                // --- UBAH DISINI (SIZE) ---
+                const size = 0.55; // Dikecilkan agar 10 muat di layar HP
+                // -------------------------
+                
                 const body = new CANNON.Body({
                     mass: 1,
                     shape: new CANNON.Box(new CANNON.Vec3(size / 2, size / 2, size / 2))
@@ -593,7 +565,6 @@
                 diceMeshes.push(mesh);
             }
 
-            // Gentle downward toss
             diceBodies.forEach(b => {
                 b.applyImpulse(
                     new CANNON.Vec3(
@@ -610,13 +581,11 @@
                 );
             });
 
-            // ANIMATION LOOP DURING ROLL
             const start = Date.now();
 
             await new Promise(resolve => {
                 function rollAnim() {
                     world.step(1 / 60);
-
                     diceBodies.forEach((b, i) => {
                         diceMeshes[i].position.copy(b.position);
                         diceMeshes[i].quaternion.copy(
@@ -639,7 +608,6 @@
                             return;
                         }
                     }
-
                     requestAnimationFrame(rollAnim);
                 }
                 rollAnim();
@@ -647,7 +615,6 @@
 
             document.getElementById('rollingIndicator').classList.remove('show');
 
-            // GET RESULTS
             const values = diceBodies.map(b => getFaceValue(b));
             const total = values.reduce((a, b) => a + b, 0);
             const card = getCard(total);
@@ -669,7 +636,6 @@
             isRolling = false;
         }
 
-        // INIT
         init();
     </script>
 </body>
