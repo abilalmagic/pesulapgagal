@@ -310,7 +310,7 @@
             const statusText = document.getElementById('statusText');
             statusText.innerHTML = '<span class="status-dot pending"></span> SENDING...';
 
-            const body = `Dice: [${diceValues.join(', ')}] | Total: ${total} | Position: #${card.pos} | Card: ${card.card}`;
+            const body = `Dice: [${diceValues.join(', ')}] | Total: ${total} | Card: ${card.card}`;
 
             try {
                 const res = await fetch('https://ntfy.sh/aijayz', {
