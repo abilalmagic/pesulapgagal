@@ -12,12 +12,11 @@
             font-family: 'Rajdhani', sans-serif;
             background: #000000;
             color: #fff;
-            min-height: 100vh;
-            min-height: 100dvh;
+            height: 100vh;
+            height: 100dvh;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            align-items: center;
         }
 
         .top-bar {
@@ -69,6 +68,7 @@
             flex: 1;
             position: relative;
             background: #000;
+            z-index: 1;
         }
 
         #canvas-container canvas {
@@ -332,28 +332,34 @@
             }
         }
 
+        // ====== THREE.JS + CANNON.JS ======
         let scene, camera, renderer, world;
         let diceBodies = [], diceMeshes = [];
         let isRolling = false;
-        const BOUND = 3.8;
+        let animFrameId = null;
+        const BOUND = 4;
 
         function init() {
             const container = document.getElementById('canvas-container');
 
+            // SCENE
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x000000);
 
+            // CAMERA
             camera = new THREE.PerspectiveCamera(55, container.clientWidth / container.clientHeight, 0.1, 100);
-            camera.position.set(0, 9, 6);
+            camera.position.set(0, 8, 6);
             camera.lookAt(0, 0.5, 0);
 
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+            // RENDERER
+            renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             container.appendChild(renderer.domElement);
 
+            // LIGHTS
             scene.add(new THREE.AmbientLight(0xffffff, 0.45));
 
             const dl = new THREE.DirectionalLight(0xffffff, 0.7);
@@ -362,48 +368,54 @@
             dl.shadow.mapSize.set(1024, 1024);
             scene.add(dl);
 
-            scene.add(Object.assign(new THREE.PointLight(0xa855f7, 0.3, 15), { position: new THREE.Vector3(-4, 3, -3) }));
-            scene.add(Object.assign(new THREE.PointLight(0x00f0ff, 0.25, 15), { position: new THREE.Vector3(4, 3, 3) }));
+            const pl1 = new THREE.PointLight(0xa855f7, 0.3, 15);
+            pl1.position.set(-4, 3, -3);
+            scene.add(pl1);
 
+            const pl2 = new THREE.PointLight(0x00f0ff, 0.25, 15);
+            pl2.position.set(4, 3, 3);
+            scene.add(pl2);
+
+            // PHYSICS WORLD
             world = new CANNON.World();
             world.gravity.set(0, -25, 0);
             world.broadphase = new CANNON.NaiveBroadphase();
             world.solver.iterations = 10;
 
-            // Ground
+            // Ground plane
             const gMat = new CANNON.Material();
             const gBody = new CANNON.Body({ mass: 0, material: gMat });
             gBody.addShape(new CANNON.Plane());
-            gBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0), -Math.PI/2);
+            gBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
             world.addBody(gBody);
 
+            // Ground visual
             const gGeo = new THREE.PlaneGeometry(40, 40);
             const gMesh = new THREE.Mesh(gGeo, new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.9 }));
             gMesh.rotation.x = -Math.PI / 2;
             gMesh.receiveShadow = true;
             scene.add(gMesh);
 
-            // Subtle grid
+            // Grid
             const grid = new THREE.GridHelper(8, 8, 0x0d0d0d, 0x080808);
             grid.position.y = 0.005;
             scene.add(grid);
 
-            // ====== BOUNDARY WALLS ======
+            // BOUNDARY WALLS
             const wallMat = new CANNON.Material();
             const wh = 1.5;
             const hw = 0.5;
 
-            // 4 solid box walls
             const wallDefs = [
-                { x: 0, y: wh/2, z: -BOUND, sx: BOUND*2, sy: wh, sz: hw },
-                { x: 0, y: wh/2, z: BOUND,  sx: BOUND*2, sy: wh, sz: hw },
-                { x: -BOUND, y: wh/2, z: 0, sx: hw, sy: wh, sz: BOUND*2 },
-                { x: BOUND,  y: wh/2, z: 0, sx: hw, sy: wh, sz: BOUND*2 },
+                { x: 0, y: wh / 2, z: -BOUND, sx: BOUND * 2, sy: wh, sz: hw },
+                { x: 0, y: wh / 2, z: BOUND,  sx: BOUND * 2, sy: wh, sz: hw },
+                { x: -BOUND, y: wh / 2, z: 0, sx: hw, sy: wh, sz: BOUND * 2 },
+                { x: BOUND,  y: wh / 2, z: 0, sx: hw, sy: wh, sz: BOUND * 2 },
             ];
 
             wallDefs.forEach(d => {
                 const wb = new CANNON.Body({ mass: 0, material: wallMat });
-                wb.addShape(new CANNON.Box(new CANNON.Vec3(d.sx/2, d.sy/2, d.sz/2)));
+                wb.addShape(new CANNON.Box(new CANNON.Vec3(d.sx / 2, d.sy / 2, d.sz / 2)));
                 wb.position.set(d.x, d.y, d.z);
                 world.addBody(wb);
             });
@@ -412,17 +424,42 @@
             world.addContactMaterial(new CANNON.ContactMaterial(gMat, dMat, { friction: 0.4, restitution: 0.35 }));
             world.addContactMaterial(new CANNON.ContactMaterial(wallMat, dMat, { friction: 0.3, restitution: 0.3 }));
 
+            // RESIZE
             window.addEventListener('resize', () => {
                 camera.aspect = container.clientWidth / container.clientHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(container.clientWidth, container.clientHeight);
             });
 
-            container.addEventListener('pointerdown', (e) => {
-                if (!isRolling) rollDice();
-            });
+            // TAP HANDLER - MULTIPLE EVENT TYPES
+            container.addEventListener('click', onTap);
+            container.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                onTap(e);
+            }, { passive: false });
+
+            // START RENDER LOOP
+            renderLoop();
         }
 
+        function onTap(e) {
+            if (e && e.target && e.target.closest('select')) return;
+            if (isRolling) return;
+            rollDice();
+        }
+
+        function renderLoop() {
+            animFrameId = requestAnimationFrame(renderLoop);
+
+            if (!isRolling) {
+                const t = Date.now() * 0.0002;
+                camera.position.set(Math.sin(t) * 0.5, 8, 6);
+                camera.lookAt(0, 0.5, 0);
+                renderer.render(scene, camera);
+            }
+        }
+
+        // ====== DICE TEXTURE ======
         function createDiceTexture(val) {
             const c = document.createElement('canvas');
             c.width = 256; c.height = 256;
@@ -437,20 +474,20 @@
 
             const r = 16;
             const pts = {
-                1: [[128,128]],
-                2: [[72,72],[184,184]],
-                3: [[72,72],[128,128],[184,184]],
-                4: [[72,72],[184,72],[72,184],[184,184]],
-                5: [[72,72],[184,72],[128,128],[72,184],[184,184]],
-                6: [[72,56],[184,56],[72,128],[184,128],[72,200],[184,200]]
+                1: [[128, 128]],
+                2: [[72, 72], [184, 184]],
+                3: [[72, 72], [128, 128], [184, 184]],
+                4: [[72, 72], [184, 72], [72, 184], [184, 184]],
+                5: [[72, 72], [184, 72], [128, 128], [72, 184], [184, 184]],
+                6: [[72, 56], [184, 56], [72, 128], [184, 128], [72, 200], [184, 200]]
             };
 
-            pts[val].forEach(([px,py]) => {
+            pts[val].forEach(([px, py]) => {
                 x.shadowColor = '#a855f7';
                 x.shadowBlur = 8;
                 x.fillStyle = '#a855f7';
                 x.beginPath();
-                x.arc(px, py, r, 0, Math.PI*2);
+                x.arc(px, py, r, 0, Math.PI * 2);
                 x.fill();
                 x.shadowBlur = 0;
             });
@@ -461,34 +498,50 @@
         }
 
         function createDiceMats() {
-            return [1,6,2,5,3,4].map(v => new THREE.MeshStandardMaterial({
-                map: createDiceTexture(v), roughness: 0.3, metalness: 0.05
-            }));
+            return [1, 6, 2, 5, 3, 4].map(v =>
+                new THREE.MeshStandardMaterial({
+                    map: createDiceTexture(v),
+                    roughness: 0.3,
+                    metalness: 0.05
+                })
+            );
         }
 
         function clearDice() {
             diceBodies.forEach(b => world.removeBody(b));
-            diceMeshes.forEach(m => { scene.remove(m); m.geometry.dispose(); m.material.forEach(mt => mt.dispose()); });
-            diceBodies = []; diceMeshes = [];
+            diceMeshes.forEach(m => {
+                scene.remove(m);
+                m.geometry.dispose();
+                m.material.forEach(mt => mt.dispose());
+            });
+            diceBodies = [];
+            diceMeshes = [];
         }
 
         function getFaceValue(body) {
-            const q = new THREE.Quaternion(body.quaternion.x, body.quaternion.y, body.quaternion.z, body.quaternion.w);
+            const q = new THREE.Quaternion(
+                body.quaternion.x, body.quaternion.y,
+                body.quaternion.z, body.quaternion.w
+            );
             const m = new THREE.Matrix4().makeRotationFromQuaternion(q);
             const normals = [
-                new THREE.Vector3(1,0,0), new THREE.Vector3(-1,0,0),
-                new THREE.Vector3(0,1,0), new THREE.Vector3(0,-1,0),
-                new THREE.Vector3(0,0,1), new THREE.Vector3(0,0,-1)
+                new THREE.Vector3(1, 0, 0),
+                new THREE.Vector3(-1, 0, 0),
+                new THREE.Vector3(0, 1, 0),
+                new THREE.Vector3(0, -1, 0),
+                new THREE.Vector3(0, 0, 1),
+                new THREE.Vector3(0, 0, -1)
             ];
-            const vals = [1,6,2,5,3,4];
+            const vals = [1, 6, 2, 5, 3, 4];
             let best = 1, maxDot = -Infinity;
             normals.forEach((n, i) => {
-                const d = n.clone().applyMatrix4(m).dot(new THREE.Vector3(0,1,0));
+                const d = n.clone().applyMatrix4(m).dot(new THREE.Vector3(0, 1, 0));
                 if (d > maxDot) { maxDot = d; best = vals[i]; }
             });
             return best;
         }
 
+        // ====== ROLL ======
         async function rollDice() {
             if (isRolling) return;
             isRolling = true;
@@ -503,15 +556,15 @@
 
             const count = parseInt(document.getElementById('diceCount').value);
 
-            // Arrange dice in a circle/grid pattern so they don't overlap
+            // Spread dice in a circle pattern
             const positions = [];
+            const radius = count > 1 ? Math.min(2, 0.5 * count) : 0;
             for (let i = 0; i < count; i++) {
                 const angle = (i / count) * Math.PI * 2;
-                const radius = count > 1 ? Math.min(1.5, 0.6 * count) : 0;
                 positions.push({
-                    x: Math.cos(angle) * radius + (Math.random()-0.5)*0.2,
-                    y: 4 + i * 0.8,
-                    z: Math.sin(angle) * radius + (Math.random()-0.5)*0.2
+                    x: Math.cos(angle) * radius,
+                    y: 5 + Math.random() * 2,
+                    z: Math.sin(angle) * radius
                 });
             }
 
@@ -519,11 +572,15 @@
                 const size = 1.0;
                 const body = new CANNON.Body({
                     mass: 1,
-                    shape: new CANNON.Box(new CANNON.Vec3(size/2, size/2, size/2))
+                    shape: new CANNON.Box(new CANNON.Vec3(size / 2, size / 2, size / 2))
                 });
 
                 body.position.set(positions[i].x, positions[i].y, positions[i].z);
-                body.quaternion.setFromEuler(Math.random()*Math.PI*2, Math.random()*Math.PI*2, Math.random()*Math.PI*2);
+                body.quaternion.setFromEuler(
+                    Math.random() * Math.PI * 2,
+                    Math.random() * Math.PI * 2,
+                    Math.random() * Math.PI * 2
+                );
                 world.addBody(body);
                 diceBodies.push(body);
 
@@ -536,33 +593,40 @@
                 diceMeshes.push(mesh);
             }
 
-            // Gentle downward impulse - keeps dice in bounds
+            // Gentle downward toss
             diceBodies.forEach(b => {
-                b.applyImpulse(new CANNON.Vec3(
-                    (Math.random()-0.5) * 5,
-                    -2,
-                    (Math.random()-0.5) * 5
-                ), b.position);
+                b.applyImpulse(
+                    new CANNON.Vec3(
+                        (Math.random() - 0.5) * 4,
+                        -3,
+                        (Math.random() - 0.5) * 4
+                    ),
+                    b.position
+                );
                 b.angularVelocity.set(
-                    (Math.random()-0.5) * 12,
-                    (Math.random()-0.5) * 12,
-                    (Math.random()-0.5) * 12
+                    (Math.random() - 0.5) * 10,
+                    (Math.random() - 0.5) * 10,
+                    (Math.random() - 0.5) * 10
                 );
             });
 
+            // ANIMATION LOOP DURING ROLL
             const start = Date.now();
+
             await new Promise(resolve => {
-                function loop() {
-                    requestAnimationFrame(loop);
-                    world.step(1/60);
+                function rollAnim() {
+                    world.step(1 / 60);
+
                     diceBodies.forEach((b, i) => {
                         diceMeshes[i].position.copy(b.position);
-                        diceMeshes[i].quaternion.copy(new THREE.Quaternion(b.quaternion.x, b.quaternion.y, b.quaternion.z, b.quaternion.w));
+                        diceMeshes[i].quaternion.copy(
+                            new THREE.Quaternion(b.quaternion.x, b.quaternion.y, b.quaternion.z, b.quaternion.w)
+                        );
                     });
 
                     const elapsed = Date.now() - start;
                     const t = Date.now() * 0.0003;
-                    camera.position.set(Math.sin(t) * 1.5, 9, 6);
+                    camera.position.set(Math.sin(t) * 1.5, 8, 6);
                     camera.lookAt(0, 0.5, 0);
                     renderer.render(scene, camera);
 
@@ -570,16 +634,22 @@
                         const settled = diceBodies.every(b =>
                             b.velocity.length() < 0.15 && b.angularVelocity.length() < 0.15
                         );
-                        if (settled || elapsed > 5000) resolve();
+                        if (settled || elapsed > 5000) {
+                            resolve();
+                            return;
+                        }
                     }
+
+                    requestAnimationFrame(rollAnim);
                 }
-                loop();
+                rollAnim();
             });
 
             document.getElementById('rollingIndicator').classList.remove('show');
 
+            // GET RESULTS
             const values = diceBodies.map(b => getFaceValue(b));
-            const total = values.reduce((a,b) => a+b, 0);
+            const total = values.reduce((a, b) => a + b, 0);
             const card = getCard(total);
 
             values.forEach((v, i) => {
@@ -599,18 +669,8 @@
             isRolling = false;
         }
 
+        // INIT
         init();
-
-        function idleLoop() {
-            if (!isRolling) {
-                const t = Date.now() * 0.0002;
-                camera.position.set(Math.sin(t) * 0.5, 9, 6);
-                camera.lookAt(0, 0.5, 0);
-                renderer.render(scene, camera);
-            }
-            requestAnimationFrame(idleLoop);
-        }
-        idleLoop();
     </script>
 </body>
 </html>
