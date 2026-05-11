@@ -5,14 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Magic Trick - Kartu Hitam Merah</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
-            font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+            font-family: Arial, sans-serif;
             text-align: center;
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
             color: white;
@@ -24,102 +20,99 @@
         }
 
         .container {
-            max-width: 450px;
+            max-width: 500px;
             width: 100%;
             padding: 25px;
             background-color: #334155;
             border-radius: 1.5rem;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        h1 {
-            font-size: 1.4rem;
+        h1 { font-size: 1.4rem; margin-bottom: 10px; color: #fff; }
+        .subtitle { font-size: 13px; color: #94a3b8; margin-bottom: 20px; }
+
+        .controls {
+            display: flex;
+            gap: 10px;
             margin-bottom: 20px;
-            color: #fff;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            justify-content: center;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: 2.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-shuffle {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+        }
+        .btn-shuffle:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            transform: translateY(-2px);
         }
 
         .grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
+            gap: 10px;
             justify-items: center;
             margin-bottom: 20px;
-            padding: 10px;
+            padding: 15px;
             background: rgba(255,255,255,0.05);
             border-radius: 1rem;
         }
 
-        .grid img {
+        .card {
             width: 100%;
             max-width: 75px;
-            height: auto;
+            aspect-ratio: 2.5/3.5;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease;
             cursor: pointer;
-            border: 2px solid transparent;
+            border: 3px solid transparent;
+            overflow: hidden;
+            background: white;
         }
 
-        .grid img:hover {
-            transform: scale(1.08) translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.25);
-            border-color: #2563eb;
-        }
+        .card:hover { transform: scale(1.08) translateY(-3px); }
+        .card[data-color="red"] { border-bottom-color: #dc2626; }
+        .card[data-color="black"] { border-bottom-color: #64748b; }
 
-        .grid img:active {
-            transform: scale(1);
-        }
-
-        button {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: white;
-            border: none;
-            padding: 14px 24px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 2.5rem;
-            cursor: pointer;
+        .card img {
             width: 100%;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
-        button:hover {
-            background: linear-gradient(135deg, #1d4ed8, #1e40af);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6);
+        .status {
+            font-size: 12px;
+            padding: 8px;
+            border-radius: 8px;
+            background: rgba(37, 99, 235, 0.2);
+            color: #93c5fd;
         }
 
-        button:active {
-            transform: translateY(0);
-        }
-
-        /* Popup Modal Styles */
+        /* Modal */
         .modal-overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(5px);
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            animation: fadeIn 0.3s ease;
         }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        .modal-overlay.active { display: flex; }
 
         .modal {
             background: linear-gradient(145deg, #1e293b, #334155);
@@ -128,43 +121,27 @@
             max-width: 400px;
             width: 90%;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            animation: slideUp 0.4s ease;
             position: relative;
+            animation: slideUp 0.4s ease;
         }
 
         @keyframes slideUp {
-            from { 
-                opacity: 0; 
-                transform: translateY(30px) scale(0.95); 
-            }
-            to { 
-                opacity: 1; 
-                transform: translateY(0) scale(1); 
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .modal-close {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 15px; right: 15px;
             background: rgba(255,255,255,0.1);
             border: none;
             color: white;
-            width: 32px;
-            height: 32px;
+            width: 32px; height: 32px;
             border-radius: 50%;
             font-size: 20px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.3s;
         }
-
-        .modal-close:hover {
-            background: rgba(255,255,255,0.25);
-        }
+        .modal-close:hover { background: rgba(255,255,255,0.25); }
 
         .modal h2 {
             font-size: 1.3rem;
@@ -175,34 +152,21 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        .instructions {
-            text-align: left;
-            line-height: 1.8;
-            font-size: 14px;
-            color: #e2e8f0;
-        }
-
         .instructions ol {
             padding-left: 20px;
             margin: 15px 0;
+            text-align: left;
         }
-
         .instructions li {
             margin: 12px 0;
             padding: 10px 14px;
             background: rgba(255,255,255,0.08);
             border-radius: 10px;
             border-left: 3px solid #2563eb;
-            transition: background 0.2s;
+            line-height: 1.6;
         }
-
-        .instructions li:hover {
-            background: rgba(255,255,255,0.15);
-        }
-
-        .instructions li strong {
-            color: #93c5fd;
-        }
+        .instructions .red { color: #f87171; font-weight: 600; }
+        .instructions .black { color: #94a3b8; font-weight: 600; }
 
         .modal-note {
             margin-top: 20px;
@@ -211,113 +175,82 @@
             border-radius: 10px;
             font-size: 13px;
             color: #bfdbfe;
-            border: 1px solid rgba(37, 99, 235, 0.4);
         }
 
-        .btn-reveal {
-            margin-top: 15px;
-            background: linear-gradient(135deg, #10b981, #059669);
-        }
-
-        .btn-reveal:hover {
-            background: linear-gradient(135deg, #059669, #047857);
-        }
-
-        /* Responsive */
         @media (max-width: 480px) {
-            .container {
-                padding: 20px 15px;
-                border-radius: 1.25rem;
-            }
-            
-            .grid {
-                gap: 8px;
-            }
-            
-            .grid img {
-                max-width: 65px;
-            }
-            
-            h1 {
-                font-size: 1.2rem;
-            }
+            .grid { gap: 8px; padding: 10px; }
+            .card { max-width: 65px; }
+            h1 { font-size: 1.2rem; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>✨ Magic Trick - Kartu Hitam Merah ✨</h1>
+        <h1>Read your Mind</h1>
         
-        <div class="grid" id="cardsGrid">
-            <!-- Baris 1 -->
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiFEmG38awzGqbg8bPIlScXUzFclI353RCsc-lTGoJ00Pitl7WwCwWSo1tIxFXbulx6ZcKWQ0jh5anBszQor-ECophAMVMI53rfjted97EuFU47wDcDqoCCtiFW_KPh8vpAiCYS1jZvkcOq9tIee-zYzGnW7_hTQfHXdV_flRpZcufN7ujhQJTIfY7wm8CR/s828/10H.jpg" alt="10 Hearts">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgsHoio8odptTA3q-iO2fmUSdVEWIA2xjhQa3wqxsN1tu4Moo85_axU2vLz-jEJjRBTKM8mRS-MokntC14-fgcEkKyWGRKeGivv9NLXmyJiCPxgXaAuhzmmWcwSgbl3HSQIbp4Tr_aEO-RtigIEWFMXnSEtVV2JOgH42UvPDfQRY0u6lKxiijW7b7shNyzG/s663/JC.jpg" alt="Jack Clubs">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEitVOciQWbvlYIPmqw9LIyc0Fjjtk7eVkOIAkT5luwMeGXDeyQM1UPmfZOAS7r6-CFcpFcJaGAzsUfP-yD1JRRH_e7bJeNPf3unD4p472ouwcCt1SITI2N5enTLBJ-ewA5bjXgYd4V9pWVPu9DZXhvXT-xwIsnooemiLfdfkG_7y_lfJ_D75fVqscY5CsNU/s828/AH.jpg" alt="Ace Hearts">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEivVuCU0PGM-p9N4tnc-5U-L3g6lsWHI13FEvt0I9GdBrhuPATEKAox66t8L9BjKExwlz6S9K4ozDtnjDnis8Ilxx4nwhr-CIA50S0ru3bQbT-eE22brFd27XHNFXk1lmFGq_PrFp1RKaqM6Yl5tLo8eGhuzgPX7CmTO0Faw1BDce5xzcntuiotOgsxj4qn/s828/5D.jpg" alt="5 Diamonds">
-            
-            <!-- Baris 2 -->
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg0cF91h1z4a7DbbGhpVjE90IfmHEMBYf-r-qOg80lIkuIukWAXRlTer_IeJSNYdChy1lmfGTT19EimjlWPD7bZRyiS2c339bwI39Tyq-Gz0lLHWVQvWhmyoPgnILY4avSf73-xfoyDQtVIuE0o0E0TdaJap5b71J7Jaumz_nXe8ZG6GB_KQ4ezUA_HnVI8/s828/4S.jpg" alt="4 Spades">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjv45TXSVW1KvwxsdbHoCm49ZvhqVrWtL7bPjV3Va2rSVVbfiXkgT-QTD6H2uXQvFk7t3r_iJGW4IibDHo3oltQP1Wqo3f6IQuhvZi7CpPyhyphenhyphenS-guo1Da4n-ymKyamOXn5aM3XX4alFAGyKtXAxTP_QdI3HFtFHkx_YZ9-kUDJJ2Wqejk33_pGgUnqp1AjC/s663/QC.jpg" alt="Queen Clubs">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhs_Rh8v3CscYAYo9n_4RyuTnl9twHXy9eg2_6vcig537fFGQtxn6chlB3HQ0LnWPklcEHSQPys2HLFb2RrK4LX9dc96vsewcP9YPe-O2hHhkkvEdD8wE4N5A1LHBV799xckFiReFlnHMSilN8Wg8JuuZU3CxlvK6L8LWZnLHzuFwtVwd8PjHep3NiEY9FZ/s828/AS.jpg" alt="Ace Spades">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg-usWn_803HwY5TV1ILP1CtjXfkUGaDgGwWHJ59B9u4hXuKOHAvjGL0kXPDaO6NYyXCOpBANLCNREeNIfb0qYESiTetlDAQ0c81q1WIXQRASFfyVVPVTOPqlVW-FvnrFo7Z6tqKMUo202jGSDQnnESrEdaz3CsYpkJQI-2jr76Nw8E8qfe3qv0iw6zWv5s/s828/2H.jpg" alt="2 Hearts">
-
-            <!-- Baris 3 -->
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEitVOciQWbvlYIPmqw9LIyc0Fjjtk7eVkOIAkT5luwMeGXDeyQM1UPmfZOAS7r6-CFcpFcJaGAzsUfP-yD1JRRH_e7bJeNPf3unD4p472ouwcCt1SITI2N5enTLBJ-ewA5bjXgYd4V9pWVPu9DZXhvXT-xwIsnooemiLfdfkG_7y_lfJ_D75fVqscY5CsNU/s828/AH.jpg" alt="Ace Hearts">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhxouHzJI6UtK7IM_k-L2ztlnS8juqFBadIujY5xitpgf3GEAHBTXehdAi_77bYIZ0Q_GwM7g_x3pPYtCIheA_DciDXV8vhtHwj3JK7ugC4Nsf9TCG6rWG-IzqloFDYdXbBJOOZ5O-uzxj3kbfPwjeRUkY6lGDhaRoxB_vwFD-u7DjyrscMiOGS_NgwqAxf/s663/JH.jpg" alt="Jack Hearts">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiOjx3DFRUiZEye8nAQV977eXpXRfgB7ajEMiDRM_Ti8Jw_tUkVUi2inFo7aVdbMO5k7oRil4Qhm10fSgb_cMLG_Ok8Iny_sLxMmrsCstQJRlqjeo7vYU0f51_zvmj8DrhKk-9kyExZRqTQaFIcrUz-CxIDO6F3CEkFC5G44acEnL_zqZZmWK6PWMuDNQdJ/s828/5C.jpg" alt="5 Clubs">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhl-qSxXdAPpneVh5C__HN1nLLU7aXktLC6LZ6PKYEo8STmJciTNVi3I96ZbHgcfWRSOUPxcLpxN6y-Q3PLBiyLpnWQ72eA1He0FNQ_TJxyL5v1Zk5yTA8AFUaOTcMLv-v0t89OzjxRPNnFU9rm6tCoFf3ELtCL1SQqw2F4NwpQcaMbUCNNFi8nhX8_jg-F/s828/AC.jpg" alt="Ace Clubs">
+        <div class="controls">
+            <button class="btn btn-shuffle" id="shuffleBtn">🔄 Shuffle</button>
         </div>
         
-        <button id="revealButton">Intruksi</button>
+        <div class="grid" id="cardsGrid"></div>
+        
+        <div class="status" id="statusText">Siap! Klik Shuffle untuk mengacak kartu.</div>
     </div>
 
-    <!-- Popup Modal untuk Instruksi -->
     <div class="modal-overlay" id="instructionModal">
         <div class="modal">
             <button class="modal-close" id="modalClose">&times;</button>
             <h2>🎭 Instruksi Trik</h2>
             <div class="instructions">
                 <ol>
-                    <li><strong>🖐️ Langkah 1:</strong> Letakkan jari di <span style="color:#f87171">kartu hitam</span> manapun.</li>
-                    <li><strong>➡️ Langkah 2:</strong> Pindahkan jari secara <em>horizontal dan vertikal</em> ke <span style="color:#f87171">kartu merah</span> terdekat.</li>
-                    <li><strong>↗️ Langkah 3:</strong> Pindahkan jari secara <em>diagonal</em> ke <span style="color:#94a3b8">kartu hitam</span> terdekat.</li>
-                    <li><strong>🎯 Langkah 4:</strong> Terakhir, pindahkan jari secara <em>horizontal</em> ke <span style="color:#f87171">kartu merah</span> terdekat.</li>
+                    <li><strong>🖐️ Langkah 1:</strong> Letakkan jari di <span class="black">kartu hitam</span> manapun.</li>
+                    <li><strong>️ Langkah 2:</strong> Pindahkan jari secara <em>horizontal & vertikal</em> ke <span class="red">kartu merah</span> terdekat.</li>
+                    <li><strong>↗️ Langkah 3:</strong> Pindahkan jari secara <em>diagonal</em> ke <span class="black">kartu hitam</span> terdekat.</li>
+                    <li><strong>🎯 Langkah 4:</strong> Terakhir, pindahkan jari secara <em>horizontal</em> ke <span class="red">kartu merah</span> terdekat.</li>
                 </ol>
             </div>
             <div class="modal-note">
-                💡 <strong>Tips:</strong> Ikuti gerakan dengan perlahan. Hasil akhir akan selalu mengarah ke kartu yang sama! ✨
+                💡 <strong>Rahasia:</strong> Trik ini menggunakan prinsip matematika Parity. Hasil akhir selalu sama! ✨
             </div>
-            <button class="btn-reveal" id="startTrick">Mulai Trik Sekarang</button>
         </div>
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const cardsGrid = document.getElementById("cardsGrid");
-            const revealButton = document.getElementById("revealButton");
+            const shuffleBtn = document.getElementById("shuffleBtn");
             const modal = document.getElementById("instructionModal");
             const modalClose = document.getElementById("modalClose");
-            const startTrickBtn = document.getElementById("startTrick");
+            const statusText = document.getElementById("statusText");
 
-            // Data kartu dengan informasi warna untuk logika trik
-            const cards = [
-                { color: "red", src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiFEmG38awzGqbg8bPIlScXUzFclI353RCsc-lTGoJ00Pitl7WwCwWSo1tIxFXbulx6ZcKWQ0jh5anBszQor-ECophAMVMI53rfjted97EuFU47wDcDqoCCtiFW_KPh8vpAiCYS1jZvkcOq9tIee-zYzGnW7_hTQfHXdV_flRpZcufN7ujhQJTIfY7wm8CR/s828/10H.jpg" },
-                { color: "black", src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgsHoio8odptTA3q-iO2fmUSdVEWIA2xjhQa3wqxsN1tu4Moo85_axU2vLz-jEJjRBTKM8mRS-MokntC14-fgcEkKyWGRKeGivv9NLXmyJiCPxgXaAuhzmmWcwSgbl3HSQIbp4Tr_aEO-RtigIEWFMXnSEtVV2JOgH42UvPDfQRY0u6lKxiijW7b7shNyzG/s663/JC.jpg" },
-                { color: "red", src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEitVOciQWbvlYIPmqw9LIyc0Fjjtk7eVkOIAkT5luwMeGXDeyQM1UPmfZOAS7r6-CFcpFcJaGAzsUfP-yD1JRRH_e7bJeNPf3unD4p472ouwcCt1SITI2N5enTLBJ-ewA5bjXgYd4V9pWVPu9DZXhvXT-xwIsnooemiLfdfkG_7y_lfJ_D75fVqscY5CsNU/s828/AH.jpg" },
-                { color: "red", src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEivVuCU0PGM-p9N4tnc-5U-L3g6lsWHI13FEvt0I9GdBrhuPATEKAox66t8L9BjKExwlz6S9K4ozDtnjDnis8Ilxx4nwhr-CIA50S0ru3bQbT-eE22brFd27XHNFXk1lmFGq_PrFp1RKaqM6Yl5tLo8eGhuzgPX7CmTO0Faw1BDce5xzcntuiotOgsxj4qn/s828/5D.jpg" },
-                { color: "black", src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg0cF91h1z4a7DbbGhpVjE90IfmHEMBYf-r-qOg80lIkuIukWAXRlTer_IeJSNYdChy1lmfGTT19EimjlWPD7bZRyiS2c339bwI39Tyq-Gz0lLHWVQvWhmyoPgnILY4avSf73-xfoyDQtVIuE0o0E0TdaJap5b71J7Jaumz_nXe8ZG6GB_KQ4ezUA_HnVI8/s828/4S.jpg" },
-                { color: "black", src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjv45TXSVW1KvwxsdbHoCm49ZvhqVrWtL7bPjV3Va2rSVVbfiXkgT-QTD6H2uXQvFk7t3r_iJGW4IibDHo3oltQP1Wqo3f6IQuhvZi7CpPyhyphenhyphenS-guo1Da4n-ymKyamOXn5aM3XX4alFAGyKtXAxTP_QdI3HFtFHkx_YZ9-kUDJJ2Wqejk33_pGgUnqp1AjC/s663/QC.jpg" },
-                { color: "black", src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhs_Rh8v3CscYAYo9n_4RyuTnl9twHXy9eg2_6vcig537fFGQtxn6chlB3HQ0LnWPklcEHSQPys2HLFb2RrK4LX9dc96vsewcP9YPe-O2hHhkkvEdD8wE4N5A1LHBV799xckFiReFlnHMSilN8Wg8JuuZU3CxlvK6L8LWZnLHzuFwtVwd8PjHep3NiEY9FZ/s828/AS.jpg" },
-                { color: "red", src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg-usWn_803HwY5TV1ILP1CtjXfkUGaDgGwWHJ59B9u4hXuKOHAvjGL0kXPDaO6NYyXCOpBANLCNREeNIfb0qYESiTetlDAQ0c81q1WIXQRASFfyVVPVTOPqlVW-FvnrFo7Z6tqKMUo202jGSDQnnESrEdaz3CsYpkJQI-2jr76Nw8E8qfe3qv0iw6zWv5s/s828/2H.jpg" },
-                { color: "red", src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEitVOciQWbvlYIPmqw9LIyc0Fjjtk7eVkOIAkT5luwMeGXDeyQM1UPmfZOAS7r6-CFcpFcJaGAzsUfP-yD1JRRH_e7bJeNPf3unD4p472ouwcCt1SITI2N5enTLBJ-ewA5bjXgYd4V9pWVPu9DZXhvXT-xwIsnooemiLfdfkG_7y_lfJ_D75fVqscY5CsNU/s828/AH.jpg" },
-                { color: "red", src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhxouHzJI6UtK7IM_k-L2ztlnS8juqFBadIujY5xitpgf3GEAHBTXehdAi_77bYIZ0Q_GwM7g_x3pPYtCIheA_DciDXV8vhtHwj3JK7ugC4Nsf9TCG6rWG-IzqloFDYdXbBJOOZ5O-uzxj3kbfPwjeRUkY6lGDhaRoxB_vwFD-u7DjyrscMiOGS_NgwqAxf/s663/JH.jpg" },
-                { color: "black", src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiOjx3DFRUiZEye8nAQV977eXpXRfgB7ajEMiDRM_Ti8Jw_tUkVUi2inFo7aVdbMO5k7oRil4Qhm10fSgb_cMLG_Ok8Iny_sLxMmrsCstQJRlqjeo7vYU0f51_zvmj8DrhKk-9kyExZRqTQaFIcrUz-CxIDO6F3CEkFC5G44acEnL_zqZZmWK6PWMuDNQdJ/s828/5C.jpg" },
-                { color: "black", src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhl-qSxXdAPpneVh5C__HN1nLLU7aXktLC6LZ6PKYEo8STmJciTNVi3I96ZbHgcfWRSOUPxcLpxN6y-Q3PLBiyLpnWQ72eA1He0FNQ_TJxyL5v1Zk5yTA8AFUaOTcMLv-v0t89OzjxRPNnFU9rm6tCoFf3ELtCL1SQqw2F4NwpQcaMbUCNNFi8nhX8_jg-F/s828/AC.jpg" }
+            // POLA WARNA TETAP - 12 POSISI
+            const COLOR_PATTERN = [
+                true,   false,  true,   true,   false,  false,
+                false,  true,   true,   true,   false,  false
             ];
 
-            // Fungsi untuk mengacak array (Fisher-Yates shuffle)
-            function shuffleArray(array) {
-                const newArray = [...array];
+            // 6 KARTU MERAH (Sudah diperbaiki - QH menggantikan duplikat AH)
+            const RED_CARDS = [
+                "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiFEmG38awzGqbg8bPIlScXUzFclI353RCsc-lTGoJ00Pitl7WwCwWSo1tIxFXbulx6ZcKWQ0jh5anBszQor-ECophAMVMI53rfjted97EuFU47wDcDqoCCtiFW_KPh8vpAiCYS1jZvkcOq9tIee-zYzGnW7_hTQfHXdV_flRpZcufN7ujhQJTIfY7wm8CR/s828/10H.jpg",
+                "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEitVOciQWbvlYIPmqw9LIyc0Fjjtk7eVkOIAkT5luwMeGXDeyQM1UPmfZOAS7r6-CFcpFcJaGAzsUfP-yD1JRRH_e7bJeNPf3unD4p472ouwcCt1SITI2N5enTLBJ-ewA5bjXgYd4V9pWVPu9DZXhvXT-xwIsnooemiLfdfkG_7y_lfJ_D75fVqscY5CsNU/s828/AH.jpg",
+                "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEivVuCU0PGM-p9N4tnc-5U-L3g6lsWHI13FEvt0I9GdBrhuPATEKAox66t8L9BjKExwlz6S9K4ozDtnjDnis8Ilxx4nwhr-CIA50S0ru3bQbT-eE22brFd27XHNFXk1lmFGq_PrFp1RKaqM6Yl5tLo8eGhuzgPX7CmTO0Faw1BDce5xzcntuiotOgsxj4qn/s828/5D.jpg",
+                "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg-usWn_803HwY5TV1ILP1CtjXfkUGaDgGwWHJ59B9u4hXuKOHAvjGL0kXPDaO6NYyXCOpBANLCNREeNIfb0qYESiTetlDAQ0c81q1WIXQRASFfyVVPVTOPqlVW-FvnrFo7Z6tqKMUo202jGSDQnnESrEdaz3CsYpkJQI-2jr76Nw8E8qfe3qv0iw6zWv5s/s828/2H.jpg",
+                "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpop5TlFImAhe6_rhQ-rXFdt4sdzzThFzTIK9V-kfQN9HCgLvfwpSqgqXdUG_v6jTgR8s_1shs6WGrker-LMNLIO9WRIthBar1VjzkPkbyMOFGY5z-gStis4KKc_PQfbFYH3R0ivFj8mLWS_M76StXgNNpHZc1VqVtcEcTjtK5Vst09tZWMj9oIuw95ENk/s663/QH.jpg",
+                "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhxouHzJI6UtK7IM_k-L2ztlnS8juqFBadIujY5xitpgf3GEAHBTXehdAi_77bYIZ0Q_GwM7g_x3pPYtCIheA_DciDXV8vhtHwj3JK7ugC4Nsf9TCG6rWG-IzqloFDYdXbBJOOZ5O-uzxj3kbfPwjeRUkY6lGDhaRoxB_vwFD-u7DjyrscMiOGS_NgwqAxf/s663/JH.jpg"
+            ];
+
+            // 6 KARTU HITAM
+            const BLACK_CARDS = [
+                "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgsHoio8odptTA3q-iO2fmUSdVEWIA2xjhQa3wqxsN1tu4Moo85_axU2vLz-jEJjRBTKM8mRS-MokntC14-fgcEkKyWGRKeGivv9NLXmyJiCPxgXaAuhzmmWcwSgbl3HSQIbp4Tr_aEO-RtigIEWFMXnSEtVV2JOgH42UvPDfQRY0u6lKxiijW7b7shNyzG/s663/JC.jpg",
+                "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg0cF91h1z4a7DbbGhpVjE90IfmHEMBYf-r-qOg80lIkuIukWAXRlTer_IeJSNYdChy1lmfGTT19EimjlWPD7bZRyiS2c339bwI39Tyq-Gz0lLHWVQvWhmyoPgnILY4avSf73-xfoyDQtVIuE0o0E0TdaJap5b71J7Jaumz_nXe8ZG6GB_KQ4ezUA_HnVI8/s828/4S.jpg",
+                "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjv45TXSVW1KvwxsdbHoCm49ZvhqVrWtL7bPjV3Va2rSVVbfiXkgT-QTD6H2uXQvFk7t3r_iJGW4IibDHo3oltQP1Wqo3f6IQuhvZi7CpPyhyphenhyphenS-guo1Da4n-ymKyamOXn5aM3XX4alFAGyKtXAxTP_QdI3HFtFHkx_YZ9-kUDJJ2Wqejk33_pGgUnqp1AjC/s663/QC.jpg",
+                "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhs_Rh8v3CscYAYo9n_4RyuTnl9twHXy9eg2_6vcig537fFGQtxn6chlB3HQ0LnWPklcEHSQPys2HLFb2RrK4LX9dc96vsewcP9YPe-O2hHhkkvEdD8wE4N5A1LHBV799xckFiReFlnHMSilN8Wg8JuuZU3CxlvK6L8LWZnLHzuFwtVwd8PjHep3NiEY9FZ/s828/AS.jpg",
+                "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiOjx3DFRUiZEye8nAQV977eXpXRfgB7ajEMiDRM_Ti8Jw_tUkVUi2inFo7aVdbMO5k7oRil4Qhm10fSgb_cMLG_Ok8Iny_sLxMmrsCstQJRlqjeo7vYU0f51_zvmj8DrhKk-9kyExZRqTQaFIcrUz-CxIDO6F3CEkFC5G44acEnL_zqZZmWK6PWMuDNQdJ/s828/5C.jpg",
+                "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhl-qSxXdAPpneVh5C__HN1nLLU7aXktLC6LZ6PKYEo8STmJciTNVi3I96ZbHgcfWRSOUPxcLpxN6y-Q3PLBiyLpnWQ72eA1He0FNQ_TJxyL5v1Zk5yTA8AFUaOTcMLv-v0t89OzjxRPNnFU9rm6tCoFf3ELtCL1SQqw2F4NwpQcaMbUCNNFi8nhX8_jg-F/s828/AC.jpg"
+            ];
+
+            function shuffleArray(arr) {
+                const newArray = [...arr];
                 for (let i = newArray.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
@@ -325,82 +258,79 @@
                 return newArray;
             }
 
-            // Fungsi menampilkan kartu ke dalam grid
-            function displayCards(cardList) {
+            function renderCards() {
                 cardsGrid.innerHTML = "";
-                cardList.forEach(card => {
+                const shuffledRed = shuffleArray(RED_CARDS);
+                const shuffledBlack = shuffleArray(BLACK_CARDS);
+                let rIdx = 0, bIdx = 0;
+                
+                for (let i = 0; i < 12; i++) {
+                    const isRed = COLOR_PATTERN[i];
+                    const src = isRed ? shuffledRed[rIdx++] : shuffledBlack[bIdx++];
+                    
+                    const cardDiv = document.createElement("div");
+                    cardDiv.className = "card";
+                    cardDiv.dataset.color = isRed ? "red" : "black";
+                    
                     const img = document.createElement("img");
-                    img.src = card.src;
-                    img.alt = `Kartu ${card.color}`;
-                    img.dataset.color = card.color;
-                    cardsGrid.appendChild(img);
-                });
+                    img.src = src;
+                    img.alt = isRed ? "Red Card" : "Black Card";
+                    img.onerror = function() {
+                        this.src = "image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 140'%3E%3Crect width='100' height='140' fill='white'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' fill='" + (isRed ? "%23dc2626" : "%231e293b") + "'%3E" + (isRed ? "♥" : "♠") + "%3C/text%3E%3C/svg%3E";
+                    };
+                    
+                    cardDiv.appendChild(img);
+                    cardsGrid.appendChild(cardDiv);
+                }
+                statusText.textContent = "";
             }
 
-            // Tampilkan kartu pertama kali (bisa di-shuffle jika diinginkan)
-            displayCards(cards);
+            // Triple Click Logic untuk Kartu ke-8 (Index 7)
+            let clickCount = 0;
+            let clickTimer = null;
 
-            // Event: Buka popup instruksi saat tombol "Lihat Hasil" diklik
-            revealButton.addEventListener("click", function () {
-                modal.classList.add("active");
-                document.body.style.overflow = "hidden"; // Prevent scroll behind modal
-            });
-
-            // Event: Tutup popup dengan tombol X
-            modalClose.addEventListener("click", function () {
-                modal.classList.remove("active");
-                document.body.style.overflow = "";
-            });
-
-            // Event: Tutup popup jika klik di luar modal
-            modal.addEventListener("click", function (e) {
-                if (e.target === modal) {
-                    modal.classList.remove("active");
-                    document.body.style.overflow = "";
-                }
-            });
-
-            // Event: Tombol "Mulai Trik Sekarang" - bisa ditambahkan logika trik di sini
-            startTrickBtn.addEventListener("click", function () {
-                modal.classList.remove("active");
-                document.body.style.overflow = "";
-                
-                // Opsional: Tambahkan animasi atau highlight kartu
-                cardsGrid.querySelectorAll("img").forEach((img, index) => {
-                    setTimeout(() => {
-                        img.style.animation = "pulse 0.5s ease";
-                        setTimeout(() => {
-                            img.style.animation = "";
-                        }, 500);
-                    }, index * 100);
-                });
-                
-                alert("🎩 Siap! Ikuti instruksi tadi dan lihat keajaibannya... ✨");
-            });
-
-            // Opsional: Klik kartu untuk efek interaktif
             cardsGrid.addEventListener("click", function(e) {
-                if (e.target.tagName === "IMG") {
-                    const color = e.target.dataset.color;
-                    const message = color === "red" ? "❤️ Kartu MERAH" : "♠️ Kartu HITAM";
-                    
-                    // Efek visual singkat
-                    e.target.style.transform = "scale(0.95)";
-                    setTimeout(() => {
-                        e.target.style.transform = "";
-                    }, 150);
+                const card = e.target.closest(".card");
+                if (!card) return;
+
+                // Efek klik normal
+                card.style.transform = "scale(0.95)";
+                setTimeout(() => { card.style.transform = ""; }, 150);
+
+                // Cek apakah ini kartu ke-8 (index 7)
+                const allCards = Array.from(cardsGrid.querySelectorAll(".card"));
+                if (allCards.indexOf(card) === 7) {
+                    clickCount++;
+                    if (clickCount === 1) {
+                        clickTimer = setTimeout(() => { clickCount = 0; }, 500);
+                    }
+                    if (clickCount === 3) {
+                        clearTimeout(clickTimer);
+                        clickCount = 0;
+                        modal.classList.add("active"); // Tampilkan popup instruksi
+                    }
                 }
             });
 
-            // Tambahkan animasi pulse ke CSS secara dinamis
-            const style = document.createElement("style");
-            style.textContent = `
-                @keyframes pulse {
-                    0%, 100% { transform: scale(1); }
-                    50% { transform: scale(1.15); }
-                }
-            `;
-            document.head.appendChild(style);
+            // Modal Controls
+            modalClose.addEventListener("click", () => modal.classList.remove("active"));
+            modal.addEventListener("click", (e) => {
+                if (e.target === modal) modal.classList.remove("active");
+            });
+
+            // Shuffle Button
+            shuffleBtn.addEventListener("click", function() {
+                shuffleBtn.disabled = true;
+                shuffleBtn.textContent = "🔄 Mengocok...";
+                setTimeout(() => {
+                    renderCards();
+                    shuffleBtn.disabled = false;
+                    shuffleBtn.textContent = "🔄 Shuffle";
+                }, 300);
+            });
+
+            // Init
+            renderCards();
         });
     </script>
 </body>
