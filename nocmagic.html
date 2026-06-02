@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Magic Circle - Forum Sulap Exclusive</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; }
+        .spoiler-content { background: #1a1a1a; color: #1a1a1a; border-radius: 4px; cursor: pointer; transition: 0.3s; padding: 4px 8px; display: inline-block; }
+        .spoiler-content.revealed { color: #fff; background: #2d2d2d; border: 1px dashed #666; }
+        .hidden-section { display: none !important; }
+        .active-section { display: block !important; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .chat-box::-webkit-scrollbar { width: 6px; }
+        .chat-box::-webkit-scrollbar-thumb { background: #555; border-radius: 3px; }
+        .chat-box::-webkit-scrollbar-track { background: #1f2937; }
+        .thread-img { max-width: 100%; max-height: 400px; border-radius: 8px; margin: 8px 0; }
+        .thread-video { width: 100%; height: 315px; border-radius: 8px; margin: 8px 0; }
+        .nav-btn.active { color: #c084fc; border-bottom: 2px solid #c084fc; }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col">
+
+    <!-- ================= NAVBAR ================= -->
+    <nav id="navbar" class="bg-gray-800 border-b border-gray-700 p-4 hidden-section sticky top-0 z-40">
+        <div class="container mx-auto flex justify-between items-center flex-wrap gap-2">
+            <h1 class="text-xl md:text-2xl font-bold text-purple-400"><i class="fa-solid fa-hat-wizard"></i> Magic Circle</h1>
+            <div class="flex gap-1 md:gap-4 items-center flex-wrap">
+                <button onclick="showSection('homeSection')" class="nav-btn px-3 py-2 hover:text-purple-400 text-sm" data-nav="homeSection">🏠 Forum</button>
+                <button onclick="showSection('chatSection')" class="nav-btn px-3 py-2 hover:text-purple-400 text-sm" data-nav="chatSection">💬 Chat</button>
+                <div class="relative group">
+                    <button class="flex items-center gap-2 bg-gray-700 px-3 py-1 rounded-full">
+                        <img id="navUserPhoto" src="" class="w-6 h-6 rounded-full">
+                        <span id="navUserName" class="text-sm">User</span>
+                    </button>
+                    <div class="absolute right-0 mt-2 w-48 bg-gray-800 border border-gray-700 rounded shadow-xl hidden group-hover:block z-50">
+                        <a onclick="showSection('profileSection')" class="block px-4 py-2 hover:bg-gray-700 cursor-pointer text-sm">👤 Profil Saya</a>
+                        <a onclick="logout()" class="block px-4 py-2 text-red-400 hover:bg-gray-700 cursor-pointer text-sm">🚪 Keluar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ================= 1. LOGIN ================= -->
+    <section id="loginSection" class="active-section flex-grow flex items-center justify-center p-4">
+        <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl max-w-md w-full text-center border border-gray-700">
+            <div class="text-6xl mb-4">🎩</div>
+            <h2 class="text-3xl font-bold mb-2 text-purple-400">The Magic Circle</h2>
+            <p class="text-gray-400 mb-6">Forum Sulap Eksklusif</p>
+            <div class="bg-gray-900 p-3 rounded-lg mb-6">
+                <p class="text-sm text-gray-400">Kuota Anggota</p>
+                <p class="text-2xl font-bold text-yellow-400"><span id="quotaDisplay">...</span> / 50</p>
+            </div>
+            <button onclick="loginWithGoogle()" class="w-full bg-white text-gray-900 font-bold py-3 px-4 rounded-lg hover:bg-gray-200 transition flex items-center justify-center gap-2">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5">
+                Masuk dengan Gmail
+            </button>
+            <p id="loginError" class="text-red-500 mt-4 text-sm hidden"></p>
+        </div>
+    </section>
+
+    <!-- ================= 2. REGISTER / BIO ================= -->
+    <section id="registerSection" class="hidden-section flex-grow flex items-center justify-center p-4">
+        <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl max-w-md w-full border border-gray-700">
+            <h2 class="text-2xl font-bold mb-4 text-purple-400">🎩 Lengkapi Profil</h2>
+            <form id="bioForm" onsubmit="saveProfile(event)">
+                <div class="mb-4">
+                    <label class="block text-sm mb-1">Nama Panggung</label>
+                    <input type="text" id="regName" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-white" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm mb-1">Bio (Spesialisasi Sulap)</label>
+                    <textarea id="regBio" rows="3" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-white" placeholder="Contoh: Card Manipulation & Mentalism..." required></textarea>
+                </div>
+                <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded-lg transition">Masuk ke Forum</button>
+            </form>
+            <p id="regError" class="text-red-500 mt-4 text-sm hidden"></p>
+        </div>
+    </section>
+
+    <!-- ================= 3. HOME / FORUM ================= -->
+    <section id="homeSection" class="hidden-section flex-grow container mx-auto p-4">
+        <div class="flex justify-between items-center mb-6 flex-wrap gap-2">
+            <h2 class="text-2xl font-bold">Diskusi Member</h2>
+            <button onclick="openModal('threadModal')" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg font-bold text-sm"><i class="fa-solid fa-plus"></i> Buat Thread</button>
+        </div>
+
+        <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
+            <button onclick="filterThreads('all')" class="bg-gray-700 px-4 py-1 rounded-full hover:bg-purple-600 transition text-sm whitespace-nowrap">Semua</button>
+            <button onclick="filterThreads('Introduce')" class="bg-gray-700 px-4 py-1 rounded-full hover:bg-purple-600 transition text-sm whitespace-nowrap">🎩 Perkenalan</button>
+            <button onclick="filterThreads('Coin')" class="bg-gray-700 px-4 py-1 rounded-full hover:bg-purple-600 transition text-sm whitespace-nowrap">🪙 Coin</button>
+            <button onclick="filterThreads('Kartu')" class="bg-gray-700 px-4 py-1 rounded-full hover:bg-purple-600 transition text-sm whitespace-nowrap">🃏 Kartu</button>
+            <button onclick="filterThreads('Mentalism')" class="bg-gray-700 px-4 py-1 rounded-full hover:bg-purple-600 transition text-sm whitespace-nowrap">🔮 Mentalism</button>
+        </div>
+
+        <div id="threadList" class="space-y-4">
+            <div class="text-center text-gray-500 py-10">Memuat thread...</div>
+        </div>
+    </section>
+
+    <!-- ================= 4. CHAT ================= -->
+    <section id="chatSection" class="hidden-section flex-grow container mx-auto p-4" style="height: calc(100vh - 80px);">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 h-full">
+            <div class="bg-gray-800 rounded-lg p-4 border border-gray-700 flex flex-col">
+                <h3 class="font-bold mb-4 border-b border-gray-700 pb-2">💬 Room Chat</h3>
+                <button onclick="loadChat('global')" class="text-left p-2 hover:bg-gray-700 rounded mb-2 bg-gray-700 text-sm">🌐 Global Chat</button>
+                <h4 class="text-xs text-gray-500 mt-4 mb-2 uppercase">Chat Privat</h4>
+                <div id="chatMemberList" class="flex-grow overflow-y-auto space-y-1 chat-box"></div>
+            </div>
+            
+            <div class="md:col-span-3 bg-gray-800 rounded-lg border border-gray-700 flex flex-col">
+                <div id="chatHeader" class="p-4 border-b border-gray-700 font-bold rounded-t-lg">🌐 Global Chat</div>
+                <div id="chatMessages" class="flex-grow p-4 overflow-y-auto chat-box space-y-3"></div>
+                <div class="p-4 border-t border-gray-700 flex gap-2">
+                    <input type="text" id="chatInput" class="flex-grow bg-gray-900 border border-gray-600 rounded-lg p-2 text-white text-sm" placeholder="Ketik pesan atau URL gambar/video...">
+                    <button onclick="sendMessage()" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 5. PROFILE ================= -->
+    <section id="profileSection" class="hidden-section flex-grow container mx-auto p-4 max-w-2xl">
+        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700 text-center">
+            <img id="profilePhoto" src="" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-purple-500">
+            <h2 id="profileName" class="text-2xl font-bold"></h2>
+            <p id="profileRole" class="text-purple-400 text-sm mb-4"></p>
+            <div class="bg-gray-900 p-4 rounded text-left mb-4">
+                <h3 class="font-bold text-gray-400 mb-2">Bio:</h3>
+                <p id="profileBio" class="text-gray-300"></p>
+            </div>
+            <div class="grid grid-cols-3 gap-2 mb-4 text-center">
+                <div class="bg-gray-900 p-3 rounded"><div id="statThreads" class="text-xl font-bold text-purple-400">0</div><div class="text-xs text-gray-400">Thread</div></div>
+                <div class="bg-gray-900 p-3 rounded"><div id="statLikes" class="text-xl font-bold text-red-400">0</div><div class="text-xs text-gray-400">Likes</div></div>
+                <div class="bg-gray-900 p-3 rounded"><div id="statRank" class="text-xl font-bold text-yellow-400">Novice</div><div class="text-xs text-gray-400">Rank</div></div>
+            </div>
+            <button onclick="showSection('homeSection')" class="bg-gray-700 hover:bg-gray-600 px-6 py-2 rounded-lg">Kembali</button>
+        </div>
+    </section>
+
+    <!-- ================= MODAL: BUAT THREAD ================= -->
+    <div id="threadModal" class="fixed inset-0 bg-black bg-opacity-75 hidden-section flex items-center justify-center p-4 z-50">
+        <div class="bg-gray-800 rounded-lg max-w-lg w-full p-6 border border-gray-700 max-h-[90vh] overflow-y-auto">
+            <h3 class="text-xl font-bold mb-4">🎩 Buat Thread Baru</h3>
+            <form onsubmit="createThread(event)">
+                <input type="text" id="threadTitle" placeholder="Judul Thread" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-2 mb-3 text-white" required>
+                <select id="threadCategory" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-2 mb-3 text-white" required>
+                    <option value="Introduce">🎩 Perkenalan</option>
+                    <option value="Coin">🪙 Coin</option>
+                    <option value="Kartu">🃏 Kartu</option>
+                    <option value="Mentalism">🔮 Mentalism</option>
+                </select>
+                <textarea id="threadContent" rows="6" placeholder="Isi thread...&#10;&#10;Tips:&#10;• Gunakan [spoiler]teks[/spoiler] untuk rahasia&#10;• Tempel URL gambar (.jpg/.png) untuk auto-tampil&#10;• Tempel URL YouTube untuk auto-embed" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-2 mb-3 text-white text-sm" required></textarea>
+                <div class="flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('threadModal')" class="px-4 py-2 text-gray-400 hover:text-white">Batal</button>
+                    <button type="submit" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg text-white">Posting</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= MODAL: DETAIL THREAD ================= -->
+    <div id="threadDetailModal" class="fixed inset-0 bg-black bg-opacity-75 hidden-section flex items-center justify-center p-4 z-50">
+        <div class="bg-gray-800 rounded-lg max-w-2xl w-full p-6 border border-gray-700 max-h-[90vh] overflow-y-auto">
+            <div id="threadDetailContent"></div>
+            <button onclick="closeModal('threadDetailModal')" class="mt-4 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg">Tutup</button>
+        </div>
+    </div>
+
+    <!-- ================= FIREBASE & LOGIC ================= -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, onSnapshot, serverTimestamp, doc, updateDoc, arrayUnion, arrayRemove, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // ✅ KONFIGURASI FIREBASE ANDA
+        const firebaseConfig = {
+            apiKey: "AIzaSyDmLQP7Es2hwOC8ByeIOcr6vlFKUGGgsx0",
+            authDomain: "magicnoc-125b6.firebaseapp.com",
+            databaseURL: "https://magicnoc-125b6-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "magicnoc-125b6",
+            storageBucket: "magicnoc-125b6.firebasestorage.app",
+            messagingSenderId: "321388594743",
+            appId: "1:321388594743:web:0dfc8f24d5201f138a21b2"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
+        let currentUser = null;
+        let currentChatRoom = 'global';
+        let currentThreadId = null;
+
+        // --- UTIL: Format konten (spoiler, URL gambar, YouTube) ---
+        function formatContent(text) {
+            let html = text
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/\[spoiler\]([\s\S]*?)\[\/spoiler\]/g, '<span class="spoiler-content" onclick="this.classList.toggle(\'revealed\')">🔒 Klik untuk membuka spoiler</span><div class="spoiler-content mt-1" onclick="this.classList.toggle(\'revealed\')" style="display:block">$1</div>')
+                .replace(/\n/g, '<br>')
+                .replace(/(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))/gi, '<br><img src="$1" class="thread-img" onerror="this.style.display=\'none\'"><br>')
+                .replace(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/g, '<br><iframe class="thread-video" src="https://www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe><br>');
+            return html;
+        }
+
+        // --- NAVIGASI ---
+        window.showSection = (sectionId) => {
+            document.querySelectorAll('section').forEach(sec => {
+                sec.classList.remove('active-section');
+                sec.classList.add('hidden-section');
+            });
+            document.getElementById(sectionId).classList.remove('hidden-section');
+            document.getElementById(sectionId).classList.add('active-section');
+            
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            const activeBtn = document.querySelector(`.nav-btn[data-nav="${sectionId}"]`);
+            if (activeBtn) activeBtn.classList.add('active');
+            
+            if (sectionId === 'homeSection') loadThreads();
+            if (sectionId === 'chatSection') { loadChatMembers(); loadChat(currentChatRoom); }
+            if (sectionId === 'profileSection') loadProfileStats();
+        };
+
+        window.openModal = (id) => document.getElementById(id).classList.remove('hidden-section');
+        window.closeModal = (id) => document.getElementById(id).classList.add('hidden-section');
+
+        // --- AUTH ---
+        window.loginWithGoogle = async () => {
+            const errEl = document.getElementById('loginError');
+            errEl.classList.add('hidden');
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                
+                const q = query(collection(db, "users"), where("uid", "==", user.uid));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    const allUsers = await getDocs(collection(db, "users"));
+                    if (allUsers.size >= 50) {
+                        await signOut(auth);
+                        errEl.textContent = "❌ Maaf, kuota member sudah penuh (50/50).";
+                        errEl.classList.remove('hidden');
+                        return;
+                    }
+                    sessionStorage.setItem('tempEmail', user.email);
+                    sessionStorage.setItem('tempUid', user.uid);
+                    sessionStorage.setItem('tempPhoto', user.photoURL || '');
+                    document.getElementById('regName').value = user.displayName || '';
+                    showSection('registerSection');
+                } else {
+                    currentUser = querySnapshot.docs[0].data();
+                    currentUser.docId = querySnapshot.docs[0].id;
+                    setupUI(currentUser);
+                    showSection('homeSection');
+                }
+            } catch (error) {
+                console.error(error);
+                errEl.textContent = "Login gagal: " + error.message;
+                errEl.classList.remove('hidden');
+            }
+        };
+
+        window.saveProfile = async (e) => {
+            e.preventDefault();
+            const uid = sessionStorage.getItem('tempUid');
+            const email = sessionStorage.getItem('tempEmail');
+            const photo = sessionStorage.getItem('tempPhoto');
+            const name = document.getElementById('regName').value;
+            const bio = document.getElementById('regBio').value;
+
+            try {
+                const ref = await addDoc(collection(db, "users"), {
+                    uid, email, photoURL: photo,
+                    displayName: name, bio,
+                    role: 'member',
+                    joinDate: serverTimestamp()
+                });
+                sessionStorage.clear();
+                const q = query(collection(db, "users"), where("uid", "==", uid));
+                const snap = await getDocs(q);
+                currentUser = snap.docs[0].data();
+                currentUser.docId = snap.docs[0].id;
+                setupUI(currentUser);
+                showSection('homeSection');
+            } catch (error) {
+                document.getElementById('regError').textContent = "Gagal: " + error.message;
+                document.getElementById('regError').classList.remove('hidden');
+            }
+        };
+
+        window.logout = async () => {
+            await signOut(auth);
+            currentUser = null;
+            document.getElementById('navbar').classList.add('hidden-section');
+            showSection('loginSection');
+        };
+
+        function setupUI(user) {
+            document.getElementById('navbar').classList.remove('hidden-section');
+            document.getElementById('navUserName').textContent = user.displayName;
+            document.getElementById('navUserPhoto').src = user.photoURL || 'https://via.placeholder.com/40';
+            document.getElementById('profileName').textContent = user.displayName;
+            document.getElementById('profileBio').textContent = user.bio;
+            document.getElementById('profileRole').textContent = '🎩 Magician';
+            document.getElementById('profilePhoto').src = user.photoURL || 'https://via.placeholder.com/100';
+        }
+
+        // --- FORUM ---
+        window.createThread = async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('threadTitle').value;
+            const category = document.getElementById('threadCategory').value;
+            const content = document.getElementById('threadContent').value;
+
+            try {
+                await addDoc(collection(db, "threads"), {
+                    title, category, content,
+                    authorId: currentUser.uid,
+                    authorName: currentUser.displayName,
+                    authorPhoto: currentUser.photoURL || '',
+                    likes: [],
+                    timestamp: serverTimestamp()
+                });
+                closeModal('threadModal');
+                e.target.reset();
+                loadThreads();
+            } catch (err) {
+                alert("Gagal: " + err.message);
+            }
+        };
+
+        function renderThread(docSnap) {
+            const t = docSnap.data();
+            const isLiked = t.likes?.includes(currentUser.uid);
+            const el = document.createElement('div');
+            el.className = "bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-purple-500 transition cursor-pointer";
+            el.innerHTML = `
+                <div class="flex justify-between items-start mb-2 flex-wrap gap-2">
+                    <span class="text-xs font-bold px-2 py-1 rounded bg-purple-900 text-purple-300">${t.category}</span>
+                    <span class="text-xs text-gray-500">${t.timestamp ? new Date(t.timestamp.seconds * 1000).toLocaleString('id-ID') : 'Baru'}</span>
+                </div>
+                <h3 class="text-lg font-bold text-white mb-2">${t.title}</h3>
+                <div class="text-gray-300 text-sm mb-3 line-clamp-3">${t.content.substring(0, 150)}${t.content.length > 150 ? '...' : ''}</div>
+                <div class="flex items-center gap-4 text-sm text-gray-400 border-t border-gray-700 pt-3 flex-wrap">
+                    <div class="flex items-center gap-2">
+                        <img src="${t.authorPhoto || 'https://via.placeholder.com/24'}" class="w-6 h-6 rounded-full">
+                        <span>${t.authorName}</span>
+                    </div>
+                    <button onclick="event.stopPropagation(); toggleLike('${docSnap.id}', ${isLiked})" class="flex items-center gap-1 hover:text-red-400 ${isLiked ? 'text-red-500' : ''}">
+                        <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart"></i> ${t.likes?.length || 0}
+                    </button>
+                    <button onclick="event.stopPropagation(); openThreadDetail('${docSnap.id}')" class="flex items-center gap-1 hover:text-purple-400">
+                        <i class="fa-regular fa-comment"></i> Komentar
+                    </button>
+                </div>
+            `;
+            el.onclick = () => openThreadDetail(docSnap.id);
+            return el;
+        }
+
+        let threadUnsubscribe = null;
+        function loadThreads(category = 'all') {
+            if (threadUnsubscribe) threadUnsubscribe();
+            const list = document.getElementById('threadList');
+            list.innerHTML = '<div class="text-center text-gray-500 py-10">Memuat...</div>';
+            
+            let q;
+            if (category === 'all') {
+                q = query(collection(db, "threads"), orderBy("timestamp", "desc"), limit(50));
+            } else {
+                q = query(collection(db, "threads"), where("category", "==", category), orderBy("timestamp", "desc"), limit(50));
+            }
+            
+            threadUnsubscribe = onSnapshot(q, (snapshot) => {
+                list.innerHTML = '';
+                if (snapshot.empty) {
+                    list.innerHTML = '<div class="text-center text-gray-500 py-10">Belum ada thread.</div>';
+                    return;
+                }
+                snapshot.forEach(docSnap => list.appendChild(renderThread(docSnap)));
+            }, (err) => {
+                list.innerHTML = `<div class="text-center text-red-500 py-10">Error: ${err.message}</div>`;
+            });
+        }
+
+        window.filterThreads = (category) => loadThreads(category);
+
+        window.toggleLike = async (threadId, isLiked) => {
+            const ref = doc(db, "threads", threadId);
+            if (isLiked) await updateDoc(ref, { likes: arrayRemove(currentUser.uid) });
+            else await updateDoc(ref, { likes: arrayUnion(currentUser.uid) });
+        };
+
+        // --- DETAIL THREAD + KOMENTAR ---
+        window.openThreadDetail = async (threadId) => {
+            currentThreadId = threadId;
+            const modal = document.getElementById('threadDetailModal');
+            const container = document.getElementById('threadDetailContent');
+            container.innerHTML = '<div class="text-center text-gray-500 py-10">Memuat...</div>';
+            modal.classList.remove('hidden-section');
+
+            // Load thread
+            const threadSnap = await getDocs(query(collection(db, "threads"), where("__name__", "==", threadId)));
+            // Cara lain: langsung pakai doc()
+            const { getDoc } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
+            const tDoc = await getDoc(doc(db, "threads", threadId));
+            if (!tDoc.exists()) { container.innerHTML = 'Thread tidak ditemukan'; return; }
+            const t = tDoc.data();
+            const isLiked = t.likes?.includes(currentUser.uid);
+
+            container.innerHTML = `
+                <div class="mb-4 pb-4 border-b border-gray-700">
+                    <div class="flex justify-between items-start mb-2 flex-wrap gap-2">
+                        <span class="text-xs font-bold px-2 py-1 rounded bg-purple-900 text-purple-300">${t.category}</span>
+                        <span class="text-xs text-gray-500">${t.timestamp ? new Date(t.timestamp.seconds * 1000).toLocaleString('id-ID') : ''}</span>
+                    </div>
+                    <h2 class="text-2xl font-bold mb-3">${t.title}</h2>
+                    <div class="flex items-center gap-2 mb-4 text-sm text-gray-400">
+                        <img src="${t.authorPhoto || 'https://via.placeholder.com/32'}" class="w-8 h-8 rounded-full">
+                        <span>${t.authorName}</span>
+                    </div>
+                    <div class="text-gray-200 leading-relaxed">${formatContent(t.content)}</div>
+                    <button onclick="toggleLike('${threadId}', ${isLiked})" class="mt-4 flex items-center gap-2 px-3 py-1 rounded ${isLiked ? 'bg-red-900 text-red-300' : 'bg-gray-700'} hover:bg-red-800">
+                        <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart"></i> ${t.likes?.length || 0} Like
+                    </button>
+                </div>
+                <h3 class="font-bold mb-3">💬 Komentar</h3>
+                <div id="commentList" class="space-y-3 mb-4"></div>
+                <div class="flex gap-2">
+                    <input type="text" id="commentInput" placeholder="Tulis komentar..." class="flex-grow bg-gray-900 border border-gray-600 rounded-lg p-2 text-white text-sm">
+                    <button onclick="postComment()" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg text-sm">Kirim</button>
+                </div>
+            `;
+
+            // Load comments realtime
+            const cq = query(collection(db, "comments"), where("threadId", "==", threadId), orderBy("timestamp", "asc"));
+            onSnapshot(cq, (snap) => {
+                const cl = document.getElementById('commentList');
+                if (!cl) return;
+                cl.innerHTML = '';
+                if (snap.empty) { cl.innerHTML = '<div class="text-gray-500 text-sm text-center py-4">Belum ada komentar.</div>'; return; }
+                snap.forEach(d => {
+                    const c = d.data();
+                    const div = document.createElement('div');
+                    div.className = "bg-gray-900 p-3 rounded-lg";
+                    div.innerHTML = `
+                        <div class="flex items-center gap-2 mb-1 text-sm">
+                            <span class="font-bold text-purple-400">${c.authorName}</span>
+                            <span class="text-xs text-gray-500">${c.timestamp ? new Date(c.timestamp.seconds * 1000).toLocaleString('id-ID') : ''}</span>
+                        </div>
+                        <div class="text-sm text-gray-300">${formatContent(c.content)}</div>
+                    `;
+                    cl.appendChild(div);
+                });
+            });
+        };
+
+        window.postComment = async () => {
+            const input = document.getElementById('commentInput');
+            const content = input.value.trim();
+            if (!content || !currentThreadId) return;
+            try {
+                await addDoc(collection(db, "comments"), {
+                    threadId: currentThreadId,
+                    authorId: currentUser.uid,
+                    authorName: currentUser.displayName,
+                    content,
+                    timestamp: serverTimestamp()
+                });
+                input.value = '';
+            } catch (err) { alert("Gagal: " + err.message); }
+        };
+
+        // --- PROFILE STATS ---
+        async function loadProfileStats() {
+            if (!currentUser) return;
+            const threadsSnap = await getDocs(query(collection(db, "threads"), where("authorId", "==", currentUser.uid)));
+            let totalLikes = 0;
+            threadsSnap.forEach(d => totalLikes += d.data().likes?.length || 0);
+            document.getElementById('statThreads').textContent = threadsSnap.size;
+            document.getElementById('statLikes').textContent = totalLikes;
+            let rank = 'Novice';
+            if (totalLikes >= 21) rank = 'Master';
+            else if (totalLikes >= 6) rank = 'Magician';
+            document.getElementById('statRank').textContent = rank;
+        }
+
+        // --- CHAT ---
+        let chatUnsubscribe = null;
+        function loadChatMembers() {
+            const q = query(collection(db, "users"));
+            onSnapshot(q, (snapshot) => {
+                const list = document.getElementById('chatMemberList');
+                list.innerHTML = '';
+                snapshot.forEach(docSnap => {
+                    const u = docSnap.data();
+                    if (u.uid !== currentUser.uid) {
+                        const btn = document.createElement('button');
+                        btn.className = "w-full text-left p-2 hover:bg-gray-700 rounded text-sm flex items-center gap-2";
+                        btn.innerHTML = `<img src="${u.photoURL || 'https://via.placeholder.com/24'}" class="w-6 h-6 rounded-full"> ${u.displayName}`;
+                        btn.onclick = () => startPrivateChat(u.uid, u.displayName);
+                        list.appendChild(btn);
+                    }
+                });
+            });
+        }
+
+        window.startPrivateChat = (targetUid, targetName) => {
+            const ids = [currentUser.uid, targetUid].sort();
+            currentChatRoom = `private_${ids[0]}_${ids[1]}`;
+            document.getElementById('chatHeader').textContent = `🔒 Privat dengan ${targetName}`;
+            loadChat(currentChatRoom);
+        };
+
+        window.loadChat = (roomId) => {
+            currentChatRoom = roomId;
+            if (roomId === 'global') document.getElementById('chatHeader').textContent = '🌐 Global Chat';
+            if (chatUnsubscribe) chatUnsubscribe();
+            
+            const q = query(collection(db, "chats"), where("roomId", "==", roomId), orderBy("timestamp", "asc"));
+            chatUnsubscribe = onSnapshot(q, (snapshot) => {
+                const box = document.getElementById('chatMessages');
+                box.innerHTML = '';
+                snapshot.forEach(docSnap => {
+                    const msg = docSnap.data();
+                    const isMe = msg.senderId === currentUser.uid;
+                    const div = document.createElement('div');
+                    div.className = `flex ${isMe ? 'justify-end' : 'justify-start'}`;
+                    
+                    let displayMsg = msg.message.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    if (displayMsg.match(/https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp)/i)) {
+                        displayMsg = `<img src="${displayMsg}" class="max-w-[200px] rounded border border-gray-600" onerror="this.outerHTML=this.textContent">`;
+                    } else if (displayMsg.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/)) {
+                        const match = displayMsg.match(/([\w-]{11})/);
+                        if (match) displayMsg = `<iframe class="w-[250px] h-[150px] rounded" src="https://www.youtube.com/embed/${match[1]}" frameborder="0" allowfullscreen></iframe>`;
+                    }
+
+                    div.innerHTML = `
+                        <div class="${isMe ? 'bg-purple-700' : 'bg-gray-700'} px-3 py-2 rounded-lg max-w-[80%]">
+                            ${!isMe ? `<div class="text-xs text-purple-300 font-bold mb-1">${msg.senderName}</div>` : ''}
+                            <div class="text-sm break-words">${displayMsg}</div>
+                            <div class="text-[10px] text-gray-300 text-right mt-1">${msg.timestamp ? new Date(msg.timestamp.seconds * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</div>
+                        </div>
+                    `;
+                    box.appendChild(div);
+                });
+                box.scrollTop = box.scrollHeight;
+            });
+        };
+
+        window.sendMessage = async () => {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if (!text) return;
+            try {
+                await addDoc(collection(db, "chats"), {
+                    roomId: currentChatRoom,
+                    senderId: currentUser.uid,
+                    senderName: currentUser.displayName,
+                    message: text,
+                    timestamp: serverTimestamp()
+                });
+                input.value = '';
+            } catch (err) { console.error(err); }
+        };
+
+        document.getElementById('chatInput')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') window.sendMessage();
+        });
+
+        // --- QUOTA COUNTER ---
+        onSnapshot(collection(db, "users"), (snap) => {
+            const el = document.getElementById('quotaDisplay');
+            if (el) {
+                el.textContent = snap.size;
+                if (snap.size >= 50) el.classList.add('text-red-500');
+            }
+        });
+
+        // --- AUTH STATE ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const q = query(collection(db, "users"), where("uid", "==", user.uid));
+                const snap = await getDocs(q);
+                if (!snap.empty) {
+                    currentUser = snap.docs[0].data();
+                    currentUser.docId = snap.docs[0].id;
+                    setupUI(currentUser);
+                    showSection('homeSection');
+                } else {
+                    showSection('loginSection');
+                }
+            } else {
+                showSection('loginSection');
+            }
+        });
+    </script>
+</body>
+</html>
