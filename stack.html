@@ -173,25 +173,33 @@
             margin-bottom: 4rem;
         }
 
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
         .section-title {
             font-family: 'Playfair Display', serif;
             font-size: 2rem;
             color: var(--primary);
-            margin-bottom: 1.5rem;
-            text-align: center;
             position: relative;
-            padding-bottom: 1rem;
         }
 
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 3px;
-            background: var(--accent);
+        .see-all-link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.2s;
+        }
+
+        .see-all-link:hover {
+            color: var(--primary);
         }
 
         .section-content {
@@ -231,6 +239,90 @@
         .history-text p {
             margin-bottom: 1rem;
             color: var(--text);
+        }
+
+        /* PRODUCT GRID */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+
+        .product-image {
+            width: 100%;
+            aspect-ratio: 4/5;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .product-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .product-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .product-price .original-price {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            text-decoration: line-through;
+            margin-left: 0.5rem;
+            font-weight: 400;
+        }
+
+        .product-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--primary);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .product-badge.new {
+            background: #10b981;
         }
 
         .feature-cards {
@@ -1197,6 +1289,7 @@
             .stack-select { grid-template-columns: 1fr; }
             .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
             .number-grid { grid-template-columns: repeat(6, 1fr); }
+            .product-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
         @media (max-width: 480px) {
@@ -1206,6 +1299,7 @@
             .card-rank { font-size: 50px; }
             .card-suit { font-size: 40px; }
             .number-grid { grid-template-columns: repeat(5, 1fr); }
+            .product-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -1231,7 +1325,7 @@
             Home
         </button>
         <button class="nav-tab" onclick="showPage('randomizer')">
-            <span class="tab-icon">🎲</span>
+            <span class="tab-icon"></span>
             Generator
         </button>
         <button class="nav-tab" onclick="openPasswordModal()">
@@ -1259,6 +1353,103 @@
                     <p>Kartu remi pertama kali muncul di Tiongkok pada abad ke-9 pada masa Dinasti Tang. Awalnya, kartu ini dibuat dari kertas, gading, atau tulang dan digunakan untuk permainan judi serta hiburan.</p>
                     <p>Pada abad ke-14, kartu remi menyebar ke Eropa melalui perdagangan dengan Timur Tengah. Di Eropa, kartu mengalami evolusi desain yang signifikan dengan munculnya empat suit yang kita kenal sekarang: Sekop (Spades), Hati (Hearts), Wajik (Diamonds), dan Klub (Clubs).</p>
                     <p><strong>Bicycle Playing Cards</strong>, yang diproduksi oleh United States Playing Card Company sejak 1885, menjadi salah satu merek kartu remi paling ikonik di dunia, dikenal dengan kualitas dan daya tahannya yang luar biasa.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW RELEASES SECTION -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">New Releases</h2>
+                <a href="#" class="see-all-link">
+                    See all 
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+            
+            <div class="product-grid">
+                <!-- Product 1 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://cdn11.bigcommerce.com/s-rnof4s38tc/images/stencil/750w/products/628/3112/CUSTOM-Bicycle-Hanafuda_playing_cards-00__28680.1782129994.png?compression=lossy" alt="Dragon Hanafuda">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">Dragon Hanafuda Playing Cards</div>
+                        <div class="product-price">
+                            $14.99
+                            <span class="original-price">$19.99</span>
+                        </div>
+                        <span class="product-badge new">New</span>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://cdn11.bigcommerce.com/s-rnof4s38tc/images/stencil/750w/products/607/3023/10055138-bicycle-bourbon-black-label_playing_cards-00__95450.1779814783.png?compression=lossy" alt="Bourbon Black Label">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">Bourbon Black Label Playing Cards</div>
+                        <div class="product-price">
+                            $12.99
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://cdn11.bigcommerce.com/s-rnof4s38tc/images/stencil/750w/products/606/3015/10055141-bicycle-royal_playing_cards-00__91200.1779814217.png?compression=lossy" alt="Royal Playing Cards">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">Royal Playing Cards</div>
+                        <div class="product-price">
+                            $11.99
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://cdn11.bigcommerce.com/s-rnof4s38tc/images/stencil/750w/products/590/2905/10057628-bicycle-spotter-deck_playing_cards-04__82970.1774470140.png?compression=lossy" alt="Spotter Deck">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">Spotter Deck Playing Cards</div>
+                        <div class="product-price">
+                            $16.99
+                            <span class="original-price">$21.99</span>
+                        </div>
+                        <span class="product-badge">Sale</span>
+                    </div>
+                </div>
+
+                <!-- Product 5 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://cdn11.bigcommerce.com/s-rnof4s38tc/images/stencil/750w/products/603/3069/CUSTOM-bicycle-machine56-black_playing_cards-00__46449.1779886245.png?compression=lossy" alt="Machine56 Black">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">Machine56 Black Playing Cards</div>
+                        <div class="product-price">
+                            $13.99
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 6 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://cdn11.bigcommerce.com/s-rnof4s38tc/images/stencil/750w/products/604/3074/CUSTOM-bicycle-machine56-white_playing_cards-00__84852.1779886332.png?compression=lossy" alt="Machine56 White">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">Machine56 White Playing Cards</div>
+                        <div class="product-price">
+                            $13.99
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1444,7 +1635,7 @@
                                 
                                 1. Cari kartu dengan suit yang sama (♠) di 4 kartu bawah<br>
                                 2. 7♠ adalah kartu referensi (value = 7)<br>
-                                3. Target: 2♠ (value = 2)<br>
+                                3. Target: 2 (value = 2)<br>
                                 4. Karena 7 > 2, gunakan rumus VALUE BESAR<br>
                                 5. Selisih = 7 - 2 = 5<br>
                                 6. Urutan setelah = 1 (karena 7♠ ada di urutan ke-2 dari bawah)<br>
@@ -1559,9 +1750,6 @@
                     <optgroup label="♦ WAJIK" id="opt-diamond" style="color:#dc2626;"></optgroup>
                 </select>
                 
-                <div class="card-position-info" id="selectedCardPosition">
-                    <div class="position-label">Nomor Urut di Mnemonica Stack</div>
-                    <div class="position-number" id="selectedPositionNum">-</div>
                     <div class="card-name" id="selectedCardName"></div>
                 </div>
                 
@@ -1571,7 +1759,7 @@
                 <div class="result-box">
                     <h3>Hasil Cut Ke</h3>
                     <p id="result" style="font-size:2.5rem;font-weight:800;color:var(--primary);min-height:50px;margin:10px 0;font-family:'Playfair Display',serif">-</p>
-                    <div class="result-position">Posisi ke-<span id="resultPositionNum">-</span></div>
+                    
                 </div>
             </div>
 
@@ -1746,19 +1934,70 @@
 
     const mnemoStack = [
         "4♣", "2♥", "7♦", "3♣", "4♥", "6♦", "A♠", "5♥", "9♠", "2♠",
-        "Q♥", "3♦", "Q♣", "8♥", "6♠", "5♠", "9♥", "K♣", "2♦",
-        "J♥", "3♠", "8♠", "6♥", "10♣", "5♦", "K♦", "2♣", "3♥",
+        "Q♥", "3♦", "Q♣", "8♥", "6♠", "5", "9♥", "K♣", "2♦",
+        "J♥", "3", "8♠", "6♥", "10♣", "5♦", "K♦", "2♣", "3♥",
         "8♦", "5♣", "K♠", "J♦", "8♣", "10♠", "K♥", "J♣",
         "7♠", "10♥", "A♦", "4♠", "7♥", "4♦", "A♣", "9♣", "J♠",
         "Q♦", "7♣", "Q♠", "10♦", "6♣", "A♥", "9♦"
     ];
 
     const mnemoCardData = [
-        {val: 43, txt: "A♣", group: "kriting"}, {val: 27, txt: "2♣", group: "kriting"}, {val: 4, txt: "3♣", group: "kriting"}, {val: 1, txt: "4♣", group: "kriting"}, {val: 30, txt: "5♣", group: "kriting"}, {val: 50, txt: "6♣", group: "kriting"}, {val: 47, txt: "7♣", group: "kriting"}, {val: 33, txt: "8♣", group: "kriting"}, {val: 44, txt: "9♣", group: "kriting"}, {val: 24, txt: "10♣", group: "kriting"}, {val: 36, txt: "J♣", group: "kriting"}, {val: 13, txt: "Q♣", group: "kriting"}, {val: 18, txt: "K♣", group: "kriting"},
-        {val: 51, txt: "A♥", group: "hati"}, {val: 2, txt: "2♥", group: "hati"}, {val: 28, txt: "3♥", group: "hati"}, {val: 5, txt: "4♥", group: "hati"}, {val: 8, txt: "5♥", group: "hati"}, {val: 23, txt: "6♥", group: "hati"}, {val: 41, txt: "7♥", group: "hati"}, {val: 14, txt: "8♥", group: "hati"}, {val: 17, txt: "9♥", group: "hati"}, {val: 38, txt: "10♥", group: "hati"}, {val: 20, txt: "J♥", group: "hati"}, {val: 11, txt: "Q♥", group: "hati"}, {val: 35, txt: "K♥", group: "hati"},
-        {val: 7, txt: "A♠", group: "sekop"}, {val: 10, txt: "2♠", group: "sekop"}, {val: 21, txt: "3♠", group: "sekop"}, {val: 40, txt: "4♠", group: "sekop"}, {val: 16, txt: "5♠", group: "sekop"}, {val: 15, txt: "6♠", group: "sekop"}, {val: 37, txt: "7♠", group: "sekop"}, {val: 22, txt: "8♠", group: "sekop"}, {val: 9, txt: "9♠", group: "sekop"}, {val: 34, txt: "10♠", group: "sekop"}, {val: 45, txt: "J♠", group: "sekop"}, {val: 48, txt: "Q♠", group: "sekop"}, {val: 31, txt: "K♠", group: "sekop"},
-        {val: 39, txt: "A♦", group: "diamond"}, {val: 19, txt: "2♦", group: "diamond"}, {val: 12, txt: "3♦", group: "diamond"}, {val: 42, txt: "4♦", group: "diamond"}, {val: 25, txt: "5♦", group: "diamond"}, {val: 6, txt: "6♦", group: "diamond"}, {val: 3, txt: "7♦", group: "diamond"}, {val: 29, txt: "8♦", group: "diamond"}, {val: 52, txt: "9♦", group: "diamond"}, {val: 49, txt: "10♦", group: "diamond"}, {val: 32, txt: "J♦", group: "diamond"}, {val: 46, txt: "Q♦", group: "diamond"}, {val: 26, txt: "K♦", group: "diamond"}
-    ];
+    {val: 43, txt: "A♣ = 43", group: "kriting"}, 
+    {val: 27, txt: "2♣ = 27", group: "kriting"}, 
+    {val: 4, txt: "3♣ = 4", group: "kriting"}, 
+    {val: 1, txt: "4♣ = 1", group: "kriting"}, 
+    {val: 30, txt: "5♣ = 30", group: "kriting"}, 
+    {val: 50, txt: "6♣ = 50", group: "kriting"}, 
+    {val: 47, txt: "7♣ = 47", group: "kriting"}, 
+    {val: 33, txt: "8♣ = 33", group: "kriting"}, 
+    {val: 44, txt: "9♣ = 44", group: "kriting"}, 
+    {val: 24, txt: "10♣ = 24", group: "kriting"}, 
+    {val: 36, txt: "J♣ = 36", group: "kriting"}, 
+    {val: 13, txt: "Q♣ = 13", group: "kriting"}, 
+    {val: 18, txt: "K♣ = 18", group: "kriting"}, 
+    
+    {val: 51, txt: "A♥ = 51", group: "hati"}, 
+    {val: 2, txt: "2♥ = 2", group: "hati"}, 
+    {val: 28, txt: "3♥ = 28", group: "hati"}, 
+    {val: 5, txt: "4♥ = 5", group: "hati"}, 
+    {val: 8, txt: "5♥ = 8", group: "hati"}, 
+    {val: 23, txt: "6♥ = 23", group: "hati"}, 
+    {val: 41, txt: "7♥ = 41", group: "hati"}, 
+    {val: 14, txt: "8♥ = 14", group: "hati"}, 
+    {val: 17, txt: "9♥ = 17", group: "hati"}, 
+    {val: 38, txt: "10♥ = 38", group: "hati"}, 
+    {val: 20, txt: "J♥ = 20", group: "hati"}, 
+    {val: 11, txt: "Q♥ = 11", group: "hati"}, 
+    {val: 35, txt: "K♥ = 35", group: "hati"}, 
+    
+    {val: 7, txt: "A♠ = 7", group: "sekop"}, 
+    {val: 10, txt: "2♠ = 10", group: "sekop"}, 
+    {val: 21, txt: "3♠ = 21", group: "sekop"}, 
+    {val: 40, txt: "4♠ = 40", group: "sekop"}, 
+    {val: 16, txt: "5♠ = 16", group: "sekop"}, 
+    {val: 15, txt: "6♠ = 15", group: "sekop"}, 
+    {val: 37, txt: "7♠ = 37", group: "sekop"}, 
+    {val: 22, txt: "8♠ = 22", group: "sekop"}, 
+    {val: 9, txt: "9♠ = 9", group: "sekop"}, 
+    {val: 34, txt: "10♠ = 34", group: "sekop"}, 
+    {val: 45, txt: "J♠ = 45", group: "sekop"}, 
+    {val: 48, txt: "Q♠ = 48", group: "sekop"}, 
+    {val: 31, txt: "K♠ = 31", group: "sekop"}, 
+    
+    {val: 39, txt: "A♦ = 39", group: "diamond"}, 
+    {val: 19, txt: "2♦ = 19", group: "diamond"}, 
+    {val: 12, txt: "3♦ = 12", group: "diamond"}, 
+    {val: 42, txt: "4♦ = 42", group: "diamond"}, 
+    {val: 25, txt: "5♦ = 25", group: "diamond"}, 
+    {val: 6, txt: "6♦ = 6", group: "diamond"}, 
+    {val: 3, txt: "7♦ = 3", group: "diamond"}, 
+    {val: 29, txt: "8♦ = 29", group: "diamond"}, 
+    {val: 52, txt: "9♦ = 52", group: "diamond"}, 
+    {val: 49, txt: "10♦ = 49", group: "diamond"}, 
+    {val: 32, txt: "J♦ = 32", group: "diamond"}, 
+    {val: 46, txt: "Q♦ = 46", group: "diamond"}, 
+    {val: 26, txt: "K♦ = 26", group: "diamond"}
+];
 
     let selectedMnemoTarget = null;
     let currentQuizCard = "";
