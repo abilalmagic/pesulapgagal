@@ -3,80 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prof Jayz — Bicycle Card Stack Master</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
         
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #c9a227;
+            --accent-dark: #b8941f;
+            --text: #2d3748;
+            --text-light: #718096;
+            --bg: rgba(255, 255, 255, 0.92);
+            --surface: #ffffff;
+            --border: rgba(0, 0, 0, 0.08);
+            --shadow: rgba(0, 0, 0, 0.05);
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background: url('https://images.ctfassets.net/sm166qdr1jca/4WIKJ1dhgYqwKg9WcjplwL/b869aabaaa08f891a7a6ef02dfb820f8/691A0514__4_.jpg') center/cover fixed;
-            min-height: 100vh;
+            background-color: #f7fafc;
+            background-image: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjBhz0mJb7KVy0duJg283cgL5nC7U2z8UkxGs1zEjM_YKZgmBX4JqxmCM37yVSVNr3OpdhbvKrzibQX0YasfktU8O58gypcXGZDQrEJHv1hoAhPEOgTV-OLeZHTwuP6HVK5yGKb0PmzZWJuKeHvrNU-1NHJYW5gWrBdS-9K3pRobnNKSUReC7wmbrOogrUe/s4608/1000087662.jpg');
+            background-size: 400px;
+            background-position: center;
+            background-attachment: fixed;
+            background-blend-mode: overlay;
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 5rem 2rem 4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjBhz0mJb7KVy0duJg283cgL5nC7U2z8UkxGs1zEjM_YKZgmBX4JqxmCM37yVSVNr3OpdhbvKrzibQX0YasfktU8O58gypcXGZDQrEJHv1hoAhPEOgTV-OLeZHTwuP6HVK5yGKb0PmzZWJuKeHvrNU-1NHJYW5gWrBdS-9K3pRobnNKSUReC7wmbrOogrUe/s4608/1000087662.jpg');
+            opacity: 0.05;
+            background-size: 300px;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            background: white;
+            border-radius: 50%;
+            padding: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .hero-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.5px;
+        }
+
+        .hero .subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero .tagline {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        /* MAIN NAVIGATION TABS */
+        .main-nav {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1000px;
+            margin: 0 auto;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            padding: 1px;
         }
 
-        .container {
-            width: 100%;
-            max-width: 500px;
-            background: rgba(255, 255, 255, 255);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-            margin: 20px 0;
-        }
-
-        .header {
+        .nav-tab {
+            flex: 1;
+            max-width: 300px;
+            padding: 1.5rem 2rem;
             text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .logo {
-            width: 80px;
-            height: auto;
-            margin-bottom: 10px;
-        }
-
-        .brand-title {
-            font-size: 24px;
-            font-weight: 800;
-            color: #1a1a1a;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-
-        .brand-subtitle {
-            font-size: 10px;
-            color: #666;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-top: 5px;
-        }
-
-        h2 {
-            font-size: 14px;
-            text-align: center;
-            color: #333;
-            margin: 25px 0 20px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-light);
             text-transform: uppercase;
             letter-spacing: 2px;
-            font-weight: 700;
+            transition: all 0.3s;
+            position: relative;
+            border-bottom: 3px solid transparent;
         }
 
-        h1 {
-            font-size: 22px;
+        .nav-tab:hover {
+            color: var(--primary);
+            background: rgba(0,0,0,0.02);
+        }
+
+        .nav-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--accent);
+            background: rgba(201, 162, 39, 0.05);
+        }
+
+        .nav-tab .tab-icon {
+            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* CONTENT WRAPPER */
+        .content-wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            background: var(--bg);
+            min-height: 80vh;
+        }
+
+        /* SECTIONS */
+        .section {
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
             text-align: center;
-            color: #1a1a1a;
-            margin: 20px 0;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            font-weight: 800;
+            position: relative;
+            padding-bottom: 1rem;
         }
 
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--accent);
+        }
+
+        .section-content {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text);
+            text-align: justify;
+        }
+
+        .history-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin: 3rem 0;
+        }
+
+        .history-image {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px var(--shadow);
+        }
+
+        .history-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .history-text h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .history-text p {
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .feature-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .feature-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px var(--shadow);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .feature-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-card p {
+            font-size: 0.95rem;
+            color: var(--text-light);
+        }
+
+        /* MAIN CARD CONTAINER */
+        .main-card {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        /* PAGE SYSTEM */
         .page { display: none; animation: pageFadeIn 0.4s ease; }
         .page.active { display: block; }
         
@@ -85,147 +298,122 @@
             to { opacity: 1; transform: translateY(0); } 
         }
 
-        .landing-hero {
+        /* LANDING */
+        .landing-intro {
             text-align: center;
-            padding: 40px 20px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(245,245,245,0.9));
-            border-radius: 20px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(0,0,0,0.05);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
-        }
-        
-        .landing-hero .logo-large {
-            width: 100px;
-            margin-bottom: 20px;
-        }
-        
-        .landing-hero .subtitle {
-            font-size: 10px;
-            color: #666;
-            margin-top: 15px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: 500;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
         }
 
-        .main-btn {
-            width: 100%;
-            padding: 16px;
-            margin: 10px 0;
-            border: 2px solid #e0e0e0;
-            border-radius: 14px;
-            font-size: 13px;
-            font-weight: 700;
+        .landing-intro h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .landing-intro p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            max-width: 600px;
+            margin: 3rem auto;
+        }
+
+        .action-btn {
+            padding: 1.5rem 2rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: white;
             cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: all 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            background: white;
-            color: #333;
-        }
-        .main-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            border-color: #ccc;
-        }
-        .main-btn:active { transform: translateY(0); }
-        
-        .btn-random { 
-            background: linear-gradient(135deg, #1a1a1a, #333);
-            color: white;
-            border-color: #1a1a1a;
-        }
-        .btn-random:hover {
-            background: linear-gradient(135deg, #333, #444);
-        }
-        
-        .btn-stack { 
-            background: white;
-            color: #1a1a1a;
+            gap: 0.75rem;
         }
 
-        .secret-hint {
-            text-align: center;
-            font-size: 10px;
-            color: #999;
-            margin-top: 20px;
-            padding: 12px;
-            background: rgba(0,0,0,0.03);
-            border-radius: 10px;
-            letter-spacing: 1px;
+        .action-btn:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-color: transparent;
+        }
+
+        .action-btn.primary:hover {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+        }
+
+        .action-btn .btn-icon {
+            font-size: 2rem;
         }
 
         /* CARD STAGE */
         .card-stage {
             width: 100%;
+            max-width: 400px;
             aspect-ratio: 3/4;
-            max-height: 500px;
-            background: linear-gradient(135deg, #f8f8f8, #ffffff);
+            margin: 2rem auto;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
             border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 25px 0;
-            border: 2px solid #e8e8e8;
             position: relative;
-            overflow: hidden;
+            border: 1px solid var(--border);
             cursor: pointer;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 40px var(--shadow);
         }
 
-        .card-stage:active { transform: scale(0.98); }
-
-        /* PLAYING CARD WITH RANK & SUIT */
         .playing-card {
-            width: 150%;
-            max-width: 280px;
+            width: 70%;
             aspect-ratio: 5/7;
             background: #ffffff;
-            border-radius: 16px;
+            border-radius: 12px;
             position: relative;
-            box-shadow: 
-                0 15px 40px rgba(0,0,0,0.15),
-                0 0 0 1px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             display: flex;
             align-items: center;
             justify-content: center;
             transition: transform 0.05s;
         }
 
-        .playing-card.flipping {
-            animation: flipCard 0.08s;
-        }
-
-        @keyframes flipCard {
-            0% { transform: scaleX(1); }
-            50% { transform: scaleX(0.1); }
-            100% { transform: scaleX(1); }
-        }
-
-        .playing-card.red { color: #d32f2f; }
-        .playing-card.black { color: #1a1a1a; }
+        .playing-card.red { color: #dc2626; }
+        .playing-card.black { color: var(--primary); }
 
         .card-content {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .card-rank {
-            font-size: 90px;
+            font-size: 70px;
             font-weight: 900;
-            letter-spacing: -3px;
+            letter-spacing: -2px;
             line-height: 1;
+            font-family: 'Playfair Display', serif;
         }
 
         .card-suit {
-            font-size: 80px;
+            font-size: 60px;
             line-height: 1;
         }
 
@@ -236,49 +424,45 @@
             transform: translateX(-50%);
             background: rgba(255,255,255,0.95);
             padding: 8px 24px;
-            border-radius: 25px;
-            font-size: 10px;
+            border-radius: 100px;
+            font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
             z-index: 10;
-            border: 2px solid #e0e0e0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .control-indicator.running {
-            background: rgba(255,235,59,0.95);
-            color: #1a1a1a;
-            border-color: #fbc02d;
+            background: rgba(245, 158, 11, 0.95);
+            color: white;
         }
 
         .control-indicator.stopped {
-            background: rgba(76,175,80,0.95);
+            background: rgba(16, 185, 129, 0.95);
             color: white;
-            border-color: #43a047;
         }
 
         .tap-hint {
             text-align: center;
-            font-size: 12px;
-            color: #666;
-            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 1.5rem;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             font-weight: 600;
             cursor: pointer;
-            padding: 12px;
+            padding: 1rem;
             transition: all 0.3s;
-            border-radius: 10px;
         }
 
         .tap-hint:hover {
-            background: rgba(0,0,0,0.03);
+            color: var(--primary);
         }
 
         .tap-hint.active {
-            color: #1a1a1a;
-            font-weight: 700;
+            color: var(--accent);
         }
 
         .status-led {
@@ -288,13 +472,13 @@
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            background: #4caf50;
-            box-shadow: 0 0 10px #4caf50;
+            background: #10b981;
+            box-shadow: 0 0 10px #10b981;
         }
 
         .status-led.running {
-            background: #ffeb3b;
-            box-shadow: 0 0 15px #ffeb3b;
+            background: #f59e0b;
+            box-shadow: 0 0 15px #f59e0b;
             animation: blink 0.5s ease-in-out infinite;
         }
 
@@ -303,11 +487,12 @@
             50% { opacity: 0.3; }
         }
 
+        /* MODAL */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
             display: none;
             align-items: center;
             justify-content: center;
@@ -317,128 +502,146 @@
         
         .modal {
             background: white;
-            padding: 35px;
-            border-radius: 20px;
+            padding: 2.5rem;
+            border-radius: 16px;
             width: 90%;
-            max-width: 340px;
+            max-width: 400px;
             text-align: center;
-            border: 2px solid #e8e8e8;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.2);
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
         }
         .modal h3 { 
-            color: #1a1a1a; 
-            margin-bottom: 20px; 
-            font-size: 16px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+            color: var(--primary); 
+            margin-bottom: 1.5rem; 
+            font-size: 1.5rem;
         }
         .modal input {
             width: 100%;
-            padding: 16px;
-            border-radius: 12px;
-            border: 2px solid #e0e0e0;
-            background: #f8f8f8;
-            color: #1a1a1a;
-            margin-bottom: 18px;
-            font-size: 16px;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            background: #f8f9fa;
+            color: var(--text);
+            margin-bottom: 1.25rem;
+            font-size: 1rem;
             text-align: center;
             font-weight: 600;
         }
         .modal input:focus {
             outline: none;
-            border-color: #1a1a1a;
+            border-color: var(--accent);
             background: white;
         }
-        .modal-btns { display: flex; gap: 12px; }
+        .modal-btns { display: flex; gap: 1rem; }
         .modal-btn {
             flex: 1;
-            padding: 14px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-weight: 700;
+            padding: 0.85rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-weight: 600;
             cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 12px;
+            font-size: 0.9rem;
             transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
         }
         .modal-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         .modal-cancel { 
-            background: #f5f5f5; 
-            color: #666;
+            background: #f8f9fa; 
+            color: var(--text);
         }
         .modal-confirm { 
-            background: #1a1a1a; 
+            background: var(--primary); 
             color: white;
-            border-color: #1a1a1a;
+            border-color: var(--primary);
         }
         .error-msg { 
-            color: #d32f2f; 
-            font-size: 11px; 
-            margin-top: 12px; 
+            color: #dc2626; 
+            font-size: 0.85rem; 
+            margin-top: 0.75rem; 
             display: none;
-            font-weight: 600;
         }
 
+        /* STACK SELECT */
         .stack-select {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            padding: 20px 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
         }
         .stack-btn {
-            padding: 20px;
-            border: 2px solid #e8e8e8;
-            border-radius: 14px;
+            padding: 2rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
             background: white;
-            color: #1a1a1a;
-            font-weight: 700;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 18px;
-            transition: all 0.2s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            text-align: center;
         }
         .stack-btn:hover {
-            transform: translateX(5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            border-color: #d0d0d0;
+            border-color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
-        .stack-btn:active { transform: translateX(5px) scale(0.98); }
-        .stack-btn.stebbin { border-left: 4px solid #2196f3; }
-        .stack-btn.mnemonica { border-left: 4px solid #ff5252; }
-
-        .tab-container {
-            background: #f5f5f5;
-            border-radius: 12px;
-            padding: 5px;
-            margin-bottom: 25px;
+        .stack-btn .stack-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            border-radius: 50%;
             display: flex;
-            gap: 5px;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+        .stack-btn.stebbin .stack-icon {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        }
+        .stack-btn.mnemonica .stack-icon {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+        .stack-btn h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        .stack-btn p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* TABS */
+        .tab-container {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 0.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 0.5rem;
         }
         .tab-btn {
             flex: 1;
-            padding: 12px;
-            font-size: 11px;
-            font-weight: 700;
+            padding: 0.85rem;
+            font-size: 0.85rem;
+            font-weight: 600;
             background: transparent;
             border: none;
-            color: #888;
-            border-radius: 10px;
+            color: var(--text-light);
+            border-radius: 8px;
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 1px;
             transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
         }
         .tab-btn.active {
             background: white;
-            color: #1a1a1a;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
         .tab-content { display: none; animation: tabFadeIn 0.3s ease; }
@@ -448,106 +651,107 @@
             to { opacity: 1; }
         }
 
+        /* FORMS */
         label { 
-            font-size: 10px; 
-            font-weight: 700; 
-            color: #555; 
+            font-size: 0.85rem; 
+            font-weight: 600; 
+            color: var(--text); 
             text-transform: uppercase; 
-            margin-bottom: 8px; 
+            margin-bottom: 0.5rem; 
             display: block;
             letter-spacing: 1px;
         }
         select, input[type="number"] { 
             width: 100%; 
-            padding: 14px; 
-            font-size: 15px; 
-            border-radius: 12px; 
-            border: 2px solid #e0e0e0; 
-            background: white; 
-            color: #1a1a1a; 
-            margin-bottom: 15px; 
+            padding: 0.85rem; 
+            font-size: 0.95rem; 
+            border-radius: 8px; 
+            border: 2px solid var(--border); 
+            background: #f8f9fa; 
+            color: var(--text); 
+            margin-bottom: 1.25rem; 
             outline: none;
-            font-weight: 600;
+            font-weight: 500;
             transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
         }
         select:focus, input[type="number"]:focus {
-            border-color: #1a1a1a;
-            box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+            border-color: var(--accent);
+            background: white;
         }
         
         .info-box {
-            background: rgba(255,235,59,0.1);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            border-left: 4px solid #fbc02d;
+            background: rgba(201, 162, 39, 0.1);
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--accent);
         }
         .info-box p { 
-            font-size: 11px; 
-            color: #666; 
-            line-height: 1.7; 
+            font-size: 0.95rem; 
+            color: var(--text);
         }
-        .info-box strong { color: #1a1a1a; font-weight: 700; }
+        .info-box strong { color: var(--primary); }
         
         .result-box { 
-            background: white;
-            padding: 25px; 
-            border-radius: 16px; 
+            background: #f8f9fa;
+            padding: 2rem; 
+            border-radius: 12px; 
             text-align: center; 
-            border: 2px solid #e8e8e8;
-            margin-top: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            margin-top: 1.5rem;
         }
         .result-box h3 { 
-            font-size: 10px; 
-            color: #888; 
-            margin-bottom: 12px;
+            font-size: 0.85rem; 
+            color: var(--text-light); 
+            margin-bottom: 1rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             font-weight: 600;
         }
         .result-value { 
-            font-size: 40px; 
-            font-weight: 900; 
-            color: #1a1a1a; 
-            margin: 15px 0;
+            font-size: 2.5rem; 
+            font-weight: 800; 
+            color: var(--primary); 
+            margin: 1rem 0;
+            font-family: 'Playfair Display', serif;
         }
         
         .badge-besar { 
-            background: linear-gradient(135deg, #f44336, #d32f2f); 
-            color: white;
+            background: rgba(220, 38, 38, 0.1); 
+            color: #dc2626;
             padding: 4px 12px;
             border-radius: 6px;
-            font-size: 9px;
+            font-size: 0.75rem;
             display: inline-block;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
         .badge-kecil { 
-            background: linear-gradient(135deg, #4caf50, #388e3c); 
-            color: white;
+            background: rgba(16, 185, 129, 0.1); 
+            color: #10b981;
             padding: 4px 12px;
             border-radius: 6px;
-            font-size: 9px;
+            font-size: 0.75rem;
             display: inline-block;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
         .bottom-cards-display {
-            background: #f8f8f8;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 15px;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.25rem;
         }
         .bottom-cards-display .title { 
-            font-size: 9px; 
-            color: #666; 
-            margin-bottom: 12px;
+            font-size: 0.75rem; 
+            color: var(--text-light); 
+            margin-bottom: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             font-weight: 600;
@@ -555,89 +759,83 @@
         .bottom-cards-display .cards {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
         }
         .bottom-cards-display .card-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-size: 20px;
+            font-size: 1.1rem;
             padding: 8px;
-            border-radius: 8px;
+            border-radius: 6px;
             background: white;
-            border: 2px solid #e8e8e8;
+            border: 1px solid var(--border);
             min-width: 50px;
         }
-        .bottom-cards-display .card-index { 
-            font-size: 8px; 
-            color: #888; 
-            margin-top: 4px;
-            font-weight: 600;
-        }
         .bottom-cards-display .card-item.highlight {
-            background: rgba(255,235,59,0.2);
-            border: 2px solid #fbc02d;
+            background: rgba(245, 158, 11, 0.2);
+            border: 2px solid var(--accent);
         }
 
         .calculation-steps {
-            background: #f8f8f8;
-            padding: 15px;
-            border-radius: 12px;
-            margin-top: 12px;
-            font-size: 11px;
-            line-height: 2;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.9;
             text-align: left;
+            border: 1px solid var(--border);
         }
-        .calculation-steps .step { margin: 4px 0; color: #555; }
+        .calculation-steps .step { margin: 3px 0; color: var(--text); }
         .calculation-steps .highlight { 
-            color: #1a1a1a; 
-            font-weight: 700;
+            color: var(--accent); 
+            font-weight: 600;
         }
         .calculation-steps .formula { 
             font-family: 'Courier New', monospace; 
             margin-top: 10px; 
             padding-top: 10px; 
-            border-top: 2px solid #e0e0e0;
-            color: #666;
-            font-size: 10px;
+            border-top: 1px solid var(--border);
+            color: var(--text-light);
+            font-size: 0.85rem;
         }
 
         .chsd-info {
-            background: #f8f8f8;
-            padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 15px;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.25rem;
         }
         .chsd-info .sequence {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            margin-top: 10px;
-            font-size: 20px;
+            gap: 10px;
+            margin-top: 8px;
+            font-size: 1.1rem;
         }
         .chsd-info .sequence span { 
             padding: 8px 12px; 
-            border-radius: 8px;
+            border-radius: 6px;
             background: white;
-            border: 2px solid #e8e8e8;
+            border: 1px solid var(--border);
         }
         .chsd-info .sequence span.active { 
-            background: #1a1a1a; 
+            background: var(--primary); 
             color: white; 
             font-weight: 700;
-            border-color: #1a1a1a;
         }
 
         .rumus-content {
-            background: #f8f8f8;
-            border-radius: 14px;
-            padding: 20px;
-            margin-bottom: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
         }
         .rumus-section {
-            margin-bottom: 25px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #e8e8e8;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
         }
         .rumus-section:last-child {
             border-bottom: none;
@@ -645,72 +843,64 @@
             padding-bottom: 0;
         }
         .rumus-title {
-            font-size: 12px;
-            font-weight: 700;
-            color: #1a1a1a;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
         }
         .rumus-text {
-            font-size: 11px;
-            color: #666;
+            font-size: 0.95rem;
+            color: var(--text);
             line-height: 1.8;
-            margin-bottom: 10px;
+            margin-bottom: 0.75rem;
         }
         .rumus-formula {
             background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 12px;
-            margin: 10px 0;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.9rem;
+            margin: 0.75rem 0;
             font-family: 'Courier New', monospace;
-            font-size: 11px;
-            color: #1a1a1a;
+            font-size: 0.9rem;
+            color: var(--primary);
             text-align: center;
             font-weight: 600;
         }
         .rumus-example {
-            background: rgba(33,150,243,0.08);
-            border-left: 3px solid #2196f3;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 0 8px 8px 0;
+            background: rgba(59, 130, 246, 0.05);
+            border-left: 3px solid #3b82f6;
+            padding: 0.9rem 1rem;
+            margin: 0.75rem 0;
+            border-radius: 0 6px 6px 0;
         }
         .rumus-example-title {
-            font-size: 10px;
+            font-size: 0.8rem;
             font-weight: 700;
-            color: #1976d2;
-            margin-bottom: 8px;
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
             text-transform: uppercase;
-        }
-        .rumus-example-text {
-            font-size: 11px;
-            color: #666;
-            line-height: 1.8;
         }
         .highlight-box {
             background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 12px;
-            margin: 10px 0;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.9rem;
+            margin: 0.75rem 0;
         }
-        .highlight-box strong { color: #1a1a1a; }
 
         .number-grid { 
             display: grid; 
             grid-template-columns: repeat(8, 1fr); 
-            gap: 6px; 
-            margin-bottom: 15px; 
+            gap: 5px; 
+            margin-bottom: 1.25rem; 
         }
         .num-btn { 
             aspect-ratio: 1/1; 
-            font-size: 12px; 
+            font-size: 0.85rem; 
             background: white; 
-            border: 2px solid #e0e0e0; 
-            border-radius: 8px; 
-            color: #666; 
+            border: 1px solid var(--border); 
+            border-radius: 6px; 
+            color: var(--text); 
             display: flex; 
             align-items: center; 
             justify-content: center; 
@@ -719,23 +909,23 @@
             font-weight: 600;
         }
         .num-btn:hover {
-            border-color: #1a1a1a;
-            transform: scale(1.05);
+            border-color: var(--accent);
+            color: var(--accent);
         }
-        .num-btn:active { transform: scale(0.95); }
         .num-btn.active { 
-            background: #1a1a1a; 
+            background: var(--primary); 
             color: white; 
-            font-weight: 800;
-            border-color: #1a1a1a;
+            font-weight: 700;
+            border-color: var(--primary);
         }
 
         .grid-action-btn {
             grid-column: span 2;
             height: 100%;
-            border-radius: 8px;
-            border: 2px solid #e0e0e0;
-            font-size: 9px;
+            min-height: 36px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            font-size: 0.8rem;
             font-weight: 700;
             cursor: pointer;
             display: flex;
@@ -744,158 +934,250 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             transition: all 0.2s;
-        }
-        .grid-action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            font-family: 'Inter', sans-serif;
         }
         .reset-btn { 
-            background: #f5f5f5; 
-            color: #666;
+            background: #f8f9fa; 
+            color: var(--text);
         }
         .send-btn { 
-            background: #1a1a1a; 
+            background: var(--primary); 
             color: white;
-            border-color: #1a1a1a;
+            border-color: var(--primary);
         }
 
         .mnemonic-list { 
             height: 350px; 
             overflow-y: auto; 
-            background: #f8f8f8; 
-            border-radius: 12px; 
-            padding: 12px; 
+            background: #f8f9fa; 
+            border-radius: 8px; 
+            padding: 0.75rem; 
             display: grid; 
             grid-template-columns: 1fr 1fr; 
-            gap: 8px;
+            gap: 6px;
         }
-        .mnemonic-list::-webkit-scrollbar { width: 6px; }
-        .mnemonic-list::-webkit-scrollbar-track { background: #e8e8e8; border-radius: 3px; }
-        .mnemonic-list::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
         .list-item { 
-            font-size: 11px; 
+            font-size: 0.85rem; 
             padding: 8px; 
             border-radius: 6px;
             background: white;
             display: flex; 
             justify-content: space-between;
-            border: 2px solid #e8e8e8;
+            border: 1px solid var(--border);
         }
         .list-item span { 
-            color: #1a1a1a; 
-            font-weight: 700;
+            color: var(--primary); 
+            font-weight: 600;
         }
-        .list-item.red { color: #d32f2f; }
-        .list-item.red span { color: #d32f2f; }
+        .list-item.red span { color: #dc2626; }
 
         .quiz-card { 
-            background: white; 
-            padding: 30px; 
-            border-radius: 16px; 
+            background: #f8f9fa; 
+            padding: 2rem; 
+            border-radius: 12px; 
             text-align: center; 
-            margin-bottom: 20px; 
-            border: 2px solid #e8e8e8;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 1.25rem; 
+            border: 1px solid var(--border);
         }
         #quiz-question { 
-            font-size: 56px; 
+            font-size: 3rem; 
             font-weight: 900; 
-            margin-bottom: 10px;
-            color: #1a1a1a;
+            margin-bottom: 8px;
+            color: var(--primary);
+            font-family: 'Playfair Display', serif;
         }
-        .quiz-controls { display: flex; flex-direction: column; gap: 12px; }
+        .quiz-controls { display: flex; flex-direction: column; gap: 10px; }
         .quiz-input { 
             width: 100%; 
-            padding: 16px; 
-            border-radius: 12px; 
-            border: 2px solid #e0e0e0; 
-            background: #f8f8f8; 
-            color: #1a1a1a; 
-            font-size: 24px; 
+            padding: 0.9rem; 
+            border-radius: 8px; 
+            border: 2px solid var(--border); 
+            background: white; 
+            color: var(--text); 
+            font-size: 1.25rem; 
             text-align: center; 
-            font-weight: 800;
+            font-weight: 700;
         }
         .quiz-input:focus {
             outline: none;
-            border-color: #1a1a1a;
-            background: white;
+            border-color: var(--accent);
         }
-        .btn-group { display: flex; gap: 10px; }
+        .btn-group { display: flex; gap: 8px; }
         .check-btn { 
             flex: 2; 
-            padding: 14px; 
-            background: #1a1a1a; 
+            padding: 0.85rem; 
+            background: var(--primary); 
             border: none; 
-            border-radius: 12px; 
-            font-weight: 800; 
+            border-radius: 8px; 
+            font-weight: 700; 
             cursor: pointer; 
             color: white;
             text-transform: uppercase;
             letter-spacing: 1px;
             transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
         }
         .check-btn:hover {
-            background: #333;
-            transform: translateY(-2px);
+            background: var(--secondary);
         }
         .next-btn { 
             flex: 1; 
-            padding: 14px; 
-            background: #f5f5f5; 
-            border: 2px solid #e0e0e0; 
-            border-radius: 12px; 
-            font-weight: 700; 
+            padding: 0.85rem; 
+            background: #f8f9fa; 
+            border: 1px solid var(--border); 
+            border-radius: 8px; 
+            font-weight: 600; 
             cursor: pointer; 
-            color: #666;
+            color: var(--text);
             text-transform: uppercase;
             transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
         }
         .next-btn:hover {
             background: white;
-            border-color: #1a1a1a;
         }
         #quiz-feedback { 
-            margin-top: 12px; 
+            margin-top: 10px; 
             text-align: center; 
-            font-size: 13px; 
-            font-weight: 700; 
+            font-size: 0.9rem; 
+            font-weight: 600; 
             min-height: 20px;
         }
 
         .back-btn {
-            background: #f5f5f5;
-            color: #666;
-            border: 2px solid #e0e0e0;
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 700;
+            background: #f8f9fa;
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
             transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
         }
         .back-btn:hover {
             background: white;
-            border-color: #1a1a1a;
-            color: #1a1a1a;
+            border-color: var(--accent);
         }
 
-        .footer {
+        .card-position-info {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.25rem;
             text-align: center;
-            font-size: 9px;
-            color: #999;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 2px solid #e8e8e8;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            display: none;
         }
-        .footer strong { color: #1a1a1a; font-weight: 700; }
+        .card-position-info.show { display: block; }
+        .card-position-info .position-label {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        .card-position-info .position-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent);
+            font-family: 'Playfair Display', serif;
+        }
+        .card-position-info .card-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+        .card-position-info .card-name.red { color: #dc2626; }
+
+        .result-position {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 8px;
+        }
+        .result-position span {
+            color: var(--primary);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-left: 4px;
+        }
+
+        /* FOOTER */
+        .footer {
+            background: var(--primary);
+            color: white;
+            padding: 4rem 2rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand {
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-brand p {
+            opacity: 0.8;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .footer-section h4 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.25rem;
+            color: var(--accent);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-section a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 2rem;
+            text-align: center;
+            opacity: 0.6;
+            font-size: 0.9rem;
+        }
 
         .secret-zone {
             position: fixed;
@@ -903,113 +1185,147 @@
             right: 0;
             width: 60px;
             height: 100vh;
-            z-index: 100;
+            z-index: 50;
         }
 
-        .card-position-info {
-            background: rgba(255,235,59,0.15);
-            border: 2px solid #fbc02d;
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 15px;
-            text-align: center;
-            display: none;
-        }
-        .card-position-info.show { display: block; }
-        .card-position-info .position-label {
-            font-size: 9px;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-        .card-position-info .position-number {
-            font-size: 28px;
-            font-weight: 900;
-            color: #1a1a1a;
-        }
-        .card-position-info .card-name {
-            font-size: 18px;
-            font-weight: 700;
-            margin-top: 5px;
-        }
-        .card-position-info .card-name.red { color: #d32f2f; }
-        .card-position-info .card-name.black { color: #1a1a1a; }
-
-        .result-position {
-            font-size: 13px;
-            color: #666;
-            margin-top: 10px;
-            font-weight: 600;
-        }
-        .result-position span {
-            color: #1a1a1a;
-            font-size: 20px;
-            font-weight: 800;
-            margin-left: 5px;
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .history-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .feature-cards { grid-template-columns: 1fr; }
+            .action-buttons { grid-template-columns: 1fr; }
+            .stack-select { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .number-grid { grid-template-columns: repeat(6, 1fr); }
         }
 
-        @media (max-width: 600px) {
-            body { padding: 10px; }
-            .container { padding: 20px; border-radius: 20px; }
-            .logo { width: 60px; }
-            .brand-title { font-size: 20px; }
-            .card-rank { font-size: 64px; }
-            .card-suit { font-size: 56px; }
-            h2 { font-size: 12px; }
-            .result-value { font-size: 36px; }
-        }
-
-        @media (max-width: 400px) {
-            .card-rank { font-size: 52px; }
-            .card-suit { font-size: 48px; }
+        @media (max-width: 480px) {
+            .hero { padding: 3rem 1.5rem; }
+            .content-wrapper { padding: 2rem 1rem; }
+            .main-card { padding: 2rem 1.5rem; }
+            .card-rank { font-size: 50px; }
+            .card-suit { font-size: 40px; }
+            .number-grid { grid-template-columns: repeat(5, 1fr); }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
+<!-- HERO SECTION -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-logo">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgg7ZypSWCWx_X3VsqCLJDwr1eAsSxdM6hWu4AttI0M5QM_ZwEUm01OtoqMVzW2YUIz09ciJR4z4yXbETjQKtRzP2XuKMiKOKds7XcJj0dIuECVpyl_0j4Zf0MwrUgYPx9ZZz-rLMjNxCB5ygiP5sjn7u5zE4l8Fy9fjDPDePvaIO1tQxcYdHbQaaZuIld1/s572/1000087573.png" alt="Bicycle Logo">
+        </div>
+        <h1>Prof Jayz Card Stack Master</h1>
+        <p class="subtitle">Professional Card Magic & Memorization System</p>
+        <p class="tagline">Est. 2024 • Bicycle Playing Cards</p>
     </div>
+</section>
+
+<!-- MAIN NAVIGATION -->
+<nav class="main-nav">
+    <div class="nav-container">
+        <button class="nav-tab active" onclick="showPage('landing')">
+            <span class="tab-icon">🏠</span>
+            Home
+        </button>
+        <button class="nav-tab" onclick="showPage('randomizer')">
+            <span class="tab-icon">🎲</span>
+            Generator
+        </button>
+        <button class="nav-tab" onclick="openPasswordModal()">
+            <span class="tab-icon">📚</span>
+            Stack System
+        </button>
+    </div>
+</nav>
+
+<!-- CONTENT WRAPPER -->
+<div class="content-wrapper">
 
     <!-- LANDING PAGE -->
     <div id="landing" class="page active">
-        <div class="landing-hero">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgg7ZypSWCWx_X3VsqCLJDwr1eAsSxdM6hWu4AttI0M5QM_ZwEUm01OtoqMVzW2YUIz09ciJR4z4yXbETjQKtRzP2XuKMiKOKds7XcJj0dIuECVpyl_0j4Zf0MwrUgYPx9ZZz-rLMjNxCB5ygiP5sjn7u5zE4l8Fy9fjDPDePvaIO1tQxcYdHbQaaZuIld1/s572/1000087573.png" alt="Bicycle" class="logo-large">
-            <h1>Welcome MAGICIAN</h1>
-            <p class="subtitle">Professional Randomizer Cards</p>
+        
+        <!-- HISTORY SECTION -->
+        <div class="section">
+            <h2 class="section-title">Sejarah Kartu Remi</h2>
+            <div class="history-grid">
+                <div class="history-image">
+                    <img src="https://images.unsplash.com/photo-1534423861386-85a16f5d13fd?w=600&h=400&fit=crop" alt="Vintage Playing Cards">
+                </div>
+                <div class="history-text">
+                    <h3>Asal Usul Kartu Remi</h3>
+                    <p>Kartu remi pertama kali muncul di Tiongkok pada abad ke-9 pada masa Dinasti Tang. Awalnya, kartu ini dibuat dari kertas, gading, atau tulang dan digunakan untuk permainan judi serta hiburan.</p>
+                    <p>Pada abad ke-14, kartu remi menyebar ke Eropa melalui perdagangan dengan Timur Tengah. Di Eropa, kartu mengalami evolusi desain yang signifikan dengan munculnya empat suit yang kita kenal sekarang: Sekop (Spades), Hati (Hearts), Wajik (Diamonds), dan Klub (Clubs).</p>
+                    <p><strong>Bicycle Playing Cards</strong>, yang diproduksi oleh United States Playing Card Company sejak 1885, menjadi salah satu merek kartu remi paling ikonik di dunia, dikenal dengan kualitas dan daya tahannya yang luar biasa.</p>
+                </div>
+            </div>
         </div>
 
-        <button class="main-btn btn-random" onclick="showPage('randomizer')">
-            <span>🎲</span> Generate Kartu
-        </button>
-        <button class="main-btn btn-stack" onclick="openPasswordModal()">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-            Card Stack
-        </button>
+        <!-- FEATURES SECTION -->
+        <div class="section">
+            <h2 class="section-title">Mengapa Bicycle?</h2>
+            <div class="feature-cards">
+                <div class="feature-card">
+                    <div class="feature-icon">♠</div>
+                    <h3>Kualitas Premium</h3>
+                    <p>Kartu Bicycle menggunakan kertas premium dengan lapisan air-cushion finish yang memberikan handling sempurna dan daya tahan tinggi.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">♥</div>
+                    <h3>Desain Ikonik</h3>
+                    <p>Desain back Bicycle Rider Back telah menjadi standar industri sejak 1885 dan digunakan oleh pesulap profesional di seluruh dunia.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">♦</div>
+                    <h3>Standar Kasino</h3>
+                    <p>Ukuran dan ketebalan standar yang digunakan di kasino-kasino Las Vegas dan turnamen poker internasional.</p>
+                </div>
+            </div>
+        </div>
 
-        <p class="secret-hint"></p>
+        <!-- LANDING INTRO -->
+        <div class="landing-intro">
+            <h2>Selamat Datang di Sistem Card Stack</h2>
+            <p>Platform profesional untuk mempelajari dan menguasai sistem stack kartu terbaik di dunia. Pelajari Stebbin Stack dan Mnemonica dengan tools interaktif kami.</p>
+        </div>
+
+        <div class="action-buttons">
+            <button class="action-btn primary" onclick="showPage('randomizer')">
+                <span class="btn-icon">🎲</span>
+                <span>Card Generator</span>
+            </button>
+            <button class="action-btn" onclick="openPasswordModal()">
+                <span class="btn-icon">📚</span>
+                <span>Stack System</span>
+            </button>
+        </div>
     </div>
 
     <!-- RANDOMIZER PAGE -->
     <div id="randomizer" class="page">
-        <button class="back-btn" onclick="showPage('landing')">← Kembali</button>
-        <h2>🎲 Card Generator</h2>
-        
-        <div class="card-stage" id="cardStage" onclick="toggleRandomizer()">
-            <div class="control-indicator stopped" id="controlIndicator">STOPPED</div>
-            <div id="cardContainer"></div>
-            <div class="status-led stopped" id="statusLed"></div>
+        <div class="main-card">
+            <button class="back-btn" onclick="showPage('landing')">
+                ← Kembali ke Home
+            </button>
+            
+            <h2 class="section-title">Card Generator</h2>
+            
+            <div class="card-stage" id="cardStage" onclick="toggleRandomizer()">
+                <div class="control-indicator stopped" id="controlIndicator">STOPPED</div>
+                <div id="cardContainer"></div>
+                <div class="status-led stopped" id="statusLed"></div>
+            </div>
+            
+            <p class="tap-hint" id="tapHint" onclick="toggleCheat(event)">Klik untuk Mulai</p>
         </div>
-        
-        <p class="tap-hint" id="tapHint" onclick="toggleCheat(event)">KETUK UNTUK MULAI</p>
     </div>
 
     <!-- PASSWORD MODAL -->
     <div class="modal-overlay" id="passwordModal">
         <div class="modal">
-            <h3>🔐 Enter Password</h3>
+            <h3>Enter Password</h3>
             <input type="password" id="passwordInput" placeholder="••••••••" maxlength="20">
             <p class="error-msg" id="passwordError">Password salah!</p>
             <div class="modal-btns">
@@ -1021,191 +1337,197 @@
 
     <!-- STACK SELECT -->
     <div id="stackSelect" class="page">
-        <button class="back-btn" onclick="showPage('landing')">← Kembali</button>
-        <h2>Card Stack System</h2>
-        
-        <div class="stack-select">
-            <button class="stack-btn stebbin" onclick="showPage('stebbin')">
-                <span style="font-size:28px"></span>
-                <div style="text-align:left">
-                    <div style="font-size:14px;margin-bottom:4px;font-weight:700">Stebbin Stack</div>
-                    <div style="font-size:10px;color:#666">CHSD System + Tracking</div>
-                </div>
+        <div class="main-card">
+            <button class="back-btn" onclick="showPage('landing')">
+                ← Kembali ke Home
             </button>
-            <button class="stack-btn mnemonica" onclick="showPage('mnemonica')">
-                <span style="font-size:28px">❤️</span>
-                <div style="text-align:left">
-                    <div style="font-size:14px;margin-bottom:4px;font-weight:700">Mnemonica Stack</div>
-                    <div style="font-size:10px;color:#666">Classic Memory System</div>
-                </div>
-            </button>
+            
+            <h2 class="section-title">Pilih Stack System</h2>
+            
+            <div class="stack-select">
+                <button class="stack-btn stebbin" onclick="showPage('stebbin')">
+                    <div class="stack-icon">S</div>
+                    <h3>Stebbin Stack</h3>
+                    <p>CHSD System dengan tracking matematis untuk perhitungan posisi kartu yang presisi.</p>
+                </button>
+                <button class="stack-btn mnemonica" onclick="showPage('mnemonica')">
+                    <div class="stack-icon">M</div>
+                    <h3>Mnemonica Stack</h3>
+                    <p>Sistem memorisasi klasik yang digunakan oleh para master card magician di seluruh dunia.</p>
+                </button>
+            </div>
         </div>
     </div>
 
     <!-- STEBBIN PAGE -->
     <div id="stebbin" class="page">
-        <button class="back-btn" onclick="showPage('stackSelect')">← Kembali</button>
-        <h2>🔷 PROF JAY STEBBIN STACK</h2>
-
-        <div class="tab-container">
-            <button class="tab-btn active" onclick="switchStebbinTab('tracking', this)">TRACKING</button>
-            <button class="tab-btn" onclick="switchStebbinTab('rumus', this)">RUMUS</button>
-        </div>
-
-        <div id="stebbin-tracking" class="tab-content active">
-            <div class="info-box">
-                <p><strong>TRACKING MODE:</strong><br>Rumus CHSD System untuk tracking posisi kartu</p>
-            </div>
-
-            <label>Kartu Paling Bawah</label>
-            <select id="tracking-bottom" onchange="calculateTracking()">
-                <option value="" disabled selected>-- PILIH KARTU BAWAH --</option>
-                <optgroup label="♣ KLUB" id="track-opt-club"></optgroup>
-                <optgroup label="♥ HATI" id="track-opt-heart" style="color:#d32f2f;"></optgroup>
-                <optgroup label="♠ SEKOP" id="track-opt-spade"></optgroup>
-                <optgroup label="♦ WAJIK" id="track-opt-diamond" style="color:#d32f2f;"></optgroup>
-            </select>
+        <div class="main-card">
+            <button class="back-btn" onclick="showPage('stackSelect')">
+                ← Kembali
+            </button>
             
-            <label>Kartu yang Dicari</label>
-            <select id="tracking-target" onchange="calculateTracking()">
-                <option value="" disabled selected>-- PILIH KARTU --</option>
-                <optgroup label="♣ KLUB" id="track-target-club"></optgroup>
-                <optgroup label="♥ HATI" id="track-target-heart" style="color:#d32f2f;"></optgroup>
-                <optgroup label="♠ SEKOP" id="track-target-spade"></optgroup>
-                <optgroup label="♦ WAJIK" id="track-target-diamond" style="color:#d32f2f;"></optgroup>
-            </select>
+            <h2 class="section-title">Stebbin Stack System</h2>
 
-            <div class="chsd-info" id="chsd-display" style="display:none;">
-                <div style="font-size:9px;color:#666;text-transform:uppercase;letter-spacing:1px;font-weight:600">Urutan CHSD dari Bawah:</div>
-                <div class="sequence" id="chsd-sequence"></div>
+            <div class="tab-container">
+                <button class="tab-btn active" onclick="switchStebbinTab('tracking', this)">Tracking</button>
+                <button class="tab-btn" onclick="switchStebbinTab('rumus', this)">Formula</button>
             </div>
 
-            <div class="bottom-cards-display" id="bottom-display" style="display:none;">
-                <div class="title">4 Kartu Bawah (dari bawah ke atas):</div>
-                <div class="cards" id="bottom-cards"></div>
-            </div>
-
-            <div class="result-box">
-                <div id="tracking-category"></div>
-                <h3>POSISI KARTU DARI ATAS:</h3>
-                <div class="result-value" id="tracking-result">-</div>
-                <div class="calculation-steps" id="tracking-steps"></div>
-            </div>
-        </div>
-
-        <div id="stebbin-rumus" class="tab-content">
-            <div class="rumus-content">
-                <div class="rumus-section">
-                    <div class="rumus-title">KONSEP DASAR STEBBIN STACK</div>
-                    <div class="rumus-text">
-                        Stebbin Stack menggunakan sistem <strong>CHSD (Clubs-Hearts-Spades-Diamonds)</strong> dengan pola +3. Setiap kartu berikutnya memiliki nilai +3 dari kartu sebelumnya dengan suit yang berurutan.
-                    </div>
-                    <div class="highlight-box">
-                        <strong>Pola:</strong> A♣ → 4♥ → 7♠ → 10♦ → K♣ → 3♥ → 6♠ → ... (berulang)
-                    </div>
+            <div id="stebbin-tracking" class="tab-content active">
+                <div class="info-box">
+                    <p><strong>Tracking Mode:</strong> Gunakan rumus CHSD System untuk tracking posisi kartu</p>
                 </div>
 
-                <div class="rumus-section">
-                    <div class="rumus-title">CARA KERJA TRACKING</div>
-                    <div class="rumus-text">
-                        Tracking digunakan untuk mengetahui posisi kartu tertentu dalam deck berdasarkan kartu yang ada di paling bawah.
-                    </div>
-                    
-                    <div class="rumus-formula">
-                        Posisi = (Selisih Value × 4) - Urutan Setelah
-                    </div>
+                <label>Kartu Paling Bawah</label>
+                <select id="tracking-bottom" onchange="calculateTracking()">
+                    <option value="" disabled selected>-- Pilih Kartu Bawah --</option>
+                    <optgroup label="♣ KLUB" id="track-opt-club"></optgroup>
+                    <optgroup label="♥ HATI" id="track-opt-heart" style="color:#dc2626;"></optgroup>
+                    <optgroup label="♠ SEKOP" id="track-opt-spade"></optgroup>
+                    <optgroup label="♦ WAJIK" id="track-opt-diamond" style="color:#dc2626;"></optgroup>
+                </select>
+                
+                <label>Kartu yang Dicari</label>
+                <select id="tracking-target" onchange="calculateTracking()">
+                    <option value="" disabled selected>-- Pilih Kartu --</option>
+                    <optgroup label="♣ KLUB" id="track-target-club"></optgroup>
+                    <optgroup label="♥ HATI" id="track-target-heart" style="color:#dc2626;"></optgroup>
+                    <optgroup label="♠ SEKOP" id="track-target-spade"></optgroup>
+                    <optgroup label="♦ WAJIK" id="track-target-diamond" style="color:#dc2626;"></optgroup>
+                </select>
 
-                    <div class="rumus-example">
-                        <div class="rumus-example-title">Contoh Perhitungan:</div>
-                        <div class="rumus-example-text">
-                            <strong>Kartu bawah:</strong> 7♠<br>
-                            <strong>Kartu yang dicari:</strong> 2♠<br><br>
-                            
-                            1. Cari kartu dengan suit yang sama (♠) di 4 kartu bawah<br>
-                            2. 7♠ adalah kartu referensi (value = 7)<br>
-                            3. Target: 2♠ (value = 2)<br>
-                            4. Karena 7 > 2, gunakan rumus VALUE BESAR<br>
-                            5. Selisih = 7 - 2 = 5<br>
-                            6. Urutan setelah = 1 (karena 7♠ ada di urutan ke-2 dari bawah)<br>
-                            7. Posisi = (5 × 4) - 1 = 20 - 1 = <strong>19</strong>
+                <div class="chsd-info" id="chsd-display" style="display:none;">
+                    <div style="font-size:0.75rem;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;font-weight:600">Urutan CHSD dari Bawah:</div>
+                    <div class="sequence" id="chsd-sequence"></div>
+                </div>
+
+                <div class="bottom-cards-display" id="bottom-display" style="display:none;">
+                    <div class="title">4 Kartu Bawah (dari bawah ke atas):</div>
+                    <div class="cards" id="bottom-cards"></div>
+                </div>
+
+                <div class="result-box">
+                    <div id="tracking-category"></div>
+                    <h3>Posisi Kartu dari Atas</h3>
+                    <div class="result-value" id="tracking-result">-</div>
+                    <div class="calculation-steps" id="tracking-steps"></div>
+                </div>
+            </div>
+
+            <div id="stebbin-rumus" class="tab-content">
+                <div class="rumus-content">
+                    <div class="rumus-section">
+                        <div class="rumus-title">Konsep Dasar Stebbin Stack</div>
+                        <div class="rumus-text">
+                            Stebbin Stack menggunakan sistem <strong>CHSD (Clubs-Hearts-Spades-Diamonds)</strong> dengan pola +3. Setiap kartu berikutnya memiliki nilai +3 dari kartu sebelumnya dengan suit yang berurutan.
+                        </div>
+                        <div class="highlight-box">
+                            <strong>Pola:</strong> A♣ → 4♥ → 7♠ → 10♦ → K♣ → 3♥ → 6♠ → ... (berulang)
                         </div>
                     </div>
-                </div>
 
-                <div class="rumus-section">
-                    <div class="rumus-title">RUMUS VALUE BESAR</div>
-                    <div class="rumus-text">
-                        Digunakan ketika nilai kartu referensi LEBIH BESAR dari kartu yang dicari.
-                    </div>
-                    <div class="rumus-formula">
-                        (Value Referensi - Value Target) × 4 - Urutan Setelah
-                    </div>
-                    <div class="highlight-box">
-                        <strong>Keterangan:</strong><br>
-                        • Value Referensi = nilai kartu dengan suit yang sama di 4 kartu bawah<br>
-                        • Value Target = nilai kartu yang dicari<br>
-                        • Urutan Setelah = posisi kartu referensi dari bawah (0-3)
-                    </div>
-                </div>
-
-                <div class="rumus-section">
-                    <div class="rumus-title">RUMUS VALUE KECIL</div>
-                    <div class="rumus-text">
-                        Digunakan ketika nilai kartu referensi LEBIH KECIL dari kartu yang dicari. Tambahkan 13 pada value referensi.
-                    </div>
-                    <div class="rumus-formula">
-                        (Value Referensi + 13 - Value Target) × 4 - Urutan Setelah
-                    </div>
-                    <div class="rumus-example">
-                        <div class="rumus-example-title">Contoh:</div>
-                        <div class="rumus-example-text">
-                            <strong>Kartu bawah:</strong> 10♦<br>
-                            <strong>Kartu yang dicari:</strong> 8♥<br><br>
-                            
-                            Referensi: 4♥ (value = 4)<br>
-                            Target: 8♥ (value = 8)<br>
-                            Karena 4 < 8, gunakan VALUE KECIL<br>
-                            (4 + 13 - 8) × 4 - 2 = 9 × 4 - 2 = 36 - 2 = <strong>34</strong>
+                    <div class="rumus-section">
+                        <div class="rumus-title">Cara Kerja Tracking</div>
+                        <div class="rumus-text">
+                            Tracking digunakan untuk mengetahui posisi kartu tertentu dalam deck berdasarkan kartu yang ada di paling bawah.
                         </div>
-                    </div>
-                </div>
-
-                <div class="rumus-section">
-                    <div class="rumus-title">MENGAPA DITAMBAH 13?</div>
-                    <div class="rumus-text">
-                        Karena deck kartu memiliki 13 nilai (A-2-3-4-5-6-7-8-9-10-J-Q-K). Ketika value referensi lebih kecil, kita "meminjam" dari putaran berikutnya dengan menambahkan 13, seperti sistem modulo dalam matematika.
-                    </div>
-                    <div class="highlight-box">
-                        <strong>Analogi:</strong><br>
-                        Seperti jam yang berputar. Jika jam menunjukkan pukul 2 dan kita ingin tahu jarak ke pukul 11, kita hitung: (2 + 12) - 11 = 3 jam.
-                    </div>
-                </div>
-
-                <div class="rumus-section">
-                    <div class="rumus-title">URUTAN CHSD</div>
-                    <div class="rumus-text">
-                        Urutan suit selalu mengikuti pola CHSD dari kartu paling bawah:
-                    </div>
-                    <div class="highlight-box">
-                        <strong>Contoh:</strong><br>
-                        Jika kartu bawah adalah ♥ (Hearts), maka urutan 4 kartu bawah adalah:<br>
-                        <strong>♥ →  → ♦ → ♣</strong><br><br>
                         
-                        Jika kartu bawah adalah ♠ (Spades), maka:<br>
-                        <strong> → ♦ → ♣ → ♥</strong>
-                    </div>
-                </div>
+                        <div class="rumus-formula">
+                            Posisi = (Selisih Value × 4) - Urutan Setelah
+                        </div>
 
-                <div class="rumus-section">
-                    <div class="rumus-title">LANGKAH-LANGKAH PRAKTEK</div>
-                    <div class="rumus-text">
-                        <strong>1.</strong> Lihat kartu paling bawah deck<br>
-                        <strong>2.</strong> Identifikasi 4 kartu bawah (termasuk kartu bawah)<br>
-                        <strong>3.</strong> Cari kartu dengan suit yang sama dengan kartu yang dicari<br>
-                        <strong>4.</strong> Bandingkan value referensi dengan value target<br>
-                        <strong>5.</strong> Pilih rumus (VALUE BESAR atau VALUE KECIL)<br>
-                        <strong>6.</strong> Hitung menggunakan rumus yang sesuai<br>
-                        <strong>7.</strong> Hasilnya adalah posisi kartu dari atas (1-52)
+                        <div class="rumus-example">
+                            <div class="rumus-example-title">Contoh Perhitungan:</div>
+                            <div class="rumus-example-text">
+                                <strong>Kartu bawah:</strong> 7♠<br>
+                                <strong>Kartu yang dicari:</strong> 2♠<br><br>
+                                
+                                1. Cari kartu dengan suit yang sama (♠) di 4 kartu bawah<br>
+                                2. 7♠ adalah kartu referensi (value = 7)<br>
+                                3. Target: 2♠ (value = 2)<br>
+                                4. Karena 7 > 2, gunakan rumus VALUE BESAR<br>
+                                5. Selisih = 7 - 2 = 5<br>
+                                6. Urutan setelah = 1 (karena 7♠ ada di urutan ke-2 dari bawah)<br>
+                                7. Posisi = (5 × 4) - 1 = 20 - 1 = <strong>19</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rumus-section">
+                        <div class="rumus-title">Rumus Value Besar</div>
+                        <div class="rumus-text">
+                            Digunakan ketika nilai kartu referensi LEBIH BESAR dari kartu yang dicari.
+                        </div>
+                        <div class="rumus-formula">
+                            (Value Referensi - Value Target) × 4 - Urutan Setelah
+                        </div>
+                        <div class="highlight-box">
+                            <strong>Keterangan:</strong><br>
+                            • Value Referensi = nilai kartu dengan suit yang sama di 4 kartu bawah<br>
+                            • Value Target = nilai kartu yang dicari<br>
+                            • Urutan Setelah = posisi kartu referensi dari bawah (0-3)
+                        </div>
+                    </div>
+
+                    <div class="rumus-section">
+                        <div class="rumus-title">Rumus Value Kecil</div>
+                        <div class="rumus-text">
+                            Digunakan ketika nilai kartu referensi LEBIH KECIL dari kartu yang dicari. Tambahkan 13 pada value referensi.
+                        </div>
+                        <div class="rumus-formula">
+                            (Value Referensi + 13 - Value Target) × 4 - Urutan Setelah
+                        </div>
+                        <div class="rumus-example">
+                            <div class="rumus-example-title">Contoh:</div>
+                            <div class="rumus-example-text">
+                                <strong>Kartu bawah:</strong> 10♦<br>
+                                <strong>Kartu yang dicari:</strong> 8♥<br><br>
+                                
+                                Referensi: 4♥ (value = 4)<br>
+                                Target: 8♥ (value = 8)<br>
+                                Karena 4 < 8, gunakan VALUE KECIL<br>
+                                (4 + 13 - 8) × 4 - 2 = 9 × 4 - 2 = 36 - 2 = <strong>34</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rumus-section">
+                        <div class="rumus-title">Mengapa Ditambah 13?</div>
+                        <div class="rumus-text">
+                            Karena deck kartu memiliki 13 nilai (A-2-3-4-5-6-7-8-9-10-J-Q-K). Ketika value referensi lebih kecil, kita "meminjam" dari putaran berikutnya dengan menambahkan 13, seperti sistem modulo dalam matematika.
+                        </div>
+                        <div class="highlight-box">
+                            <strong>Analogi:</strong><br>
+                            Seperti jam yang berputar. Jika jam menunjukkan pukul 2 dan kita ingin tahu jarak ke pukul 11, kita hitung: (2 + 12) - 11 = 3 jam.
+                        </div>
+                    </div>
+
+                    <div class="rumus-section">
+                        <div class="rumus-title">Urutan CHSD</div>
+                        <div class="rumus-text">
+                            Urutan suit selalu mengikuti pola CHSD dari kartu paling bawah:
+                        </div>
+                        <div class="highlight-box">
+                            <strong>Contoh:</strong><br>
+                            Jika kartu bawah adalah ♥ (Hearts), maka urutan 4 kartu bawah adalah:<br>
+                            <strong>♥ → ♠ → ♦ → ♣</strong><br><br>
+                            
+                            Jika kartu bawah adalah ♠ (Spades), maka:<br>
+                            <strong>♠ → ♦ → ♣ → ♥</strong>
+                        </div>
+                    </div>
+
+                    <div class="rumus-section">
+                        <div class="rumus-title">Langkah-Langkah Praktek</div>
+                        <div class="rumus-text">
+                            <strong>1.</strong> Lihat kartu paling bawah deck<br>
+                            <strong>2.</strong> Identifikasi 4 kartu bawah (termasuk kartu bawah)<br>
+                            <strong>3.</strong> Cari kartu dengan suit yang sama dengan kartu yang dicari<br>
+                            <strong>4.</strong> Bandingkan value referensi dengan value target<br>
+                            <strong>5.</strong> Pilih rumus (VALUE BESAR atau VALUE KECIL)<br>
+                            <strong>6.</strong> Hitung menggunakan rumus yang sesuai<br>
+                            <strong>7.</strong> Hasilnya adalah posisi kartu dari atas (1-52)
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1214,65 +1536,105 @@
 
     <!-- MNEMONICA PAGE -->
     <div id="mnemonica" class="page">
-        <button class="back-btn" onclick="showPage('stackSelect')">← Kembali</button>
-        <h2>❤️ PROF JAY MNEMONICA</h2>
-
-        <div class="tab-container">
-            <button class="tab-btn active" onclick="switchMnemonicaTab('acaan', this)">ACAAN</button>
-            <button class="tab-btn" onclick="switchMnemonicaTab('list', this)">LIST</button>
-            <button class="tab-btn" onclick="switchMnemonicaTab('memorize', this)">MEMORIZE</button>
-        </div>
-
-        <div id="mnemo-acaan" class="tab-content active">
-            <label>1. Pilih Kartu</label>
-            <select id="card-select" onchange="generateMnemoAcaan()">
-                <option value="" disabled selected>-- PILIH KARTU --</option>
-                <optgroup label="♣ KLUB" id="opt-kriting"></optgroup>
-                <optgroup label="♥ HATI" id="opt-hati" style="color:#d32f2f;"></optgroup>
-                <optgroup label="♠ SEKOP" id="opt-sekop"></optgroup>
-                <optgroup label="♦ WAJIK" id="opt-diamond" style="color:#d32f2f;"></optgroup>
-            </select>
+        <div class="main-card">
+            <button class="back-btn" onclick="showPage('stackSelect')">
+                ← Kembali
+            </button>
             
-            <div class="card-position-info" id="selectedCardPosition">
-                <div class="position-label">Nomor Urut di Mnemonica Stack</div>
-                <div class="position-number" id="selectedPositionNum">-</div>
-                <div class="card-name" id="selectedCardName"></div>
-            </div>
-            
-            <label>2. Posisi Tujuan</label>
-            <div class="number-grid" id="mnemoGrid"></div>
+            <h2 class="section-title">Mnemonica Stack System</h2>
 
-            <div class="result-box">
-                <h3>HASIL CUT KE:</h3>
-                <p id="result" style="font-size:36px;font-weight:900;color:#1a1a1a;min-height:50px;margin:15px 0">-</p>
-                <div class="result-position" id="resultPosition">Posisi ke-<span id="resultPositionNum">-</span></div>
+            <div class="tab-container">
+                <button class="tab-btn active" onclick="switchMnemonicaTab('acaan', this)">ACAAN</button>
+                <button class="tab-btn" onclick="switchMnemonicaTab('list', this)">List</button>
+                <button class="tab-btn" onclick="switchMnemonicaTab('memorize', this)">Memorize</button>
             </div>
-        </div>
 
-        <div id="mnemo-list" class="tab-content">
-            <div class="mnemonic-list" id="fullList"></div>
-        </div>
+            <div id="mnemo-acaan" class="tab-content active">
+                <label>1. Pilih Kartu</label>
+                <select id="card-select" onchange="generateMnemoAcaan()">
+                    <option value="" disabled selected>-- Pilih Kartu --</option>
+                    <optgroup label="♣ KLUB" id="opt-kriting"></optgroup>
+                    <optgroup label="♥ HATI" id="opt-hati" style="color:#dc2626;"></optgroup>
+                    <optgroup label="♠ SEKOP" id="opt-sekop"></optgroup>
+                    <optgroup label="♦ WAJIK" id="opt-diamond" style="color:#dc2626;"></optgroup>
+                </select>
+                
+                <div class="card-position-info" id="selectedCardPosition">
+                    <div class="position-label">Nomor Urut di Mnemonica Stack</div>
+                    <div class="position-number" id="selectedPositionNum">-</div>
+                    <div class="card-name" id="selectedCardName"></div>
+                </div>
+                
+                <label>2. Posisi Tujuan</label>
+                <div class="number-grid" id="mnemoGrid"></div>
 
-        <div id="mnemo-memorize" class="tab-content">
-            <div class="quiz-card">
-                <div id="quiz-question">?</div>
-                <p style="font-size: 10px; color: #666; letter-spacing: 2px; text-transform:uppercase;font-weight:600">TEBAK POSISI (1-52)</p>
-            </div>
-            <div class="quiz-controls">
-                <input type="number" id="quiz-answer" class="quiz-input" placeholder="00" inputmode="numeric">
-                <div class="btn-group">
-                    <button class="check-btn" onclick="checkQuiz()">CEK HASIL</button>
-                    <button class="next-btn" onclick="newQuiz()">NEXT</button>
+                <div class="result-box">
+                    <h3>Hasil Cut Ke</h3>
+                    <p id="result" style="font-size:2.5rem;font-weight:800;color:var(--primary);min-height:50px;margin:10px 0;font-family:'Playfair Display',serif">-</p>
+                    <div class="result-position">Posisi ke-<span id="resultPositionNum">-</span></div>
                 </div>
             </div>
-            <p id="quiz-feedback"></p>
+
+            <div id="mnemo-list" class="tab-content">
+                <div class="mnemonic-list" id="fullList"></div>
+            </div>
+
+            <div id="mnemo-memorize" class="tab-content">
+                <div class="quiz-card">
+                    <div id="quiz-question">?</div>
+                    <p style="font-size: 0.8rem; color: var(--text-light); letter-spacing: 2px; text-transform:uppercase;font-weight:600;margin-top:8px">Tebak Posisi (1-52)</p>
+                </div>
+                <div class="quiz-controls">
+                    <input type="number" id="quiz-answer" class="quiz-input" placeholder="00" inputmode="numeric">
+                    <div class="btn-group">
+                        <button class="check-btn" onclick="checkQuiz()">Cek Hasil</button>
+                        <button class="next-btn" onclick="newQuiz()">Next</button>
+                    </div>
+                </div>
+                <p id="quiz-feedback"></p>
+            </div>
         </div>
     </div>
-
-    <div class="footer">
-        Designed by <strong>Prof. Jayz</strong> • Bicycle Card Stack Master
-    </div>
 </div>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <h3>Prof Jayz Card Stack Master</h3>
+                <p>Platform profesional untuk mempelajari dan menguasai sistem stack kartu terbaik di dunia. Didedikasikan untuk para pesulap dan card enthusiast.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Produk</h4>
+                <ul>
+                    <li><a href="#" onclick="showPage('randomizer'); return false;">Card Generator</a></li>
+                    <li><a href="#" onclick="openPasswordModal(); return false;">Stebbin Stack</a></li>
+                    <li><a href="#" onclick="openPasswordModal(); return false;">Mnemonica System</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Sumber Daya</h4>
+                <ul>
+                    <li><a href="#">Tutorial</a></li>
+                    <li><a href="#">Dokumentasi</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Kontak</h4>
+                <ul>
+                    <li><a href="#">Support</a></li>
+                    <li><a href="#">Community</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Prof Jayz Card Stack Master. All rights reserved. | Bicycle Playing Cards</p>
+        </div>
+    </div>
+</footer>
 
 <div class="secret-zone" id="secretZone"></div>
 
@@ -1383,11 +1745,11 @@
     }
 
     const mnemoStack = [
-        "4", "2♥", "7♦", "3♣", "4♥", "6♦", "A♠", "5♥", "9♠", "2♠",
+        "4♣", "2♥", "7♦", "3♣", "4♥", "6♦", "A♠", "5♥", "9♠", "2♠",
         "Q♥", "3♦", "Q♣", "8♥", "6♠", "5♠", "9♥", "K♣", "2♦",
-        "J♥", "3♠", "8♠", "6♥", "10", "5♦", "K♦", "2♣", "3♥",
-        "8♦", "5♣", "K♠", "J♦", "8♣", "10", "K♥", "J♣",
-        "7♠", "10♥", "A♦", "4♠", "7♥", "4♦", "A♣", "9", "J♠",
+        "J♥", "3♠", "8♠", "6♥", "10♣", "5♦", "K♦", "2♣", "3♥",
+        "8♦", "5♣", "K♠", "J♦", "8♣", "10♠", "K♥", "J♣",
+        "7♠", "10♥", "A♦", "4♠", "7♥", "4♦", "A♣", "9♣", "J♠",
         "Q♦", "7♣", "Q♠", "10♦", "6♣", "A♥", "9♦"
     ];
 
@@ -1406,7 +1768,6 @@
         return found ? found.val : null;
     }
 
-    // CARD RENDERER - Menampilkan Rank dan Suit
     function createPlayingCard(rank, suit) {
         const color = (suit === '♥' || suit === '♦') ? 'red' : 'black';
         return `<div class="playing-card ${color}"><div class="card-content"><span class="card-rank">${rank}</span><span class="card-suit">${suit}</span></div></div>`;
@@ -1414,10 +1775,17 @@
 
     function showPage(pageId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
+        
+        // Update nav tab active state
+        if (pageId === 'landing') document.querySelectorAll('.nav-tab')[0].classList.add('active');
+        else if (pageId === 'randomizer') document.querySelectorAll('.nav-tab')[1].classList.add('active');
+        
         if (pageId === 'randomizer') initRandomizer();
         if (pageId === 'stebbin') initStebbin();
         if (pageId === 'mnemonica') initMnemonica();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function switchStebbinTab(tabName, btn) {
@@ -1464,7 +1832,6 @@
         isStebbinMode = false;
         lastStoppedCard = null;
         
-        // Tampilkan kartu pertama
         const firstCard = stebbinStack[0];
         document.getElementById('cardContainer').innerHTML = createPlayingCard(firstCard.slice(0,-1), firstCard.slice(-1));
         updateUI();
@@ -1478,7 +1845,6 @@
     function toggleCheat(event) {
         event.stopPropagation();
         isStebbinMode = !isStebbinMode;
-        // NO VISUAL FEEDBACK - COMPLETELY SILENT
     }
 
     function startRandomizer() {
@@ -1505,10 +1871,8 @@
         isRandomizing = false;
         if (animationFrameId) cancelAnimationFrame(animationFrameId);
         
-        // SAAT BERHENTI: jika cheat aktif, tampilkan kartu Stebbin next
         if (isStebbinMode) {
             if (lastStoppedCard === null) {
-                // Pertama kali: ambil kartu yang sedang tampil sebagai base
                 const container = document.getElementById('cardContainer');
                 const cardEl = container.querySelector('.playing-card');
                 if (cardEl) {
@@ -1519,15 +1883,12 @@
                     lastStoppedCard = "A♣";
                 }
             } else {
-                // Hitung kartu berikutnya dalam urutan Stebbin
                 const nextCard = getNextStebbinCard(lastStoppedCard);
                 lastStoppedCard = nextCard;
-                // Tampilkan kartu Stebbin
                 const container = document.getElementById('cardContainer');
                 container.innerHTML = createPlayingCard(nextCard.slice(0,-1), nextCard.slice(-1));
             }
         } else {
-            // Mode normal: simpan kartu yang sedang tampil
             const container = document.getElementById('cardContainer');
             const cardEl = container.querySelector('.playing-card');
             if (cardEl) {
@@ -1541,7 +1902,6 @@
     }
 
     function flipCard() {
-        // Saat running: tampilkan kartu acak (biar terlihat natural)
         const container = document.getElementById('cardContainer');
         const randomIdx = Math.floor(Math.random() * 52);
         const cardToShow = stebbinStack[randomIdx];
@@ -1559,13 +1919,13 @@
             indicator.textContent = 'RUNNING';
             indicator.className = 'control-indicator running';
             led.className = 'status-led running';
-            hint.textContent = 'KETUK UNTUK BERHENTI';
+            hint.textContent = 'Klik untuk Berhenti';
             hint.classList.add('active');
         } else {
             indicator.textContent = 'STOPPED';
             indicator.className = 'control-indicator stopped';
             led.className = 'status-led stopped';
-            hint.textContent = 'KETUK UNTUK MULAI';
+            hint.textContent = 'Klik untuk Mulai';
             hint.classList.remove('active');
         }
     }
@@ -1619,9 +1979,9 @@
         const chsdSeq = getCHSDSequence(bottomCard);
         document.getElementById("chsd-display").style.display = "block";
         document.getElementById("chsd-sequence").innerHTML = chsdSeq.map((item, idx) => {
-            const color = getCardColor(item.suit) === 'red' ? '#d32f2f' : '#1a1a1a';
+            const color = getCardColor(item.suit) === 'red' ? '#dc2626' : '#1a1a2e';
             const active = item.isBottom ? 'active' : '';
-            return `<span class="${active}" style="color:${color}">${item.suit}<br><small style="font-size:7px">${idx}</small></span>`;
+            return `<span class="${active}" style="color:${color}">${item.suit}<br><small style="font-size:0.65rem">${idx}</small></span>`;
         }).join('');
 
         const { refCard, bottom4 } = findReferenceInBottom4(bottomCard, targetCard);
@@ -1629,7 +1989,7 @@
 
         document.getElementById("bottom-display").style.display = "block";
         document.getElementById("bottom-cards").innerHTML = bottom4.map((item, idx) => {
-            const color = getCardColor(item.card) === 'red' ? '#d32f2f' : '#1a1a1a';
+            const color = getCardColor(item.card) === 'red' ? '#dc2626' : '#1a1a2e';
             const isRef = (item.card === refCard.card) ? 'highlight' : '';
             return `<div class="card-item ${isRef}"><div style="color:${color}">${item.card}</div><div class="card-index">${idx}</div></div>`;
         }).join('');
@@ -1740,9 +2100,9 @@
         }
         
         if (resultCard.includes('♥') || resultCard.includes('♦')) {
-            resEl.style.color = "#d32f2f";
+            resEl.style.color = "#dc2626";
         } else {
-            resEl.style.color = "#1a1a1a";
+            resEl.style.color = "#1a1a2e";
         }
     }
 
@@ -1751,7 +2111,7 @@
         document.querySelectorAll('#mnemoGrid .num-btn').forEach(b => b.classList.remove('active'));
         selectedMnemoTarget = null;
         document.getElementById("result").innerText = "-";
-        document.getElementById("result").style.color = "#1a1a1a";
+        document.getElementById("result").style.color = "#1a1a2e";
         document.getElementById("resultPositionNum").innerText = "-";
         document.getElementById("selectedCardPosition").classList.remove("show");
     }
@@ -1766,7 +2126,7 @@
         }).then(() => {
             const sBtn = document.querySelector('.send-btn');
             const originalBg = sBtn.style.backgroundColor;
-            sBtn.style.backgroundColor = "#4caf50";
+            sBtn.style.backgroundColor = "#10b981";
             setTimeout(() => sBtn.style.backgroundColor = originalBg, 500);
         }).catch(err => console.error('Error ntfy:', err));
     }
@@ -1777,7 +2137,7 @@
         document.getElementById('quiz-question').innerText = currentQuizCard;
         document.getElementById('quiz-answer').value = "";
         document.getElementById('quiz-feedback').innerText = "";
-        document.getElementById('quiz-question').style.color = (currentQuizCard.includes('♥') || currentQuizCard.includes('♦')) ? "#d32f2f" : "#1a1a1a";
+        document.getElementById('quiz-question').style.color = (currentQuizCard.includes('♥') || currentQuizCard.includes('♦')) ? "#dc2626" : "#1a1a2e";
     }
 
     function checkQuiz() {
@@ -1785,21 +2145,19 @@
         const correctPos = mnemoStack.indexOf(currentQuizCard) + 1;
         const feedback = document.getElementById('quiz-feedback');
         if (ans === correctPos) {
-            feedback.style.color = "#4caf50";
+            feedback.style.color = "#10b981";
             feedback.innerText = "BENAR! Memuat...";
             setTimeout(newQuiz, 800);
         } else {
-            feedback.style.color = "#d32f2f";
+            feedback.style.color = "#dc2626";
             feedback.innerText = `SALAH! Posisi ke-${correctPos}`;
         }
     }
 
-    // CHEAT MODE - Console command (silent)
     window.ketuk = function() {
         isStebbinMode = !isStebbinMode;
     };
 
-    // Initialize
     buildStebbinStack();
 </script>
 
