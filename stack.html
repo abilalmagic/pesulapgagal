@@ -2,515 +2,547 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PROF JAY CARD STACK MASTER</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
         
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
-            color: #eee;
+            background: url('https://images.ctfassets.net/sm166qdr1jca/4WIKJ1dhgYqwKg9WcjplwL/b869aabaaa08f891a7a6ef02dfb820f8/691A0514__4_.jpg') center/cover fixed;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
-            min-height: 100vh;
-            padding: 10px;
-            overflow-x: hidden;
+            align-items: flex-start;
+            padding: 1px;
         }
 
         .container {
             width: 100%;
-            max-width: 400px;
-            background: rgba(30, 30, 46, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 235, 59, 0.1);
-            border: 1px solid rgba(255, 235, 59, 0.1);
-            animation: containerGlow 3s ease-in-out infinite alternate;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 255);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            margin: 20px 0;
         }
 
-        @keyframes containerGlow {
-            from { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 235, 59, 0.1); }
-            to { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 235, 59, 0.2); }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
         }
 
-        h2 { 
-            font-size: 14px; 
-            text-align: center; 
-            color: #ffeb3b; 
-            margin-bottom: 20px; 
-            text-transform: uppercase; 
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
+        .logo {
+            width: 80px;
+            height: auto;
+            margin-bottom: 10px;
         }
 
-        h1 { 
-            font-size: 22px; 
-            text-align: center; 
-            color: #ffeb3b; 
-            margin: 20px 0; 
-            text-transform: uppercase; 
+        .brand-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1a1a1a;
             letter-spacing: 3px;
-            background: linear-gradient(135deg, #ffeb3b, #f57f17);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: titlePulse 2s ease-in-out infinite;
+            text-transform: uppercase;
         }
 
-        @keyframes titlePulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
+        .brand-subtitle {
+            font-size: 10px;
+            color: #666;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        h2 {
+            font-size: 14px;
+            text-align: center;
+            color: #333;
+            margin: 25px 0 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        h1 {
+            font-size: 22px;
+            text-align: center;
+            color: #1a1a1a;
+            margin: 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 800;
         }
 
         .page { display: none; animation: pageFadeIn 0.4s ease; }
         .page.active { display: block; }
         
         @keyframes pageFadeIn { 
-            from { opacity: 0; transform: translateY(20px) scale(0.95); } 
-            to { opacity: 1; transform: translateY(0) scale(1); } 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
         }
 
         .landing-hero {
             text-align: center;
             padding: 40px 20px;
-            background: linear-gradient(135deg, rgba(255,235,59,0.1), rgba(33,150,243,0.1));
-            border-radius: 15px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(245,245,245,0.9));
+            border-radius: 20px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+        }
+        
+        .landing-hero .logo-large {
+            width: 100px;
             margin-bottom: 20px;
-            border: 1px solid rgba(255,235,59,0.2);
         }
-        .landing-hero .logo {
-            font-size: 64px;
-            margin-bottom: 15px;
-            animation: logoFloat 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 20px rgba(255,235,59,0.5));
-        }
-        @keyframes logoFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+        
         .landing-hero .subtitle {
-            font-size: 11px;
-            color: #888;
-            margin-top: 10px;
-            letter-spacing: 1px;
+            font-size: 10px;
+            color: #666;
+            margin-top: 15px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 500;
         }
 
         .main-btn {
             width: 100%;
-            padding: 18px;
-            margin: 12px 0;
-            border: none;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 800;
+            padding: 16px;
+            margin: 10px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 14px;
+            font-size: 13px;
+            font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
+            gap: 10px;
+            transition: all 0.2s;
             text-transform: uppercase;
             letter-spacing: 1px;
+            background: white;
+            color: #333;
         }
-        .main-btn::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
+        .main-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-color: #ccc;
         }
-        .main-btn:hover::before { left: 100%; }
-        .main-btn:active { transform: scale(0.98); }
+        .main-btn:active { transform: translateY(0); }
         
         .btn-random { 
-            background: linear-gradient(135deg, #2196f3, #1976d2); 
-            color: #fff;
-            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+            background: linear-gradient(135deg, #1a1a1a, #333);
+            color: white;
+            border-color: #1a1a1a;
         }
-        .btn-random:hover { 
-            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.6);
-            transform: translateY(-2px);
+        .btn-random:hover {
+            background: linear-gradient(135deg, #333, #444);
         }
         
         .btn-stack { 
-            background: linear-gradient(135deg, #ffeb3b, #fbc02d); 
-            color: #000;
-            box-shadow: 0 4px 15px rgba(255, 235, 59, 0.4);
+            background: white;
+            color: #1a1a1a;
         }
-        .btn-stack:hover { 
-            box-shadow: 0 6px 20px rgba(255, 235, 59, 0.6);
-            transform: translateY(-2px);
-        }
-        .btn-stack svg { width: 20px; height: 20px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
 
         .secret-hint {
             text-align: center;
-            font-size: 9px;
-            color: #333;
-            margin-top: 25px;
+            font-size: 10px;
+            color: #999;
+            margin-top: 20px;
             padding: 12px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 8px;
+            background: rgba(0,0,0,0.03);
+            border-radius: 10px;
+            letter-spacing: 1px;
         }
 
-        .card-display {
+        /* CARD STAGE */
+        .card-stage {
             width: 100%;
             aspect-ratio: 3/4;
-            max-height: 400px;
-            background: linear-gradient(135deg, #1e1e2e, #2a2a3e);
-            border-radius: 16px;
+            max-height: 500px;
+            background: linear-gradient(135deg, #f8f8f8, #ffffff);
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 20px 0;
-            border: 2px solid rgba(255,235,59,0.1);
+            margin: 25px 0;
+            border: 2px solid #e8e8e8;
             position: relative;
             overflow: hidden;
             cursor: pointer;
-            transition: transform 0.1s;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
         }
-        .card-display:active { transform: scale(0.95); }
-        
-        .card-display img {
-            width: 90%;
-            height: 90%;
-            object-fit: contain;
-            border-radius: 8px;
+
+        .card-stage:active { transform: scale(0.98); }
+
+        /* PLAYING CARD WITH RANK & SUIT */
+        .playing-card {
+            width: 150%;
+            max-width: 280px;
+            aspect-ratio: 5/7;
+            background: #ffffff;
+            border-radius: 16px;
             position: relative;
-            z-index: 1;
+            box-shadow: 
+                0 15px 40px rgba(0,0,0,0.15),
+                0 0 0 1px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.05s;
         }
-        .card-display .placeholder {
+
+        .playing-card.flipping {
+            animation: flipCard 0.08s;
+        }
+
+        @keyframes flipCard {
+            0% { transform: scaleX(1); }
+            50% { transform: scaleX(0.1); }
+            100% { transform: scaleX(1); }
+        }
+
+        .playing-card.red { color: #d32f2f; }
+        .playing-card.black { color: #1a1a1a; }
+
+        .card-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .card-rank {
+            font-size: 90px;
+            font-weight: 900;
+            letter-spacing: -3px;
+            line-height: 1;
+        }
+
+        .card-suit {
             font-size: 80px;
-            color: #444;
-            position: relative;
-            z-index: 1;
+            line-height: 1;
         }
-        .card-display.shuffling {
-            animation: shuffleCard 0.1s ease-in-out;
+
+        .control-indicator {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.95);
+            padding: 8px 24px;
+            border-radius: 25px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            z-index: 10;
+            border: 2px solid #e0e0e0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         }
-        @keyframes shuffleCard {
-            0% { transform: rotate(-2deg) scale(0.98); }
-            50% { transform: rotate(2deg) scale(1.02); }
-            100% { transform: rotate(0deg) scale(1); }
+
+        .control-indicator.running {
+            background: rgba(255,235,59,0.95);
+            color: #1a1a1a;
+            border-color: #fbc02d;
+        }
+
+        .control-indicator.stopped {
+            background: rgba(76,175,80,0.95);
+            color: white;
+            border-color: #43a047;
         }
 
         .tap-hint {
             text-align: center;
-            font-size: 11px;
+            font-size: 12px;
             color: #666;
-            margin-top: 10px;
+            margin-top: 20px;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             font-weight: 600;
+            cursor: pointer;
+            padding: 12px;
+            transition: all 0.3s;
+            border-radius: 10px;
+        }
+
+        .tap-hint:hover {
+            background: rgba(0,0,0,0.03);
+        }
+
+        .tap-hint.active {
+            color: #1a1a1a;
+            font-weight: 700;
+        }
+
+        .status-led {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4caf50;
+            box-shadow: 0 0 10px #4caf50;
+        }
+
+        .status-led.running {
+            background: #ffeb3b;
+            box-shadow: 0 0 15px #ffeb3b;
+            animation: blink 0.5s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
 
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.9);
-            backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 150;
-            animation: fadeIn 0.3s ease;
         }
         .modal-overlay.active { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
         .modal {
-            background: linear-gradient(135deg, #1e1e2e, #2a2a3e);
-            padding: 30px;
-            border-radius: 16px;
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
             width: 90%;
-            max-width: 320px;
+            max-width: 340px;
             text-align: center;
-            border: 2px solid rgba(255,235,59,0.3);
-            box-shadow: 0 0 40px rgba(255,235,59,0.2);
-            animation: modalSlide 0.3s ease;
-        }
-        @keyframes modalSlide {
-            from { transform: translateY(-50px) scale(0.9); opacity: 0; }
-            to { transform: translateY(0) scale(1); opacity: 1; }
+            border: 2px solid #e8e8e8;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.2);
         }
         .modal h3 { 
-            color: #ffeb3b; 
+            color: #1a1a1a; 
             margin-bottom: 20px; 
             font-size: 16px;
             text-transform: uppercase;
             letter-spacing: 2px;
+            font-weight: 700;
         }
         .modal input {
             width: 100%;
-            padding: 14px;
-            border-radius: 10px;
-            border: 2px solid rgba(255,235,59,0.3);
-            background: rgba(0,0,0,0.4);
-            color: #fff;
-            margin-bottom: 15px;
+            padding: 16px;
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            background: #f8f8f8;
+            color: #1a1a1a;
+            margin-bottom: 18px;
             font-size: 16px;
             text-align: center;
-            transition: all 0.3s;
+            font-weight: 600;
         }
         .modal input:focus {
             outline: none;
-            border-color: #ffeb3b;
-            box-shadow: 0 0 15px rgba(255,235,59,0.3);
+            border-color: #1a1a1a;
+            background: white;
         }
-        .modal-btns { display: flex; gap: 10px; }
+        .modal-btns { display: flex; gap: 12px; }
         .modal-btn {
             flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 800;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-weight: 700;
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: all 0.3s;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         .modal-cancel { 
-            background: rgba(255,255,255,0.1); 
-            color: #888;
+            background: #f5f5f5; 
+            color: #666;
         }
-        .modal-cancel:hover { background: rgba(255,255,255,0.2); }
         .modal-confirm { 
-            background: linear-gradient(135deg, #ffeb3b, #fbc02d); 
-            color: #000;
-            box-shadow: 0 4px 15px rgba(255,235,59,0.3);
-        }
-        .modal-confirm:hover { 
-            box-shadow: 0 6px 20px rgba(255,235,59,0.5);
-            transform: translateY(-2px);
+            background: #1a1a1a; 
+            color: white;
+            border-color: #1a1a1a;
         }
         .error-msg { 
-            color: #f44336; 
+            color: #d32f2f; 
             font-size: 11px; 
-            margin-top: 10px; 
+            margin-top: 12px; 
             display: none;
-            animation: shake 0.5s ease;
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
+            font-weight: 600;
         }
 
         .stack-select {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 14px;
             padding: 20px 0;
         }
         .stack-btn {
             padding: 20px;
-            border: 2px solid rgba(255,235,59,0.2);
-            border-radius: 12px;
-            background: linear-gradient(135deg, rgba(30,30,46,0.8), rgba(42,42,62,0.8));
-            color: #fff;
-            font-weight: 800;
+            border: 2px solid #e8e8e8;
+            border-radius: 14px;
+            background: white;
+            color: #1a1a1a;
+            font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 15px;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
+            gap: 18px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
-        .stack-btn::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 4px; height: 100%;
-            transition: width 0.3s;
-        }
-        .stack-btn:hover::before { width: 100%; opacity: 0.1; }
-        .stack-btn:hover { 
+        .stack-btn:hover {
             transform: translateX(5px);
-            border-color: rgba(255,235,59,0.5);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-color: #d0d0d0;
         }
+        .stack-btn:active { transform: translateX(5px) scale(0.98); }
         .stack-btn.stebbin { border-left: 4px solid #2196f3; }
-        .stack-btn.stebbin::before { background: #2196f3; }
         .stack-btn.mnemonica { border-left: 4px solid #ff5252; }
-        .stack-btn.mnemonica::before { background: #ff5252; }
 
         .tab-container {
-            background: rgba(0,0,0,0.3);
+            background: #f5f5f5;
             border-radius: 12px;
             padding: 5px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             display: flex;
             gap: 5px;
-            border: 1px solid rgba(255,235,59,0.1);
         }
         .tab-btn {
             flex: 1;
             padding: 12px;
             font-size: 11px;
-            font-weight: 800;
+            font-weight: 700;
             background: transparent;
             border: none;
-            color: #666;
-            border-radius: 8px;
+            color: #888;
+            border-radius: 10px;
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-        .tab-btn::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: linear-gradient(135deg, rgba(255,235,59,0.2), rgba(255,235,59,0.05));
-            opacity: 0;
-            transition: opacity 0.3s;
+            transition: all 0.2s;
         }
         .tab-btn.active {
-            background: linear-gradient(135deg, #ffeb3b, #fbc02d);
-            color: #000;
-            box-shadow: 0 4px 15px rgba(255,235,59,0.3);
-        }
-        .tab-btn.active::before { opacity: 0; }
-        .tab-btn:not(.active):hover {
-            color: #ffeb3b;
-            background: rgba(255,235,59,0.1);
+            background: white;
+            color: #1a1a1a;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
         }
 
-        .tab-content { display: none; animation: tabFadeIn 0.4s ease; }
+        .tab-content { display: none; animation: tabFadeIn 0.3s ease; }
         .tab-content.active { display: block; }
         @keyframes tabFadeIn {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         label { 
             font-size: 10px; 
             font-weight: 700; 
-            color: #888; 
+            color: #555; 
             text-transform: uppercase; 
-            margin-bottom: 6px; 
+            margin-bottom: 8px; 
             display: block;
             letter-spacing: 1px;
         }
         select, input[type="number"] { 
             width: 100%; 
             padding: 14px; 
-            font-size: 16px; 
-            border-radius: 10px; 
-            border: 2px solid rgba(255,235,59,0.2); 
-            background: rgba(0,0,0,0.4); 
-            color: #fff; 
+            font-size: 15px; 
+            border-radius: 12px; 
+            border: 2px solid #e0e0e0; 
+            background: white; 
+            color: #1a1a1a; 
             margin-bottom: 15px; 
             outline: none;
-            transition: all 0.3s;
             font-weight: 600;
+            transition: all 0.2s;
         }
         select:focus, input[type="number"]:focus {
-            border-color: #ffeb3b;
-            box-shadow: 0 0 15px rgba(255,235,59,0.2);
+            border-color: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
         }
         
         .info-box {
-            background: linear-gradient(135deg, rgba(255,235,59,0.1), rgba(33,150,243,0.1));
+            background: rgba(255,235,59,0.1);
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 12px;
             margin-bottom: 15px;
-            border-left: 4px solid #ffeb3b;
-            border: 1px solid rgba(255,235,59,0.2);
+            border-left: 4px solid #fbc02d;
         }
         .info-box p { 
             font-size: 11px; 
-            color: #aaa; 
-            line-height: 1.6; 
+            color: #666; 
+            line-height: 1.7; 
         }
-        .info-box strong { 
-            color: #ffeb3b;
-            text-shadow: 0 0 5px rgba(255,235,59,0.3);
-        }
+        .info-box strong { color: #1a1a1a; font-weight: 700; }
         
         .result-box { 
-            background: linear-gradient(135deg, rgba(30,30,46,0.9), rgba(42,42,62,0.9));
-            padding: 20px; 
-            border-radius: 12px; 
+            background: white;
+            padding: 25px; 
+            border-radius: 16px; 
             text-align: center; 
-            border: 2px solid rgba(255,235,59,0.2);
+            border: 2px solid #e8e8e8;
             margin-top: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            position: relative;
-            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
-        .result-box::before {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,235,59,0.05) 0%, transparent 70%);
-            animation: rotate 30s linear infinite;
-        }
-        .result-box > * { position: relative; z-index: 1; }
         .result-box h3 { 
             font-size: 10px; 
-            color: #666; 
-            margin-bottom: 10px;
+            color: #888; 
+            margin-bottom: 12px;
             text-transform: uppercase;
             letter-spacing: 2px;
+            font-weight: 600;
         }
         .result-value { 
-            font-size: 42px; 
+            font-size: 40px; 
             font-weight: 900; 
-            color: #ffeb3b; 
-            min-height: 60px; 
+            color: #1a1a1a; 
             margin: 15px 0;
-            text-shadow: 0 0 20px rgba(255,235,59,0.5);
-            animation: resultGlow 2s ease-in-out infinite;
-        }
-        @keyframes resultGlow {
-            0%, 100% { text-shadow: 0 0 20px rgba(255,235,59,0.5); }
-            50% { text-shadow: 0 0 30px rgba(255,235,59,0.8), 0 0 40px rgba(255,235,59,0.4); }
         }
         
-        .category-badge {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: 900;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            animation: badgePulse 2s ease-in-out infinite;
-        }
-        @keyframes badgePulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
         .badge-besar { 
             background: linear-gradient(135deg, #f44336, #d32f2f); 
-            color: #fff;
-            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.4);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 9px;
+            display: inline-block;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         .badge-kecil { 
             background: linear-gradient(135deg, #4caf50, #388e3c); 
-            color: #fff;
-            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 9px;
+            display: inline-block;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .bottom-cards-display {
-            background: rgba(0,0,0,0.4);
+            background: #f8f8f8;
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 12px;
             margin-bottom: 15px;
-            border: 1px solid rgba(255,235,59,0.1);
         }
         .bottom-cards-display .title { 
             font-size: 9px; 
@@ -518,12 +550,12 @@
             margin-bottom: 12px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            font-weight: 600;
         }
         .bottom-cards-display .cards {
             display: flex;
             justify-content: center;
-            gap: 8px;
-            font-size: 24px;
+            gap: 10px;
         }
         .bottom-cards-display .card-item {
             display: flex;
@@ -532,69 +564,49 @@
             font-size: 20px;
             padding: 8px;
             border-radius: 8px;
-            background: rgba(255,255,255,0.05);
-            transition: all 0.3s;
-        }
-        .bottom-cards-display .card-item:hover {
-            background: rgba(255,235,59,0.1);
-            transform: translateY(-3px);
+            background: white;
+            border: 2px solid #e8e8e8;
+            min-width: 50px;
         }
         .bottom-cards-display .card-index { 
             font-size: 8px; 
-            color: #555; 
+            color: #888; 
             margin-top: 4px;
-            font-weight: 700;
+            font-weight: 600;
         }
         .bottom-cards-display .card-item.highlight {
-            background: linear-gradient(135deg, rgba(255,235,59,0.2), rgba(255,235,59,0.1));
-            border: 2px solid #ffeb3b;
-            box-shadow: 0 0 15px rgba(255,235,59,0.3);
-            animation: highlightPulse 1.5s ease-in-out infinite;
-        }
-        @keyframes highlightPulse {
-            0%, 100% { box-shadow: 0 0 15px rgba(255,235,59,0.3); }
-            50% { box-shadow: 0 0 25px rgba(255,235,59,0.6); }
+            background: rgba(255,235,59,0.2);
+            border: 2px solid #fbc02d;
         }
 
         .calculation-steps {
-            background: rgba(0,0,0,0.4);
+            background: #f8f8f8;
             padding: 15px;
-            border-radius: 10px;
-            margin: 15px 0;
+            border-radius: 12px;
+            margin-top: 12px;
             font-size: 11px;
             line-height: 2;
             text-align: left;
-            border: 1px solid rgba(255,235,59,0.1);
         }
-        .calculation-steps .step { 
-            margin: 5px 0;
-            padding: 5px;
-            border-radius: 4px;
-            transition: background 0.3s;
-        }
-        .calculation-steps .step:hover {
-            background: rgba(255,235,59,0.05);
-        }
+        .calculation-steps .step { margin: 4px 0; color: #555; }
         .calculation-steps .highlight { 
-            color: #ffeb3b; 
-            font-weight: 900;
-            text-shadow: 0 0 5px rgba(255,235,59,0.3);
+            color: #1a1a1a; 
+            font-weight: 700;
         }
         .calculation-steps .formula { 
             font-family: 'Courier New', monospace; 
-            margin-top: 12px; 
-            padding-top: 12px; 
-            border-top: 2px solid rgba(255,235,59,0.2);
-            color: #aaa;
+            margin-top: 10px; 
+            padding-top: 10px; 
+            border-top: 2px solid #e0e0e0;
+            color: #666;
             font-size: 10px;
         }
 
         .chsd-info {
-            background: rgba(0,0,0,0.4);
+            background: #f8f8f8;
             padding: 12px;
-            border-radius: 10px;
+            border-radius: 12px;
             margin-bottom: 15px;
-            border: 1px solid rgba(255,235,59,0.1);
         }
         .chsd-info .sequence {
             display: flex;
@@ -606,28 +618,26 @@
         .chsd-info .sequence span { 
             padding: 8px 12px; 
             border-radius: 8px;
-            background: rgba(255,255,255,0.05);
-            transition: all 0.3s;
+            background: white;
+            border: 2px solid #e8e8e8;
         }
         .chsd-info .sequence span.active { 
-            background: linear-gradient(135deg, #ffeb3b, #fbc02d); 
-            color: #000; 
-            font-weight: 900;
-            box-shadow: 0 4px 15px rgba(255,235,59,0.4);
-            transform: scale(1.1);
+            background: #1a1a1a; 
+            color: white; 
+            font-weight: 700;
+            border-color: #1a1a1a;
         }
 
-        /* RUMUS/PENJELASAN STYLES */
         .rumus-content {
-            background: rgba(0,0,0,0.3);
-            border-radius: 12px;
+            background: #f8f8f8;
+            border-radius: 14px;
             padding: 20px;
             margin-bottom: 15px;
         }
         .rumus-section {
             margin-bottom: 25px;
             padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255,235,59,0.2);
+            border-bottom: 2px solid #e8e8e8;
         }
         .rumus-section:last-child {
             border-bottom: none;
@@ -635,39 +645,33 @@
             padding-bottom: 0;
         }
         .rumus-title {
-            font-size: 13px;
-            font-weight: 800;
-            color: #ffeb3b;
+            font-size: 12px;
+            font-weight: 700;
+            color: #1a1a1a;
             margin-bottom: 12px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .rumus-title::before {
-            content: '▸';
-            color: #ffeb3b;
         }
         .rumus-text {
             font-size: 11px;
-            color: #aaa;
+            color: #666;
             line-height: 1.8;
             margin-bottom: 10px;
         }
         .rumus-formula {
-            background: rgba(255,235,59,0.1);
-            border: 1px solid rgba(255,235,59,0.3);
+            background: white;
+            border: 2px solid #e0e0e0;
             border-radius: 8px;
             padding: 12px;
             margin: 10px 0;
             font-family: 'Courier New', monospace;
             font-size: 11px;
-            color: #ffeb3b;
+            color: #1a1a1a;
             text-align: center;
+            font-weight: 600;
         }
         .rumus-example {
-            background: rgba(33,150,243,0.1);
+            background: rgba(33,150,243,0.08);
             border-left: 3px solid #2196f3;
             padding: 12px;
             margin: 10px 0;
@@ -676,25 +680,23 @@
         .rumus-example-title {
             font-size: 10px;
             font-weight: 700;
-            color: #2196f3;
+            color: #1976d2;
             margin-bottom: 8px;
             text-transform: uppercase;
         }
         .rumus-example-text {
             font-size: 11px;
-            color: #aaa;
+            color: #666;
             line-height: 1.8;
         }
         .highlight-box {
-            background: rgba(255,235,59,0.15);
-            border: 1px solid rgba(255,235,59,0.3);
+            background: white;
+            border: 2px solid #e0e0e0;
             border-radius: 8px;
             padding: 12px;
             margin: 10px 0;
         }
-        .highlight-box strong {
-            color: #ffeb3b;
-        }
+        .highlight-box strong { color: #1a1a1a; }
 
         .number-grid { 
             display: grid; 
@@ -705,228 +707,195 @@
         .num-btn { 
             aspect-ratio: 1/1; 
             font-size: 12px; 
-            background: rgba(255,255,255,0.05); 
-            border: 2px solid rgba(255,235,59,0.2); 
+            background: white; 
+            border: 2px solid #e0e0e0; 
             border-radius: 8px; 
-            color: #888; 
+            color: #666; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 700;
+            transition: all 0.2s;
+            font-weight: 600;
         }
         .num-btn:hover {
-            background: rgba(255,235,59,0.1);
-            border-color: rgba(255,235,59,0.4);
+            border-color: #1a1a1a;
             transform: scale(1.05);
         }
+        .num-btn:active { transform: scale(0.95); }
         .num-btn.active { 
-            background: linear-gradient(135deg, #ffeb3b, #fbc02d); 
-            color: #000; 
-            font-weight: 900;
-            box-shadow: 0 4px 15px rgba(255,235,59,0.4);
-            transform: scale(1.1);
+            background: #1a1a1a; 
+            color: white; 
+            font-weight: 800;
+            border-color: #1a1a1a;
         }
 
         .grid-action-btn {
             grid-column: span 2;
             height: 100%;
             border-radius: 8px;
-            border: 2px solid rgba(255,235,59,0.2);
+            border: 2px solid #e0e0e0;
             font-size: 9px;
-            font-weight: 900;
+            font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: all 0.3s;
+            transition: all 0.2s;
+        }
+        .grid-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         .reset-btn { 
-            background: rgba(255,255,255,0.05); 
-            color: #888;
-        }
-        .reset-btn:hover { 
-            background: rgba(255,255,255,0.1);
-            border-color: rgba(255,255,255,0.3);
+            background: #f5f5f5; 
+            color: #666;
         }
         .send-btn { 
-            background: linear-gradient(135deg, #ffeb3b, #fbc02d); 
-            color: #000;
-            border: none;
-            box-shadow: 0 4px 15px rgba(255,235,59,0.3);
+            background: #1a1a1a; 
+            color: white;
+            border-color: #1a1a1a;
         }
-        .send-btn:hover { 
-            box-shadow: 0 6px 20px rgba(255,235,59,0.5);
-            transform: translateY(-2px);
-        }
-        .send-btn svg { margin-left: 4px; }
 
         .mnemonic-list { 
             height: 350px; 
             overflow-y: auto; 
-            background: rgba(0,0,0,0.4); 
+            background: #f8f8f8; 
             border-radius: 12px; 
             padding: 12px; 
             display: grid; 
             grid-template-columns: 1fr 1fr; 
             gap: 8px;
-            border: 1px solid rgba(255,235,59,0.1);
         }
         .mnemonic-list::-webkit-scrollbar { width: 6px; }
-        .mnemonic-list::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 3px; }
-        .mnemonic-list::-webkit-scrollbar-thumb { background: rgba(255,235,59,0.3); border-radius: 3px; }
+        .mnemonic-list::-webkit-scrollbar-track { background: #e8e8e8; border-radius: 3px; }
+        .mnemonic-list::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
         .list-item { 
             font-size: 11px; 
             padding: 8px; 
             border-radius: 6px;
-            background: rgba(255,255,255,0.03);
+            background: white;
             display: flex; 
             justify-content: space-between;
-            transition: all 0.3s;
-            border: 1px solid rgba(255,235,59,0.05);
-        }
-        .list-item:hover {
-            background: rgba(255,235,59,0.1);
-            transform: translateX(3px);
+            border: 2px solid #e8e8e8;
         }
         .list-item span { 
-            color: #ffeb3b; 
-            font-weight: 900;
-            text-shadow: 0 0 5px rgba(255,235,59,0.3);
+            color: #1a1a1a; 
+            font-weight: 700;
         }
-        .list-item.red { 
-            color: #ff5252;
-        }
-        .list-item.red span {
-            color: #ff5252;
-            text-shadow: 0 0 5px rgba(255,82,82,0.3);
-        }
+        .list-item.red { color: #d32f2f; }
+        .list-item.red span { color: #d32f2f; }
 
         .quiz-card { 
-            background: linear-gradient(135deg, rgba(30,30,46,0.9), rgba(42,42,62,0.9)); 
+            background: white; 
             padding: 30px; 
             border-radius: 16px; 
             text-align: center; 
             margin-bottom: 20px; 
-            border: 2px solid rgba(255,235,59,0.2);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            border: 2px solid #e8e8e8;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
         #quiz-question { 
             font-size: 56px; 
             font-weight: 900; 
             margin-bottom: 10px;
-            text-shadow: 0 0 20px rgba(255,235,59,0.5);
-            animation: quizPulse 2s ease-in-out infinite;
-        }
-        @keyframes quizPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            color: #1a1a1a;
         }
         .quiz-controls { display: flex; flex-direction: column; gap: 12px; }
         .quiz-input { 
             width: 100%; 
-            padding: 18px; 
+            padding: 16px; 
             border-radius: 12px; 
-            border: 2px solid rgba(255,235,59,0.3); 
-            background: rgba(0,0,0,0.4); 
-            color: #000; 
+            border: 2px solid #e0e0e0; 
+            background: #f8f8f8; 
+            color: #1a1a1a; 
             font-size: 24px; 
             text-align: center; 
-            font-weight: 900;
-            transition: all 0.3s;
+            font-weight: 800;
         }
         .quiz-input:focus {
             outline: none;
-            border-color: #ffeb3b;
-            box-shadow: 0 0 20px rgba(255,235,59,0.3);
+            border-color: #1a1a1a;
+            background: white;
         }
         .btn-group { display: flex; gap: 10px; }
         .check-btn { 
             flex: 2; 
-            padding: 15px; 
-            background: linear-gradient(135deg, #ffeb3b, #fbc02d); 
+            padding: 14px; 
+            background: #1a1a1a; 
             border: none; 
-            border-radius: 10px; 
-            font-weight: 900; 
+            border-radius: 12px; 
+            font-weight: 800; 
             cursor: pointer; 
-            color: #000;
+            color: white;
             text-transform: uppercase;
             letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(255,235,59,0.3);
-            transition: all 0.3s;
+            transition: all 0.2s;
         }
-        .check-btn:hover { 
-            box-shadow: 0 6px 20px rgba(255,235,59,0.5);
+        .check-btn:hover {
+            background: #333;
             transform: translateY(-2px);
         }
         .next-btn { 
             flex: 1; 
-            padding: 15px; 
-            background: rgba(255,255,255,0.1); 
-            border: 2px solid rgba(255,235,59,0.2); 
-            border-radius: 10px; 
-            font-weight: 800; 
+            padding: 14px; 
+            background: #f5f5f5; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 12px; 
+            font-weight: 700; 
             cursor: pointer; 
-            color: #fff;
+            color: #666;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s;
+            transition: all 0.2s;
         }
-        .next-btn:hover { 
-            background: rgba(255,255,255,0.2);
-            border-color: rgba(255,235,59,0.4);
+        .next-btn:hover {
+            background: white;
+            border-color: #1a1a1a;
         }
         #quiz-feedback { 
-            margin-top: 15px; 
+            margin-top: 12px; 
             text-align: center; 
-            font-size: 14px; 
-            font-weight: 900; 
-            min-height: 25px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 13px; 
+            font-weight: 700; 
+            min-height: 20px;
         }
 
         .back-btn {
-            background: rgba(255,255,255,0.05);
-            color: #888;
-            border: 2px solid rgba(255,235,59,0.2);
-            padding: 12px;
-            border-radius: 10px;
+            background: #f5f5f5;
+            color: #666;
+            border: 2px solid #e0e0e0;
+            padding: 12px 20px;
+            border-radius: 12px;
             font-size: 11px;
-            font-weight: 800;
+            font-weight: 700;
             cursor: pointer;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 8px;
             margin-bottom: 20px;
-            transition: all 0.3s;
             text-transform: uppercase;
             letter-spacing: 1px;
+            transition: all 0.2s;
         }
-        .back-btn:hover { 
-            background: rgba(255,235,59,0.1);
-            border-color: rgba(255,235,59,0.4);
-            color: #ffeb3b;
-            transform: translateX(-3px);
+        .back-btn:hover {
+            background: white;
+            border-color: #1a1a1a;
+            color: #1a1a1a;
         }
 
         .footer {
             text-align: center;
             font-size: 9px;
-            color: #444;
-            margin-top: 25px;
+            color: #999;
+            margin-top: 30px;
             padding-top: 20px;
-            border-top: 1px solid rgba(255,235,59,0.1);
+            border-top: 2px solid #e8e8e8;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
-        .footer strong { 
-            color: #ffeb3b;
-            text-shadow: 0 0 10px rgba(255,235,59,0.3);
-        }
+        .footer strong { color: #1a1a1a; font-weight: 700; }
 
         .secret-zone {
             position: fixed;
@@ -937,79 +906,107 @@
             z-index: 100;
         }
 
-        @media (min-width: 768px) {
-            .container {
-                max-width: 800px;
-                padding: 30px;
-            }
-            
-            h1 {
-                font-size: 28px;
-            }
-            
-            .card-display {
-                max-width: 300px;
-                margin: 30px auto;
-            }
-            
-            .main-btn {
-                max-width: 400px;
-                margin: 15px auto;
-            }
+        .card-position-info {
+            background: rgba(255,235,59,0.15);
+            border: 2px solid #fbc02d;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 15px;
+            text-align: center;
+            display: none;
+        }
+        .card-position-info.show { display: block; }
+        .card-position-info .position-label {
+            font-size: 9px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .card-position-info .position-number {
+            font-size: 28px;
+            font-weight: 900;
+            color: #1a1a1a;
+        }
+        .card-position-info .card-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+        .card-position-info .card-name.red { color: #d32f2f; }
+        .card-position-info .card-name.black { color: #1a1a1a; }
+
+        .result-position {
+            font-size: 13px;
+            color: #666;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        .result-position span {
+            color: #1a1a1a;
+            font-size: 20px;
+            font-weight: 800;
+            margin-left: 5px;
         }
 
-        @media (max-width: 480px) {
-            .container {
-                padding: 15px;
-            }
-            
-            h1 {
-                font-size: 20px;
-            }
-            
-            .card-display {
-                aspect-ratio: 3/4;
-                max-height: 350px;
-            }
-            
-            .result-value {
-                font-size: 36px;
-            }
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .container { padding: 20px; border-radius: 20px; }
+            .logo { width: 60px; }
+            .brand-title { font-size: 20px; }
+            .card-rank { font-size: 64px; }
+            .card-suit { font-size: 56px; }
+            h2 { font-size: 12px; }
+            .result-value { font-size: 36px; }
+        }
+
+        @media (max-width: 400px) {
+            .card-rank { font-size: 52px; }
+            .card-suit { font-size: 48px; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <div class="header">
+    </div>
+
+    <!-- LANDING PAGE -->
     <div id="landing" class="page active">
         <div class="landing-hero">
-            <div class="logo">🃏</div>
-            <h1>PROF JAY<br>CARD STACK MASTER</h1>
-            <p class="subtitle">Advanced Card Stack Calculator & Randomizer</p>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgg7ZypSWCWx_X3VsqCLJDwr1eAsSxdM6hWu4AttI0M5QM_ZwEUm01OtoqMVzW2YUIz09ciJR4z4yXbETjQKtRzP2XuKMiKOKds7XcJj0dIuECVpyl_0j4Zf0MwrUgYPx9ZZz-rLMjNxCB5ygiP5sjn7u5zE4l8Fy9fjDPDePvaIO1tQxcYdHbQaaZuIld1/s572/1000087573.png" alt="Bicycle" class="logo-large">
+            <h1>Welcome MAGICIAN</h1>
+            <p class="subtitle">Professional Randomizer Cards</p>
         </div>
 
         <button class="main-btn btn-random" onclick="showPage('randomizer')">
             <span>🎲</span> Generate Kartu
         </button>
         <button class="main-btn btn-stack" onclick="openPasswordModal()">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
             Card Stack
         </button>
 
-        <p class="secret-hint">💡 Tip: Ketuk kartu untuk mulai/berhenti</p>
+        <p class="secret-hint"></p>
     </div>
 
+    <!-- RANDOMIZER PAGE -->
     <div id="randomizer" class="page">
         <button class="back-btn" onclick="showPage('landing')">← Kembali</button>
         <h2>🎲 Card Generator</h2>
         
-        <div class="card-display" id="cardDisplay" onclick="toggleRandomizer()">
-            <div class="placeholder" id="cardPlaceholder">🃏</div>
+        <div class="card-stage" id="cardStage" onclick="toggleRandomizer()">
+            <div class="control-indicator stopped" id="controlIndicator">STOPPED</div>
+            <div id="cardContainer"></div>
+            <div class="status-led stopped" id="statusLed"></div>
         </div>
         
-        <p class="tap-hint" id="tapHint">Ketuk untuk mulai</p>
+        <p class="tap-hint" id="tapHint" onclick="toggleCheat(event)">KETUK UNTUK MULAI</p>
     </div>
 
+    <!-- PASSWORD MODAL -->
     <div class="modal-overlay" id="passwordModal">
         <div class="modal">
             <h3>🔐 Enter Password</h3>
@@ -1022,28 +1019,30 @@
         </div>
     </div>
 
+    <!-- STACK SELECT -->
     <div id="stackSelect" class="page">
         <button class="back-btn" onclick="showPage('landing')">← Kembali</button>
-        <h2>🔓 Card Stack System</h2>
+        <h2>Card Stack System</h2>
         
         <div class="stack-select">
             <button class="stack-btn stebbin" onclick="showPage('stebbin')">
-                <span style="font-size:24px">🔷</span>
+                <span style="font-size:28px"></span>
                 <div style="text-align:left">
-                    <div style="font-size:14px;margin-bottom:3px">Stebbin Stack</div>
-                    <div style="font-size:9px;color:#888">CHSD System + Tracking</div>
+                    <div style="font-size:14px;margin-bottom:4px;font-weight:700">Stebbin Stack</div>
+                    <div style="font-size:10px;color:#666">CHSD System + Tracking</div>
                 </div>
             </button>
             <button class="stack-btn mnemonica" onclick="showPage('mnemonica')">
-                <span style="font-size:24px">❤️</span>
+                <span style="font-size:28px">❤️</span>
                 <div style="text-align:left">
-                    <div style="font-size:14px;margin-bottom:3px">Mnemonica Stack</div>
-                    <div style="font-size:9px;color:#888">Classic Memory System</div>
+                    <div style="font-size:14px;margin-bottom:4px;font-weight:700">Mnemonica Stack</div>
+                    <div style="font-size:10px;color:#666">Classic Memory System</div>
                 </div>
             </button>
         </div>
     </div>
 
+    <!-- STEBBIN PAGE -->
     <div id="stebbin" class="page">
         <button class="back-btn" onclick="showPage('stackSelect')">← Kembali</button>
         <h2>🔷 PROF JAY STEBBIN STACK</h2>
@@ -1062,22 +1061,22 @@
             <select id="tracking-bottom" onchange="calculateTracking()">
                 <option value="" disabled selected>-- PILIH KARTU BAWAH --</option>
                 <optgroup label="♣ KLUB" id="track-opt-club"></optgroup>
-                <optgroup label="♥ HATI" id="track-opt-heart" style="color:#ff5252;"></optgroup>
+                <optgroup label="♥ HATI" id="track-opt-heart" style="color:#d32f2f;"></optgroup>
                 <optgroup label="♠ SEKOP" id="track-opt-spade"></optgroup>
-                <optgroup label="♦ WAJIK" id="track-opt-diamond" style="color:#ff5252;"></optgroup>
+                <optgroup label="♦ WAJIK" id="track-opt-diamond" style="color:#d32f2f;"></optgroup>
             </select>
             
             <label>Kartu yang Dicari</label>
             <select id="tracking-target" onchange="calculateTracking()">
                 <option value="" disabled selected>-- PILIH KARTU --</option>
                 <optgroup label="♣ KLUB" id="track-target-club"></optgroup>
-                <optgroup label="♥ HATI" id="track-target-heart" style="color:#ff5252;"></optgroup>
+                <optgroup label="♥ HATI" id="track-target-heart" style="color:#d32f2f;"></optgroup>
                 <optgroup label="♠ SEKOP" id="track-target-spade"></optgroup>
-                <optgroup label="♦ WAJIK" id="track-target-diamond" style="color:#ff5252;"></optgroup>
+                <optgroup label="♦ WAJIK" id="track-target-diamond" style="color:#d32f2f;"></optgroup>
             </select>
 
             <div class="chsd-info" id="chsd-display" style="display:none;">
-                <div style="font-size:9px;color:#666;text-transform:uppercase;letter-spacing:1px">Urutan CHSD dari Bawah:</div>
+                <div style="font-size:9px;color:#666;text-transform:uppercase;letter-spacing:1px;font-weight:600">Urutan CHSD dari Bawah:</div>
                 <div class="sequence" id="chsd-sequence"></div>
             </div>
 
@@ -1190,10 +1189,10 @@
                     <div class="highlight-box">
                         <strong>Contoh:</strong><br>
                         Jika kartu bawah adalah ♥ (Hearts), maka urutan 4 kartu bawah adalah:<br>
-                        <strong>♥ → ♠ → ♦ → ♣</strong><br><br>
+                        <strong>♥ →  → ♦ → ♣</strong><br><br>
                         
                         Jika kartu bawah adalah ♠ (Spades), maka:<br>
-                        <strong>♠ → ♦ → ♣ → ♥</strong>
+                        <strong> → ♦ → ♣ → ♥</strong>
                     </div>
                 </div>
 
@@ -1213,6 +1212,7 @@
         </div>
     </div>
 
+    <!-- MNEMONICA PAGE -->
     <div id="mnemonica" class="page">
         <button class="back-btn" onclick="showPage('stackSelect')">← Kembali</button>
         <h2>❤️ PROF JAY MNEMONICA</h2>
@@ -1228,17 +1228,24 @@
             <select id="card-select" onchange="generateMnemoAcaan()">
                 <option value="" disabled selected>-- PILIH KARTU --</option>
                 <optgroup label="♣ KLUB" id="opt-kriting"></optgroup>
-                <optgroup label="♥ HATI" id="opt-hati" style="color:#ff5252;"></optgroup>
+                <optgroup label="♥ HATI" id="opt-hati" style="color:#d32f2f;"></optgroup>
                 <optgroup label="♠ SEKOP" id="opt-sekop"></optgroup>
-                <optgroup label="♦ WAJIK" id="opt-diamond" style="color:#ff5252;"></optgroup>
+                <optgroup label="♦ WAJIK" id="opt-diamond" style="color:#d32f2f;"></optgroup>
             </select>
+            
+            <div class="card-position-info" id="selectedCardPosition">
+                <div class="position-label">Nomor Urut di Mnemonica Stack</div>
+                <div class="position-number" id="selectedPositionNum">-</div>
+                <div class="card-name" id="selectedCardName"></div>
+            </div>
             
             <label>2. Posisi Tujuan</label>
             <div class="number-grid" id="mnemoGrid"></div>
 
             <div class="result-box">
                 <h3>HASIL CUT KE:</h3>
-                <p id="result" style="font-size:36px;font-weight:900;color:#ffeb3b;min-height:50px;margin:15px 0;text-shadow:0 0 20px rgba(255,235,59,0.5)">-</p>
+                <p id="result" style="font-size:36px;font-weight:900;color:#1a1a1a;min-height:50px;margin:15px 0">-</p>
+                <div class="result-position" id="resultPosition">Posisi ke-<span id="resultPositionNum">-</span></div>
             </div>
         </div>
 
@@ -1249,7 +1256,7 @@
         <div id="mnemo-memorize" class="tab-content">
             <div class="quiz-card">
                 <div id="quiz-question">?</div>
-                <p style="font-size: 10px; color: #666; letter-spacing: 2px; text-transform:uppercase">TEBAK POSISI (1-52)</p>
+                <p style="font-size: 10px; color: #666; letter-spacing: 2px; text-transform:uppercase;font-weight:600">TEBAK POSISI (1-52)</p>
             </div>
             <div class="quiz-controls">
                 <input type="number" id="quiz-answer" class="quiz-input" placeholder="00" inputmode="numeric">
@@ -1263,7 +1270,7 @@
     </div>
 
     <div class="footer">
-        Designed by <strong>Prof. Jayz</strong> • Card Stack Master
+        Designed by <strong>Prof. Jayz</strong> • Bicycle Card Stack Master
     </div>
 </div>
 
@@ -1271,12 +1278,16 @@
 
 <script>
     let isRandomizing = false;
-    let randomInterval = null;
+    let animationFrameId = null;
     let isStebbinMode = false;
-    let stebbinIndex = 0;
+    let lastStoppedCard = null;
+    let lastFlipTime = 0;
+    const FLIP_INTERVAL = 80;
 
     const suits = ['♣', '♥', '♠', '♦'];
     const cardValues = {'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13};
+    const valueToRank = {1: 'A', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8', 9: '9', 10: '10', 11: 'J', 12: 'Q', 13: 'K'};
+    
     let stebbinStack = [];
     let cardPositions = {};
 
@@ -1296,12 +1307,7 @@
     }
 
     function formatCard(value, suit) {
-        let rank = value;
-        if (value === 1) rank = 'A';
-        else if (value === 11) rank = 'J';
-        else if (value === 12) rank = 'Q';
-        else if (value === 13) rank = 'K';
-        return rank + suit;
+        return valueToRank[value] + suit;
     }
 
     function getCardValue(card) {
@@ -1312,6 +1318,18 @@
     function getCardSuit(card) { return card.slice(-1); }
     function getCardColor(card) { return (card.includes('♥') || card.includes('♦')) ? 'red' : 'black'; }
     function getSuitIndex(suit) { return suits.indexOf(suit); }
+
+    function getNextStebbinCard(currentCard) {
+        const currentValue = getCardValue(currentCard);
+        const currentSuit = getCardSuit(currentCard);
+        const currentSuitIndex = getSuitIndex(currentSuit);
+        
+        let newValue = currentValue + 3;
+        if (newValue > 13) newValue -= 13;
+        
+        const newSuitIndex = (currentSuitIndex + 1) % 4;
+        return formatCard(newValue, suits[newSuitIndex]);
+    }
 
     function getBottom4Cards(bottomCard) {
         const bottomPos = cardPositions[bottomCard];
@@ -1365,23 +1383,34 @@
     }
 
     const mnemoStack = [
-        "4♣", "2♥", "7♦", "3♣", "4♥", "6♦", "As♠", "5♥", "9♠", "2♠",
+        "4", "2♥", "7♦", "3♣", "4♥", "6♦", "A♠", "5♥", "9♠", "2♠",
         "Q♥", "3♦", "Q♣", "8♥", "6♠", "5♠", "9♥", "K♣", "2♦",
-        "J♥", "3♠", "8♠", "6♥", "10♣", "5♦", "K♦", "2♣", "3♥",
-        "8♦", "5♣", "K♠", "J♦", "8♣", "10♠", "K♥", "J♣",
-        "7♠", "10♥", "As♦", "4♠", "7♥", "4♦", "As♣", "9♣", "J♠",
-        "Q♦", "7♣", "Q♠", "10♦", "6♣", "As♥", "9♦"
+        "J♥", "3♠", "8♠", "6♥", "10", "5♦", "K♦", "2♣", "3♥",
+        "8♦", "5♣", "K♠", "J♦", "8♣", "10", "K♥", "J♣",
+        "7♠", "10♥", "A♦", "4♠", "7♥", "4♦", "A♣", "9", "J♠",
+        "Q♦", "7♣", "Q♠", "10♦", "6♣", "A♥", "9♦"
     ];
 
     const mnemoCardData = [
-        {val: 43, txt: "As♣", group: "kriting"}, {val: 27, txt: "2♣", group: "kriting"}, {val: 4, txt: "3♣", group: "kriting"}, {val: 1, txt: "4♣", group: "kriting"}, {val: 30, txt: "5♣", group: "kriting"}, {val: 50, txt: "6♣", group: "kriting"}, {val: 47, txt: "7♣", group: "kriting"}, {val: 33, txt: "8♣", group: "kriting"}, {val: 44, txt: "9♣", group: "kriting"}, {val: 24, txt: "10♣", group: "kriting"}, {val: 36, txt: "J♣", group: "kriting"}, {val: 13, txt: "Q♣", group: "kriting"}, {val: 18, txt: "K♣", group: "kriting"},
-        {val: 51, txt: "As♥", group: "hati"}, {val: 2, txt: "2♥", group: "hati"}, {val: 28, txt: "3♥", group: "hati"}, {val: 5, txt: "4♥", group: "hati"}, {val: 8, txt: "5♥", group: "hati"}, {val: 23, txt: "6♥", group: "hati"}, {val: 41, txt: "7♥", group: "hati"}, {val: 14, txt: "8♥", group: "hati"}, {val: 17, txt: "9♥", group: "hati"}, {val: 38, txt: "10♥", group: "hati"}, {val: 20, txt: "J♥", group: "hati"}, {val: 11, txt: "Q♥", group: "hati"}, {val: 35, txt: "K♥", group: "hati"},
-        {val: 7, txt: "As♠", group: "sekop"}, {val: 10, txt: "2♠", group: "sekop"}, {val: 21, txt: "3♠", group: "sekop"}, {val: 40, txt: "4♠", group: "sekop"}, {val: 16, txt: "5♠", group: "sekop"}, {val: 15, txt: "6♠", group: "sekop"}, {val: 37, txt: "7♠", group: "sekop"}, {val: 22, txt: "8♠", group: "sekop"}, {val: 9, txt: "9♠", group: "sekop"}, {val: 34, txt: "10♠", group: "sekop"}, {val: 45, txt: "J♠", group: "sekop"}, {val: 48, txt: "Q♠", group: "sekop"}, {val: 31, txt: "K♠", group: "sekop"},
-        {val: 39, txt: "As♦", group: "diamond"}, {val: 19, txt: "2♦", group: "diamond"}, {val: 12, txt: "3♦", group: "diamond"}, {val: 42, txt: "4♦", group: "diamond"}, {val: 25, txt: "5♦", group: "diamond"}, {val: 6, txt: "6♦", group: "diamond"}, {val: 3, txt: "7♦", group: "diamond"}, {val: 29, txt: "8♦", group: "diamond"}, {val: 52, txt: "9♦", group: "diamond"}, {val: 49, txt: "10♦", group: "diamond"}, {val: 32, txt: "J♦", group: "diamond"}, {val: 46, txt: "Q♦", group: "diamond"}, {val: 26, txt: "K♦", group: "diamond"}
+        {val: 43, txt: "A♣", group: "kriting"}, {val: 27, txt: "2♣", group: "kriting"}, {val: 4, txt: "3♣", group: "kriting"}, {val: 1, txt: "4♣", group: "kriting"}, {val: 30, txt: "5♣", group: "kriting"}, {val: 50, txt: "6♣", group: "kriting"}, {val: 47, txt: "7♣", group: "kriting"}, {val: 33, txt: "8♣", group: "kriting"}, {val: 44, txt: "9♣", group: "kriting"}, {val: 24, txt: "10♣", group: "kriting"}, {val: 36, txt: "J♣", group: "kriting"}, {val: 13, txt: "Q♣", group: "kriting"}, {val: 18, txt: "K♣", group: "kriting"},
+        {val: 51, txt: "A♥", group: "hati"}, {val: 2, txt: "2♥", group: "hati"}, {val: 28, txt: "3♥", group: "hati"}, {val: 5, txt: "4♥", group: "hati"}, {val: 8, txt: "5♥", group: "hati"}, {val: 23, txt: "6♥", group: "hati"}, {val: 41, txt: "7♥", group: "hati"}, {val: 14, txt: "8♥", group: "hati"}, {val: 17, txt: "9♥", group: "hati"}, {val: 38, txt: "10♥", group: "hati"}, {val: 20, txt: "J♥", group: "hati"}, {val: 11, txt: "Q♥", group: "hati"}, {val: 35, txt: "K♥", group: "hati"},
+        {val: 7, txt: "A♠", group: "sekop"}, {val: 10, txt: "2♠", group: "sekop"}, {val: 21, txt: "3♠", group: "sekop"}, {val: 40, txt: "4♠", group: "sekop"}, {val: 16, txt: "5♠", group: "sekop"}, {val: 15, txt: "6♠", group: "sekop"}, {val: 37, txt: "7♠", group: "sekop"}, {val: 22, txt: "8♠", group: "sekop"}, {val: 9, txt: "9♠", group: "sekop"}, {val: 34, txt: "10♠", group: "sekop"}, {val: 45, txt: "J♠", group: "sekop"}, {val: 48, txt: "Q♠", group: "sekop"}, {val: 31, txt: "K♠", group: "sekop"},
+        {val: 39, txt: "A♦", group: "diamond"}, {val: 19, txt: "2♦", group: "diamond"}, {val: 12, txt: "3♦", group: "diamond"}, {val: 42, txt: "4♦", group: "diamond"}, {val: 25, txt: "5♦", group: "diamond"}, {val: 6, txt: "6♦", group: "diamond"}, {val: 3, txt: "7♦", group: "diamond"}, {val: 29, txt: "8♦", group: "diamond"}, {val: 52, txt: "9♦", group: "diamond"}, {val: 49, txt: "10♦", group: "diamond"}, {val: 32, txt: "J♦", group: "diamond"}, {val: 46, txt: "Q♦", group: "diamond"}, {val: 26, txt: "K♦", group: "diamond"}
     ];
 
     let selectedMnemoTarget = null;
     let currentQuizCard = "";
+
+    function getCardPosition(cardText) {
+        const found = mnemoCardData.find(c => c.txt === cardText);
+        return found ? found.val : null;
+    }
+
+    // CARD RENDERER - Menampilkan Rank dan Suit
+    function createPlayingCard(rank, suit) {
+        const color = (suit === '♥' || suit === '♦') ? 'red' : 'black';
+        return `<div class="playing-card ${color}"><div class="card-content"><span class="card-rank">${rank}</span><span class="card-suit">${suit}</span></div></div>`;
+    }
 
     function showPage(pageId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -1431,71 +1460,114 @@
     });
 
     function initRandomizer() {
+        if (stebbinStack.length === 0) buildStebbinStack();
         isStebbinMode = false;
-        stebbinIndex = 0;
-        showRandomCard();
-        updateTapHint();
-    }
-
-    function showRandomCard() {
-        const randomIdx = Math.floor(Math.random() * 52);
-        const randomCard = stebbinStack[randomIdx];
-        displayCardImage(randomCard);
+        lastStoppedCard = null;
+        
+        // Tampilkan kartu pertama
+        const firstCard = stebbinStack[0];
+        document.getElementById('cardContainer').innerHTML = createPlayingCard(firstCard.slice(0,-1), firstCard.slice(-1));
+        updateUI();
     }
 
     function toggleRandomizer() {
-        if (isRandomizing) {
-            stopRandomizer();
-        } else {
-            startRandomizer();
-        }
+        if (isRandomizing) stopRandomizer();
+        else startRandomizer();
+    }
+
+    function toggleCheat(event) {
+        event.stopPropagation();
+        isStebbinMode = !isStebbinMode;
+        // NO VISUAL FEEDBACK - COMPLETELY SILENT
     }
 
     function startRandomizer() {
         if (isRandomizing) return;
         isRandomizing = true;
-        document.getElementById('tapHint').innerText = 'Ketuk untuk berhenti';
+        updateUI();
         
-        randomInterval = setInterval(() => {
-            if (isStebbinMode) {
-                const card = stebbinStack[stebbinIndex];
-                displayCardImage(card);
-                stebbinIndex = (stebbinIndex + 1) % 52;
-            } else {
-                const randomIdx = Math.floor(Math.random() * 52);
-                const card = stebbinStack[randomIdx];
-                displayCardImage(card);
+        function animate(currentTime) {
+            if (!isRandomizing) return;
+            
+            if (currentTime - lastFlipTime >= FLIP_INTERVAL) {
+                lastFlipTime = currentTime;
+                flipCard();
             }
-        }, 100);
+            
+            animationFrameId = requestAnimationFrame(animate);
+        }
+        
+        animationFrameId = requestAnimationFrame(animate);
     }
 
     function stopRandomizer() {
         if (!isRandomizing) return;
         isRandomizing = false;
-        clearInterval(randomInterval);
-        document.getElementById('tapHint').innerText = 'Ketuk untuk mulai';
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        
+        // SAAT BERHENTI: jika cheat aktif, tampilkan kartu Stebbin next
+        if (isStebbinMode) {
+            if (lastStoppedCard === null) {
+                // Pertama kali: ambil kartu yang sedang tampil sebagai base
+                const container = document.getElementById('cardContainer');
+                const cardEl = container.querySelector('.playing-card');
+                if (cardEl) {
+                    const rank = cardEl.querySelector('.card-rank').textContent;
+                    const suit = cardEl.querySelector('.card-suit').textContent;
+                    lastStoppedCard = rank + suit;
+                } else {
+                    lastStoppedCard = "A♣";
+                }
+            } else {
+                // Hitung kartu berikutnya dalam urutan Stebbin
+                const nextCard = getNextStebbinCard(lastStoppedCard);
+                lastStoppedCard = nextCard;
+                // Tampilkan kartu Stebbin
+                const container = document.getElementById('cardContainer');
+                container.innerHTML = createPlayingCard(nextCard.slice(0,-1), nextCard.slice(-1));
+            }
+        } else {
+            // Mode normal: simpan kartu yang sedang tampil
+            const container = document.getElementById('cardContainer');
+            const cardEl = container.querySelector('.playing-card');
+            if (cardEl) {
+                const rank = cardEl.querySelector('.card-rank').textContent;
+                const suit = cardEl.querySelector('.card-suit').textContent;
+                lastStoppedCard = rank + suit;
+            }
+        }
+        
+        updateUI();
     }
 
-    function displayCardImage(cardCode) {
-        const suitMap = {'♣': 'CLUBS', '♥': 'HEARTS', '♠': 'SPADES', '♦': 'DIAMONDS'};
-        const rankMap = {'A': 'ACE', 'J': 'JACK', 'Q': 'QUEEN', 'K': 'KING'};
-        
-        const suit = getCardSuit(cardCode);
-        let rank = cardCode.slice(0, -1);
-        if (rankMap[rank]) rank = rankMap[rank];
-        
-        const apiSuit = suitMap[suit];
-        const url = `https://deckofcardsapi.com/static/img/${rank}${apiSuit[0]}.png`;
-        
-        const display = document.getElementById('cardDisplay');
-        display.classList.add('shuffling');
-        setTimeout(() => display.classList.remove('shuffling'), 100);
-        
-        display.innerHTML = `<img src="${url}" alt="${cardCode}" style="width:90%;height:90%;object-fit:contain;border-radius:8px;">`;
+    function flipCard() {
+        // Saat running: tampilkan kartu acak (biar terlihat natural)
+        const container = document.getElementById('cardContainer');
+        const randomIdx = Math.floor(Math.random() * 52);
+        const cardToShow = stebbinStack[randomIdx];
+        const rank = cardToShow.slice(0, -1);
+        const suit = cardToShow.slice(-1);
+        container.innerHTML = createPlayingCard(rank, suit);
     }
 
-    function updateTapHint() {
-        document.getElementById('tapHint').innerText = isRandomizing ? 'Ketuk untuk berhenti' : 'Ketuk untuk mulai';
+    function updateUI() {
+        const indicator = document.getElementById('controlIndicator');
+        const led = document.getElementById('statusLed');
+        const hint = document.getElementById('tapHint');
+        
+        if (isRandomizing) {
+            indicator.textContent = 'RUNNING';
+            indicator.className = 'control-indicator running';
+            led.className = 'status-led running';
+            hint.textContent = 'KETUK UNTUK BERHENTI';
+            hint.classList.add('active');
+        } else {
+            indicator.textContent = 'STOPPED';
+            indicator.className = 'control-indicator stopped';
+            led.className = 'status-led stopped';
+            hint.textContent = 'KETUK UNTUK MULAI';
+            hint.classList.remove('active');
+        }
     }
 
     let touchStartY = 0;
@@ -1511,14 +1583,11 @@
         
         if (diff > 100 && document.getElementById('randomizer').classList.contains('active')) {
             isStebbinMode = !isStebbinMode;
-            if (isStebbinMode) {
-                stebbinIndex = 0;
-            }
         }
     }, { passive: true });
 
     function initStebbin() {
-        buildStebbinStack();
+        if (stebbinStack.length === 0) buildStebbinStack();
         populateStebbinDropdowns();
     }
 
@@ -1550,9 +1619,9 @@
         const chsdSeq = getCHSDSequence(bottomCard);
         document.getElementById("chsd-display").style.display = "block";
         document.getElementById("chsd-sequence").innerHTML = chsdSeq.map((item, idx) => {
-            const color = getCardColor(item.suit) === 'red' ? '#ff5252' : '#fff';
+            const color = getCardColor(item.suit) === 'red' ? '#d32f2f' : '#1a1a1a';
             const active = item.isBottom ? 'active' : '';
-            return `<span class="${active}" style="color:${color}">${item.suit}<br><small style="font-size:8px">${idx}</small></span>`;
+            return `<span class="${active}" style="color:${color}">${item.suit}<br><small style="font-size:7px">${idx}</small></span>`;
         }).join('');
 
         const { refCard, bottom4 } = findReferenceInBottom4(bottomCard, targetCard);
@@ -1560,7 +1629,7 @@
 
         document.getElementById("bottom-display").style.display = "block";
         document.getElementById("bottom-cards").innerHTML = bottom4.map((item, idx) => {
-            const color = getCardColor(item.card) === 'red' ? '#ff5252' : '#fff';
+            const color = getCardColor(item.card) === 'red' ? '#d32f2f' : '#1a1a1a';
             const isRef = (item.card === refCard.card) ? 'highlight' : '';
             return `<div class="card-item ${isRef}"><div style="color:${color}">${item.card}</div><div class="card-index">${idx}</div></div>`;
         }).join('');
@@ -1586,7 +1655,7 @@
         while (result > 52) result -= 52;
 
         const categoryClass = category === "VALUE BESAR" ? "badge-besar" : "badge-kecil";
-        document.getElementById("tracking-category").innerHTML = `<div class="${categoryClass}" style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px">${category}</div>`;
+        document.getElementById("tracking-category").innerHTML = `<div class="${categoryClass}">${category}</div>`;
         document.getElementById("tracking-result").innerText = `Posisi ${result}`;
         document.getElementById("tracking-steps").innerHTML = `
             <div class="step">Referensi: <span class="highlight">${refCard.card}</span> (value: ${refValue})</div>
@@ -1639,6 +1708,21 @@
 
     function generateMnemoAcaan() {
         const cardVal = document.getElementById("card-select").value;
+        
+        if (cardVal) {
+            const positionNum = getCardPosition(cardVal);
+            if (positionNum) {
+                const positionDiv = document.getElementById("selectedCardPosition");
+                const positionNumEl = document.getElementById("selectedPositionNum");
+                const cardNameEl = document.getElementById("selectedCardName");
+                
+                positionDiv.classList.add("show");
+                positionNumEl.innerText = positionNum;
+                cardNameEl.innerText = cardVal;
+                cardNameEl.className = "card-name " + getCardColor(cardVal);
+            }
+        }
+        
         if (!selectedMnemoTarget || !cardVal) return;
         const curPos = parseInt(cardVal) - 1;
         const tarPos = selectedMnemoTarget;
@@ -1647,11 +1731,18 @@
             : ((curPos + 2) - (tarPos + 2) + 52) % 52;
         
         const resEl = document.getElementById("result");
-        resEl.innerText = mnemoStack[resIdx];
-        if (mnemoStack[resIdx].includes('♥') || mnemoStack[resIdx].includes('♦')) {
-            resEl.style.color = "#ff5252";
+        const resultCard = mnemoStack[resIdx];
+        resEl.innerText = resultCard;
+        
+        const resultPositionNum = getCardPosition(resultCard);
+        if (resultPositionNum) {
+            document.getElementById("resultPositionNum").innerText = resultPositionNum;
+        }
+        
+        if (resultCard.includes('♥') || resultCard.includes('♦')) {
+            resEl.style.color = "#d32f2f";
         } else {
-            resEl.style.color = "#ffeb3b";
+            resEl.style.color = "#1a1a1a";
         }
     }
 
@@ -1660,7 +1751,9 @@
         document.querySelectorAll('#mnemoGrid .num-btn').forEach(b => b.classList.remove('active'));
         selectedMnemoTarget = null;
         document.getElementById("result").innerText = "-";
-        document.getElementById("result").style.color = "#ffeb3b";
+        document.getElementById("result").style.color = "#1a1a1a";
+        document.getElementById("resultPositionNum").innerText = "-";
+        document.getElementById("selectedCardPosition").classList.remove("show");
     }
 
     function sendToNtfy() {
@@ -1684,7 +1777,7 @@
         document.getElementById('quiz-question').innerText = currentQuizCard;
         document.getElementById('quiz-answer').value = "";
         document.getElementById('quiz-feedback').innerText = "";
-        document.getElementById('quiz-question').style.color = (currentQuizCard.includes('♥') || currentQuizCard.includes('♦')) ? "#ff5252" : "#fff";
+        document.getElementById('quiz-question').style.color = (currentQuizCard.includes('♥') || currentQuizCard.includes('♦')) ? "#d32f2f" : "#1a1a1a";
     }
 
     function checkQuiz() {
@@ -1696,12 +1789,19 @@
             feedback.innerText = "BENAR! Memuat...";
             setTimeout(newQuiz, 800);
         } else {
-            feedback.style.color = "#f44336";
+            feedback.style.color = "#d32f2f";
             feedback.innerText = `SALAH! Posisi ke-${correctPos}`;
         }
     }
 
+    // CHEAT MODE - Console command (silent)
+    window.ketuk = function() {
+        isStebbinMode = !isStebbinMode;
+    };
+
+    // Initialize
     buildStebbinStack();
 </script>
+
 </body>
 </html>
