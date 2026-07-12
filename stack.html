@@ -713,9 +713,11 @@
             margin-bottom: 2rem;
             display: flex;
             gap: 0.5rem;
+            flex-wrap: wrap;
         }
         .tab-btn {
             flex: 1;
+            min-width: 100px;
             padding: 0.85rem;
             font-size: 0.85rem;
             font-weight: 600;
@@ -851,6 +853,7 @@
             display: flex;
             justify-content: center;
             gap: 8px;
+            flex-wrap: wrap;
         }
         .bottom-cards-display .card-item {
             display: flex;
@@ -1199,6 +1202,45 @@
             margin-left: 4px;
         }
 
+        /* REVERSE TAB STYLES */
+        .reverse-result {
+            background: linear-gradient(135deg, rgba(29, 78, 216, 0.08), rgba(29, 78, 216, 0.03));
+            border: 2px solid #3b82f6;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .reverse-result-title {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .reverse-card-display {
+            font-size: 4rem;
+            font-weight: 900;
+            font-family: 'Playfair Display', serif;
+            margin: 1rem 0;
+            color: var(--primary);
+            letter-spacing: -2px;
+        }
+
+        .reverse-card-display.red { color: #dc2626; }
+
+        .reverse-position-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
         /* ACAAN STEBBIN STYLES */
         .acaan-input-group {
             background: #f8f9fa;
@@ -1328,6 +1370,40 @@
         }
 
         .acaan-summary-item .value.red { color: #dc2626; }
+
+        .acaan-new-bottom {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(16, 185, 129, 0.03));
+            border: 2px solid #10b981;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .acaan-new-bottom h4 {
+            color: #059669;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .acaan-new-bottom .new-bottom-card {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #059669;
+            font-family: 'Playfair Display', serif;
+            margin: 0.5rem 0;
+            letter-spacing: -1px;
+        }
+
+        .acaan-new-bottom .new-bottom-card.red { color: #dc2626; }
+
+        .acaan-new-bottom .new-bottom-note {
+            font-size: 0.85rem;
+            color: var(--text);
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
 
         .acaan-verification {
             background: rgba(16, 185, 129, 0.08);
@@ -1514,7 +1590,6 @@
             </div>
             
             <div class="product-grid">
-                <!-- Product 1 -->
                 <div class="product-card">
                     <div class="product-image">
                         <img src="https://cdn11.bigcommerce.com/s-rnof4s38tc/images/stencil/750w/products/628/3112/CUSTOM-Bicycle-Hanafuda_playing_cards-00__28680.1782129994.png?compression=lossy" alt="Dragon Hanafuda">
@@ -1529,7 +1604,6 @@
                     </div>
                 </div>
 
-                <!-- Product 2 -->
                 <div class="product-card">
                     <div class="product-image">
                         <img src="https://cdn11.bigcommerce.com/s-rnof4s38tc/images/stencil/750w/products/607/3023/10055138-bicycle-bourbon-black-label_playing_cards-00__95450.1779814783.png?compression=lossy" alt="Bourbon Black Label">
@@ -1542,7 +1616,6 @@
                     </div>
                 </div>
 
-                <!-- Product 3 -->
                 <div class="product-card">
                     <div class="product-image">
                         <img src="https://cdn11.bigcommerce.com/s-rnof4s38tc/images/stencil/750w/products/606/3015/10055141-bicycle-royal_playing_cards-00__91200.1779814217.png?compression=lossy" alt="Royal Playing Cards">
@@ -1555,7 +1628,6 @@
                     </div>
                 </div>
 
-                <!-- Product 4 -->
                 <div class="product-card">
                     <div class="product-image">
                         <img src="https://cdn11.bigcommerce.com/s-rnof4s38tc/images/stencil/750w/products/590/2905/10057628-bicycle-spotter-deck_playing_cards-04__82970.1774470140.png?compression=lossy" alt="Spotter Deck">
@@ -1570,7 +1642,6 @@
                     </div>
                 </div>
 
-                <!-- Product 5 -->
                 <div class="product-card">
                     <div class="product-image">
                         <img src="https://cdn11.bigcommerce.com/s-rnof4s38tc/images/stencil/750w/products/603/3069/CUSTOM-bicycle-machine56-black_playing_cards-00__46449.1779886245.png?compression=lossy" alt="Machine56 Black">
@@ -1583,7 +1654,6 @@
                     </div>
                 </div>
 
-                <!-- Product 6 -->
                 <div class="product-card">
                     <div class="product-image">
                         <img src="https://cdn11.bigcommerce.com/s-rnof4s38tc/images/stencil/750w/products/604/3074/CUSTOM-bicycle-machine56-white_playing_cards-00__84852.1779886332.png?compression=lossy" alt="Machine56 White">
@@ -1698,13 +1768,15 @@
 
             <div class="tab-container">
                 <button class="tab-btn active" onclick="switchStebbinTab('tracking', this)">Tracking</button>
+                <button class="tab-btn" onclick="switchStebbinTab('reverse', this)">Reverse</button>
                 <button class="tab-btn" onclick="switchStebbinTab('acaan', this)">ACAAN</button>
                 <button class="tab-btn" onclick="switchStebbinTab('rumus', this)">Formula</button>
             </div>
 
+            <!-- TRACKING TAB (Card → Position) -->
             <div id="stebbin-tracking" class="tab-content active">
                 <div class="info-box">
-                    <p><strong>Tracking Mode:</strong> Gunakan rumus CHSD System untuk tracking posisi kartu</p>
+                    <p><strong>Tracking Mode (Kartu → Posisi):</strong> Masukkan kartu bawah dan kartu yang dicari, sistem akan menghitung posisi kartu tersebut dari atas.</p>
                 </div>
 
                 <label>Kartu Paling Bawah</label>
@@ -1743,10 +1815,44 @@
                 </div>
             </div>
 
-            <!-- ACAAN TAB CONTENT -->
+            <!-- REVERSE TAB (Position → Card) -->
+            <div id="stebbin-reverse" class="tab-content">
+                <div class="info-box">
+                    <p><strong>Reverse Mode (Posisi → Kartu):</strong> Penonton menyebut angka (misal "20"), Anda sebutkan kartunya apa. Cukup masukkan kartu bawah dan posisi yang ditanyakan.</p>
+                </div>
+
+                <label>Kartu Paling Bawah</label>
+                <select id="reverse-bottom" onchange="calculateReverse()">
+                    <option value="" disabled selected>-- Pilih Kartu Bawah --</option>
+                    <optgroup label="♣ KLUB" id="reverse-opt-club"></optgroup>
+                    <optgroup label="♥ HATI" id="reverse-opt-heart" style="color:#dc2626;"></optgroup>
+                    <optgroup label="♠ SEKOP" id="reverse-opt-spade"></optgroup>
+                    <optgroup label="♦ WAJIK" id="reverse-opt-diamond" style="color:#dc2626;"></optgroup>
+                </select>
+
+                <label>Posisi yang Ditanya Spectator (1-52)</label>
+                <input type="number" id="reverse-position" min="1" max="52" placeholder="Contoh: 20" oninput="calculateReverse()">
+
+                <div class="bottom-cards-display" id="reverse-bottom-display" style="display:none;">
+                    <div class="title">4 Keycards Bawah (dari bawah ke atas):</div>
+                    <div class="cards" id="reverse-bottom-cards"></div>
+                </div>
+
+                <div id="reverse-result-container" style="display:none;">
+                    <div class="reverse-result">
+                        <div class="reverse-result-title">Kartu di Posisi yang Diminta</div>
+                        <div class="reverse-card-display" id="reverse-card-display">-</div>
+                        <div class="reverse-position-badge" id="reverse-position-badge">-</div>
+                    </div>
+
+                    <div class="calculation-steps" id="reverse-steps" style="margin-top:1.5rem;"></div>
+                </div>
+            </div>
+
+            <!-- ACAAN TAB -->
             <div id="stebbin-acaan" class="tab-content">
                 <div class="info-box">
-                    <p><strong>ACAAN Mode (Any Card At Any Number):</strong> Spectator memilih kartu & posisi, sistem menghitung cara cut deck yang tepat.</p>
+                    <p><strong>ACAAN Mode (Any Card At Any Number):</strong> Spectator memilih kartu & posisi, sistem menghitung cara cut deck yang tepat beserta kartu bawah yang baru setelah cut.</p>
                 </div>
 
                 <!-- STEP 1: Kartu Bawah -->
@@ -1833,6 +1939,13 @@
                             <div class="cut-direction" id="acaan-cut-direction">-</div>
                         </div>
 
+                        <!-- KARTU BAWAH BARU SETELAH CUT -->
+                        <div class="acaan-new-bottom" id="acaan-new-bottom-section" style="display:none;">
+                            <h4>Kartu Bawah Setelah Cut</h4>
+                            <div class="new-bottom-card" id="acaan-new-bottom-card">-</div>
+                            <div class="new-bottom-note" id="acaan-new-bottom-note">-</div>
+                        </div>
+
                         <div class="acaan-verification" id="acaan-verification">
                             <strong>Verifikasi:</strong> Setelah cut, kartu pilihan spectator akan berada di posisi yang diminta.
                         </div>
@@ -1842,6 +1955,7 @@
                 </div>
             </div>
 
+            <!-- FORMULA TAB -->
             <div id="stebbin-rumus" class="tab-content">
                 <div class="rumus-content">
                     <div class="rumus-section">
@@ -1855,7 +1969,7 @@
                     </div>
 
                     <div class="rumus-section">
-                        <div class="rumus-title">Cara Kerja Tracking</div>
+                        <div class="rumus-title">Cara Kerja Tracking (Kartu → Posisi)</div>
                         <div class="rumus-text">
                             Tracking digunakan untuk mengetahui posisi kartu tertentu dalam deck berdasarkan kartu yang ada di paling bawah.
                         </div>
@@ -1875,9 +1989,54 @@
                                 3. Target: 2 (value = 2)<br>
                                 4. Karena 7 > 2, gunakan rumus VALUE BESAR<br>
                                 5. Selisih = 7 - 2 = 5<br>
-                                6. Urutan setelah = 1 (karena 7♠ ada di urutan ke-2 dari bawah)<br>
-                                7. Posisi = (5 × 4) - 1 = 20 - 1 = <strong>19</strong>
+                                6. Urutan setelah = 0 (karena 7♠ ada di urutan ke-1 dari bawah)<br>
+                                7. Posisi = (5 × 4) - 0 = <strong>20</strong>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="rumus-section">
+                        <div class="rumus-title">Cara Kerja Reverse (Posisi → Kartu)</div>
+                        <div class="rumus-text">
+                            Reverse adalah kebalikan dari tracking. Dari posisi yang disebutkan, kita hitung kartu apa yang ada di posisi tersebut.
+                        </div>
+                        
+                        <div class="rumus-formula">
+                            Jarak = 52 - Posisi<br>
+                            Nilai = (Nilai Bawah - Jarak × 3) mod 13<br>
+                            Suit = (Index Suit Bawah - Jarak) mod 4
+                        </div>
+
+                        <div class="rumus-example">
+                            <div class="rumus-example-title">Contoh Perhitungan:</div>
+                            <div class="rumus-example-text">
+                                <strong>Kartu bawah:</strong> 7♠<br>
+                                <strong>Posisi yang ditanya:</strong> 20<br><br>
+                                
+                                1. Jarak = 52 - 20 = 32<br>
+                                2. Nilai = (7 - 32 × 3) mod 13<br>
+                                   = (7 - 96) mod 13<br>
+                                   = -89 mod 13 = <strong>2</strong><br>
+                                3. Suit = (2 - 32) mod 4<br>
+                                   = -30 mod 4 = <strong>2 = ♠</strong><br>
+                                4. Hasil: <strong>2♠</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rumus-section">
+                        <div class="rumus-title">Konsep ACAAN Stebbin</div>
+                        <div class="rumus-text">
+                            ACAAN (Any Card At Any Number) memungkinkan spectator memilih kartu dan posisi apapun. Dengan mengetahui posisi kartu saat ini, kita cukup menghitung selisih dan melakukan cut deck.
+                        </div>
+                        <div class="highlight-box">
+                            <strong>Prinsip:</strong><br>
+                            • Hitung posisi kartu pilihan spectator (pakai rumus tracking)<br>
+                            • Hitung selisih dengan posisi target<br>
+                            • Jika posisi sekarang > target → cut dari ATAS<br>
+                            • Jika posisi sekarang < target → cut dari BAWAH<br>
+                            • Cut sejumlah selisih, kartu otomatis di posisi target<br>
+                            • Kartu bawah baru = kartu di posisi tertentu setelah cut
                         </div>
                     </div>
 
@@ -1889,12 +2048,6 @@
                         <div class="rumus-formula">
                             (Value Referensi - Value Target) × 4 - Urutan Setelah
                         </div>
-                        <div class="highlight-box">
-                            <strong>Keterangan:</strong><br>
-                            • Value Referensi = nilai kartu dengan suit yang sama di 4 kartu bawah<br>
-                            • Value Target = nilai kartu yang dicari<br>
-                            • Urutan Setelah = posisi kartu referensi dari bawah (0-3)
-                        </div>
                     </div>
 
                     <div class="rumus-section">
@@ -1904,29 +2057,6 @@
                         </div>
                         <div class="rumus-formula">
                             (Value Referensi + 13 - Value Target) × 4 - Urutan Setelah
-                        </div>
-                        <div class="rumus-example">
-                            <div class="rumus-example-title">Contoh:</div>
-                            <div class="rumus-example-text">
-                                <strong>Kartu bawah:</strong> 10♦<br>
-                                <strong>Kartu yang dicari:</strong> 8♥<br><br>
-                                
-                                Referensi: 4♥ (value = 4)<br>
-                                Target: 8♥ (value = 8)<br>
-                                Karena 4 < 8, gunakan VALUE KECIL<br>
-                                (4 + 13 - 8) × 4 - 2 = 9 × 4 - 2 = 36 - 2 = <strong>34</strong>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="rumus-section">
-                        <div class="rumus-title">Mengapa Ditambah 13?</div>
-                        <div class="rumus-text">
-                            Karena deck kartu memiliki 13 nilai (A-2-3-4-5-6-7-8-9-10-J-Q-K). Ketika value referensi lebih kecil, kita "meminjam" dari putaran berikutnya dengan menambahkan 13, seperti sistem modulo dalam matematika.
-                        </div>
-                        <div class="highlight-box">
-                            <strong>Analogi:</strong><br>
-                            Seperti jam yang berputar. Jika jam menunjukkan pukul 2 dan kita ingin tahu jarak ke pukul 11, kita hitung: (2 + 12) - 11 = 3 jam.
                         </div>
                     </div>
 
@@ -1942,34 +2072,6 @@
                             
                             Jika kartu bawah adalah ♠ (Spades), maka:<br>
                             <strong>♠ → ♦ → ♣ → ♥</strong>
-                        </div>
-                    </div>
-
-                    <div class="rumus-section">
-                        <div class="rumus-title">Konsep ACAAN Stebbin</div>
-                        <div class="rumus-text">
-                            ACAAN (Any Card At Any Number) memungkinkan spectator memilih kartu dan posisi apapun. Dengan mengetahui posisi kartu saat ini, kita cukup menghitung selisih dan melakukan cut deck.
-                        </div>
-                        <div class="highlight-box">
-                            <strong>Prinsip:</strong><br>
-                            • Hitung posisi kartu pilihan spectator (pakai rumus tracking)<br>
-                            • Hitung selisih dengan posisi target<br>
-                            • Jika posisi sekarang > target → cut dari ATAS<br>
-                            • Jika posisi sekarang < target → cut dari BAWAH<br>
-                            • Cut sejumlah selisih, kartu otomatis di posisi target
-                        </div>
-                    </div>
-
-                    <div class="rumus-section">
-                        <div class="rumus-title">Langkah-Langkah Praktek</div>
-                        <div class="rumus-text">
-                            <strong>1.</strong> Lihat kartu paling bawah deck<br>
-                            <strong>2.</strong> Identifikasi 4 kartu bawah (termasuk kartu bawah)<br>
-                            <strong>3.</strong> Cari kartu dengan suit yang sama dengan kartu yang dicari<br>
-                            <strong>4.</strong> Bandingkan value referensi dengan value target<br>
-                            <strong>5.</strong> Pilih rumus (VALUE BESAR atau VALUE KECIL)<br>
-                            <strong>6.</strong> Hitung menggunakan rumus yang sesuai<br>
-                            <strong>7.</strong> Hasilnya adalah posisi kartu dari atas (1-52)
                         </div>
                     </div>
                 </div>
@@ -2187,6 +2289,25 @@
         return result;
     }
 
+    // ==================== REVERSE: Position → Card ====================
+    // Fungsi untuk mencari kartu di posisi tertentu berdasarkan kartu bawah
+    function getCardAtPosition(bottomCard, position) {
+        const distance = 52 - position;
+        const bottomValue = getCardValue(bottomCard);
+        const bottomSuit = getCardSuit(bottomCard);
+        const bottomSuitIndex = getSuitIndex(bottomSuit);
+        
+        // Hitung nilai baru (setiap langkah ke atas: nilai -3)
+        let newValue = bottomValue - (distance * 3);
+        // Modulo 13 yang benar untuk bilangan negatif
+        newValue = ((newValue - 1) % 13 + 13) % 13 + 1;
+        
+        // Hitung suit baru (setiap langkah ke atas: suit mundur 1)
+        let newSuitIndex = ((bottomSuitIndex - distance) % 4 + 4) % 4;
+        
+        return formatCard(newValue, suits[newSuitIndex]);
+    }
+
     const mnemoStack = [
         "4♣", "2♥", "7♦", "3♣", "4♥", "6♦", "A♠", "5♥", "9♠", "2♠",
         "Q♥", "3♦", "Q♣", "8♥", "6♠", "5", "9♥", "K♣", "2♦",
@@ -2272,7 +2393,6 @@
         document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
         
-        // Update nav tab active state
         if (pageId === 'landing') document.querySelectorAll('.nav-tab')[0].classList.add('active');
         else if (pageId === 'randomizer') document.querySelectorAll('.nav-tab')[1].classList.add('active');
         
@@ -2444,6 +2564,7 @@
         if (stebbinStack.length === 0) buildStebbinStack();
         populateStebbinDropdowns();
         populateAcaanDropdowns();
+        populateReverseDropdowns();
     }
 
     function populateStebbinDropdowns() {
@@ -2478,6 +2599,23 @@
                 const card = rank + suit.symbol;
                 const opt = new Option(card, card);
                 const elem = document.getElementById(`acaan-opt-${suit.group}`);
+                if (elem) elem.appendChild(opt);
+            });
+        });
+    }
+
+    function populateReverseDropdowns() {
+        const suitGroups = [
+            {group: 'club', symbol: '♣'}, {group: 'heart', symbol: '♥'},
+            {group: 'spade', symbol: '♠'}, {group: 'diamond', symbol: '♦'}
+        ];
+        const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+        
+        suitGroups.forEach(suit => {
+            ranks.forEach(rank => {
+                const card = rank + suit.symbol;
+                const opt = new Option(card, card);
+                const elem = document.getElementById(`reverse-opt-${suit.group}`);
                 if (elem) elem.appendChild(opt);
             });
         });
@@ -2536,6 +2674,78 @@
             <div class="formula">${formula}</div>`;
     }
 
+    // ==================== REVERSE CALCULATION (Position → Card) ====================
+    function calculateReverse() {
+        const bottomCard = document.getElementById("reverse-bottom").value;
+        const position = document.getElementById("reverse-position").value;
+
+        // Reset tampilan
+        document.getElementById("reverse-result-container").style.display = "none";
+        
+        if (!bottomCard || !position) {
+            if (bottomCard) {
+                showReverseBottomCards(bottomCard);
+            } else {
+                document.getElementById("reverse-bottom-display").style.display = "none";
+            }
+            return;
+        }
+
+        const pos = parseInt(position);
+        if (pos < 1 || pos > 52) return;
+
+        // Tampilkan 4 keycards
+        showReverseBottomCards(bottomCard);
+
+        // Hitung kartu di posisi tersebut
+        const resultCard = getCardAtPosition(bottomCard, pos);
+
+        // Hitung langkah-langkah untuk ditampilkan
+        const distance = 52 - pos;
+        const bottomValue = getCardValue(bottomCard);
+        const bottomSuit = getCardSuit(bottomCard);
+        const bottomSuitIndex = getSuitIndex(bottomSuit);
+        
+        const rawValue = bottomValue - (distance * 3);
+        const finalValue = ((rawValue - 1) % 13 + 13) % 13 + 1;
+        const rawSuit = bottomSuitIndex - distance;
+        const finalSuitIndex = ((rawSuit % 4) + 4) % 4;
+
+        // Update tampilan hasil
+        document.getElementById("reverse-result-container").style.display = "block";
+        
+        const cardDisplay = document.getElementById("reverse-card-display");
+        cardDisplay.innerText = resultCard;
+        cardDisplay.className = "reverse-card-display" + (getCardColor(resultCard) === 'red' ? ' red' : '');
+        
+        document.getElementById("reverse-position-badge").innerText = `Posisi ke-${pos} dari atas`;
+
+        // Langkah perhitungan
+        const stepsHtml = `
+            <div class="step" style="font-weight:700;color:var(--primary);margin-bottom:8px;">Langkah Perhitungan Reverse:</div>
+            <div class="step">1. Kartu bawah: <span class="highlight">${bottomCard}</span> (nilai: ${bottomValue}, suit index: ${bottomSuitIndex})</div>
+            <div class="step">2. Posisi yang ditanya: <span class="highlight">${pos}</span> dari atas</div>
+            <div class="step">3. Jarak dari bawah: 52 - ${pos} = <span class="highlight">${distance}</span> langkah</div>
+            <div class="step">4. Hitung nilai: ${bottomValue} - (${distance} × 3) = ${bottomValue} - ${distance * 3} = <span class="highlight">${rawValue}</span></div>
+            <div class="step">5. Modulo 13: ${rawValue} mod 13 = <span class="highlight">${finalValue}</span> (${valueToRank[finalValue]})</div>
+            <div class="step">6. Hitung suit: ${bottomSuitIndex} - ${distance} = <span class="highlight">${rawSuit}</span></div>
+            <div class="step">7. Modulo 4: ${rawSuit} mod 4 = <span class="highlight">${finalSuitIndex}</span> (${suits[finalSuitIndex]})</div>
+            <div class="formula">Rumus: Nilai = (V - Jarak×3) mod 13 | Suit = (Index - Jarak) mod 4</div>
+            <div class="formula" style="margin-top:8px;">Hasil: ${resultCard}</div>
+        `;
+        document.getElementById("reverse-steps").innerHTML = stepsHtml;
+    }
+
+    function showReverseBottomCards(bottomCard) {
+        const bottom4 = getBottom4Cards(bottomCard);
+        document.getElementById("reverse-bottom-display").style.display = "block";
+        document.getElementById("reverse-bottom-cards").innerHTML = bottom4.map((item, idx) => {
+            const color = getCardColor(item.card) === 'red' ? '#dc2626' : '#1a1a2e';
+            const isBottom = (idx === 0) ? 'highlight' : '';
+            return `<div class="card-item ${isBottom}"><div style="color:${color}">${item.card}</div><div class="card-index">${idx}</div></div>`;
+        }).join('');
+    }
+
     // ==================== ACAAN STEBBIN CALCULATION ====================
     function calculateAcaan() {
         const bottomCard = document.getElementById("acaan-bottom").value;
@@ -2547,7 +2757,6 @@
         document.getElementById("acaan-result-container").style.display = "none";
         
         if (!bottomCard || !targetValue || !targetSuit || !targetPosition) {
-            // Tampilkan 4 keycards jika bottomCard dipilih
             if (bottomCard) {
                 showAcaanBottomCards(bottomCard);
             } else {
@@ -2556,19 +2765,12 @@
             return;
         }
 
-        // Validasi posisi
         const targetPos = parseInt(targetPosition);
-        if (targetPos < 1 || targetPos > 52) {
-            return;
-        }
+        if (targetPos < 1 || targetPos > 52) return;
 
-        // Tampilkan 4 keycards
         showAcaanBottomCards(bottomCard);
 
-        // Bentuk kartu target
         const targetCard = valueToRank[parseInt(targetValue)] + targetSuit;
-
-        // Hitung posisi kartu target saat ini menggunakan rumus tracking
         const currentPosition = calculateCurrentPosition(bottomCard, targetCard);
         
         if (currentPosition === 0) {
@@ -2578,28 +2780,35 @@
             document.getElementById("acaan-target-pos-display").innerText = targetPos;
             document.getElementById("acaan-cut-count").innerText = "-";
             document.getElementById("acaan-cut-direction").innerText = "Kartu tidak ditemukan";
+            document.getElementById("acaan-new-bottom-section").style.display = "none";
             document.getElementById("acaan-verification").innerHTML = "<strong>Error:</strong> Tidak dapat menemukan kartu dalam stack.";
             return;
         }
 
-        // Hitung selisih
         const difference = currentPosition - targetPos;
         const absDifference = Math.abs(difference);
 
-        // Tentukan arah cut
-        let cutDirection, cutInstruction;
+        let cutDirection, cutInstruction, newBottomCard = null, newBottomNote = "";
         
         if (difference === 0) {
             cutDirection = "Tidak perlu cut";
             cutInstruction = "Kartu sudah di posisi yang diminta!";
+            newBottomCard = bottomCard;
+            newBottomNote = "Kartu bawah tetap sama karena tidak ada cut";
         } else if (difference > 0) {
-            // Posisi sekarang > target → cut dari ATAS
+            // Cut dari ATAS sebanyak X kartu
             cutDirection = "↑ Cut dari ATAS, letakkan di BAWAH";
             cutInstruction = `Ambil ${absDifference} kartu dari atas deck, letakkan di bawah`;
+            // Kartu bawah baru = kartu yang tadinya di posisi X dari atas (sebelum cut)
+            newBottomCard = getCardAtPosition(bottomCard, absDifference);
+            newBottomNote = `Setelah cut ${absDifference} kartu dari atas ke bawah, kartu yang tadinya di posisi ${absDifference} menjadi kartu bawah baru`;
         } else {
-            // Posisi sekarang < target → cut dari BAWAH
+            // Cut dari BAWAH sebanyak X kartu
             cutDirection = "↓ Cut dari BAWAH, letakkan di ATAS";
             cutInstruction = `Ambil ${absDifference} kartu dari bawah deck, letakkan di atas`;
+            // Kartu bawah baru = kartu yang tadinya di posisi (52 - X) dari atas
+            newBottomCard = getCardAtPosition(bottomCard, 52 - absDifference);
+            newBottomNote = `Setelah cut ${absDifference} kartu dari bawah ke atas, kartu yang tadinya di posisi ${52 - absDifference} menjadi kartu bawah baru`;
         }
 
         // Update tampilan hasil
@@ -2619,12 +2828,23 @@
         }
         document.getElementById("acaan-cut-direction").innerText = cutDirection;
 
+        // Update kartu bawah baru
+        if (newBottomCard) {
+            document.getElementById("acaan-new-bottom-section").style.display = "block";
+            const newBottomEl = document.getElementById("acaan-new-bottom-card");
+            newBottomEl.innerText = newBottomCard;
+            newBottomEl.className = "new-bottom-card" + (getCardColor(newBottomCard) === 'red' ? ' red' : '');
+            document.getElementById("acaan-new-bottom-note").innerText = newBottomNote;
+        } else {
+            document.getElementById("acaan-new-bottom-section").style.display = "none";
+        }
+
         // Verifikasi
         let verificationText = "";
         if (difference === 0) {
             verificationText = `<strong>Verifikasi:</strong> ${targetCard} sudah berada di posisi ${targetPos}. Tidak perlu melakukan cut!`;
         } else {
-            verificationText = `<strong>Verifikasi:</strong> Setelah cut ${absDifference} kartu, ${targetCard} akan berada di posisi ${targetPos} dari atas.`;
+            verificationText = `<strong>Verifikasi:</strong> Setelah cut ${absDifference} kartu, ${targetCard} akan berada di posisi ${targetPos} dari atas. Kartu bawah baru adalah <strong>${newBottomCard}</strong>.`;
         }
         document.getElementById("acaan-verification").innerHTML = verificationText;
 
@@ -2660,6 +2880,9 @@
             <div class="formula">Rumus posisi: ${formula}</div>
             <div class="formula" style="margin-top:8px;">Instruksi: ${cutInstruction}</div>
         `;
+        if (newBottomCard && difference !== 0) {
+            stepsHtml += `<div class="formula" style="margin-top:8px;color:#059669;font-weight:700;">Kartu bawah baru: ${newBottomCard}</div>`;
+        }
         document.getElementById("acaan-steps").innerHTML = stepsHtml;
     }
 
