@@ -1199,6 +1199,150 @@
             margin-left: 4px;
         }
 
+        /* ACAAN STEBBIN STYLES */
+        .acaan-input-group {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .acaan-input-group h4 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .acaan-input-group h4 .step-num {
+            background: var(--primary);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .acaan-input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .acaan-result {
+            background: linear-gradient(135deg, rgba(201, 162, 39, 0.1), rgba(201, 162, 39, 0.05));
+            border: 2px solid var(--accent);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .acaan-result-title {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary);
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .acaan-result-card {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            font-family: 'Playfair Display', serif;
+            margin: 1rem 0;
+        }
+
+        .acaan-result-card.red { color: #dc2626; }
+
+        .acaan-cut-instruction {
+            background: white;
+            border: 2px dashed var(--accent);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+        }
+
+        .acaan-cut-instruction h4 {
+            color: var(--accent-dark);
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .acaan-cut-instruction .cut-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--accent);
+            font-family: 'Playfair Display', serif;
+            margin: 0.5rem 0;
+        }
+
+        .acaan-cut-instruction .cut-direction {
+            font-size: 1rem;
+            color: var(--text);
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            background: rgba(201, 162, 39, 0.1);
+            border-radius: 6px;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .acaan-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .acaan-summary-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .acaan-summary-item .label {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .acaan-summary-item .value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .acaan-summary-item .value.red { color: #dc2626; }
+
+        .acaan-verification {
+            background: rgba(16, 185, 129, 0.08);
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        .acaan-verification strong {
+            color: #059669;
+        }
+
         /* FOOTER */
         .footer {
             background: var(--primary);
@@ -1289,6 +1433,8 @@
             .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
             .number-grid { grid-template-columns: repeat(6, 1fr); }
             .product-grid { grid-template-columns: repeat(2, 1fr); }
+            .acaan-input-row { grid-template-columns: 1fr; }
+            .acaan-summary { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 480px) {
@@ -1552,6 +1698,7 @@
 
             <div class="tab-container">
                 <button class="tab-btn active" onclick="switchStebbinTab('tracking', this)">Tracking</button>
+                <button class="tab-btn" onclick="switchStebbinTab('acaan', this)">ACAAN</button>
                 <button class="tab-btn" onclick="switchStebbinTab('rumus', this)">Formula</button>
             </div>
 
@@ -1593,6 +1740,105 @@
                     <h3>Posisi Kartu dari Atas</h3>
                     <div class="result-value" id="tracking-result">-</div>
                     <div class="calculation-steps" id="tracking-steps"></div>
+                </div>
+            </div>
+
+            <!-- ACAAN TAB CONTENT -->
+            <div id="stebbin-acaan" class="tab-content">
+                <div class="info-box">
+                    <p><strong>ACAAN Mode (Any Card At Any Number):</strong> Spectator memilih kartu & posisi, sistem menghitung cara cut deck yang tepat.</p>
+                </div>
+
+                <!-- STEP 1: Kartu Bawah -->
+                <div class="acaan-input-group">
+                    <h4><span class="step-num">1</span> Kartu Paling Bawah Deck</h4>
+                    <select id="acaan-bottom" onchange="calculateAcaan()">
+                        <option value="" disabled selected>-- Pilih Kartu Bawah --</option>
+                        <optgroup label="♣ KLUB" id="acaan-opt-club"></optgroup>
+                        <optgroup label="♥ HATI" id="acaan-opt-heart" style="color:#dc2626;"></optgroup>
+                        <optgroup label="♠ SEKOP" id="acaan-opt-spade"></optgroup>
+                        <optgroup label="♦ WAJIK" id="acaan-opt-diamond" style="color:#dc2626;"></optgroup>
+                    </select>
+                    <div class="bottom-cards-display" id="acaan-bottom-display" style="display:none;">
+                        <div class="title">4 Keycards Bawah (dari bawah ke atas):</div>
+                        <div class="cards" id="acaan-bottom-cards"></div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Kartu Pilihan Spectator -->
+                <div class="acaan-input-group">
+                    <h4><span class="step-num">2</span> Kartu Pilihan Spectator</h4>
+                    <div class="acaan-input-row">
+                        <div>
+                            <label>Nilai Kartu</label>
+                            <select id="acaan-target-value" onchange="calculateAcaan()">
+                                <option value="" disabled selected>-- Pilih Nilai --</option>
+                                <option value="1">A (1)</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">J (11)</option>
+                                <option value="12">Q (12)</option>
+                                <option value="13">K (13)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Suit Kartu</label>
+                            <select id="acaan-target-suit" onchange="calculateAcaan()">
+                                <option value="" disabled selected>-- Pilih Suit --</option>
+                                <option value="♣">♣ Klub (Clubs)</option>
+                                <option value="♥">♥ Hati (Hearts)</option>
+                                <option value="♠">♠ Sekop (Spades)</option>
+                                <option value="♦">♦ Wajik (Diamonds)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Posisi yang Diminta -->
+                <div class="acaan-input-group">
+                    <h4><span class="step-num">3</span> Posisi yang Diminta Spectator (1-52)</h4>
+                    <input type="number" id="acaan-target-position" min="1" max="52" placeholder="Contoh: 20" onchange="calculateAcaan()" oninput="calculateAcaan()">
+                </div>
+
+                <!-- HASIL ACAAN -->
+                <div id="acaan-result-container" style="display:none;">
+                    <div class="acaan-result">
+                        <div class="acaan-result-title">Hasil Analisis ACAAN</div>
+                        
+                        <div class="acaan-summary">
+                            <div class="acaan-summary-item">
+                                <div class="label">Kartu Pilihan</div>
+                                <div class="value" id="acaan-selected-card">-</div>
+                            </div>
+                            <div class="acaan-summary-item">
+                                <div class="label">Posisi Saat Ini</div>
+                                <div class="value" id="acaan-current-position">-</div>
+                            </div>
+                            <div class="acaan-summary-item">
+                                <div class="label">Posisi Target</div>
+                                <div class="value" id="acaan-target-pos-display">-</div>
+                            </div>
+                        </div>
+
+                        <div class="acaan-cut-instruction">
+                            <h4>Instruksi Cut Deck</h4>
+                            <div class="cut-number" id="acaan-cut-count">-</div>
+                            <div class="cut-direction" id="acaan-cut-direction">-</div>
+                        </div>
+
+                        <div class="acaan-verification" id="acaan-verification">
+                            <strong>Verifikasi:</strong> Setelah cut, kartu pilihan spectator akan berada di posisi yang diminta.
+                        </div>
+                    </div>
+
+                    <div class="calculation-steps" id="acaan-steps" style="margin-top:1.5rem;"></div>
                 </div>
             </div>
 
@@ -1696,6 +1942,21 @@
                             
                             Jika kartu bawah adalah ♠ (Spades), maka:<br>
                             <strong>♠ → ♦ → ♣ → ♥</strong>
+                        </div>
+                    </div>
+
+                    <div class="rumus-section">
+                        <div class="rumus-title">Konsep ACAAN Stebbin</div>
+                        <div class="rumus-text">
+                            ACAAN (Any Card At Any Number) memungkinkan spectator memilih kartu dan posisi apapun. Dengan mengetahui posisi kartu saat ini, kita cukup menghitung selisih dan melakukan cut deck.
+                        </div>
+                        <div class="highlight-box">
+                            <strong>Prinsip:</strong><br>
+                            • Hitung posisi kartu pilihan spectator (pakai rumus tracking)<br>
+                            • Hitung selisih dengan posisi target<br>
+                            • Jika posisi sekarang > target → cut dari ATAS<br>
+                            • Jika posisi sekarang < target → cut dari BAWAH<br>
+                            • Cut sejumlah selisih, kartu otomatis di posisi target
                         </div>
                     </div>
 
@@ -2182,6 +2443,7 @@
     function initStebbin() {
         if (stebbinStack.length === 0) buildStebbinStack();
         populateStebbinDropdowns();
+        populateAcaanDropdowns();
     }
 
     function populateStebbinDropdowns() {
@@ -2202,6 +2464,23 @@
             });
         }
         populate('track-opt'); populate('track-target');
+    }
+
+    function populateAcaanDropdowns() {
+        const suitGroups = [
+            {group: 'club', symbol: '♣'}, {group: 'heart', symbol: '♥'},
+            {group: 'spade', symbol: '♠'}, {group: 'diamond', symbol: '♦'}
+        ];
+        const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+        
+        suitGroups.forEach(suit => {
+            ranks.forEach(rank => {
+                const card = rank + suit.symbol;
+                const opt = new Option(card, card);
+                const elem = document.getElementById(`acaan-opt-${suit.group}`);
+                if (elem) elem.appendChild(opt);
+            });
+        });
     }
 
     function calculateTracking() {
@@ -2255,6 +2534,143 @@
             <div class="step">Target: <span class="highlight">${targetCard}</span> (value: ${targetValue})</div>
             <div class="step">Urutan setelah: <span class="highlight">${urutanSetelah}</span></div>
             <div class="formula">${formula}</div>`;
+    }
+
+    // ==================== ACAAN STEBBIN CALCULATION ====================
+    function calculateAcaan() {
+        const bottomCard = document.getElementById("acaan-bottom").value;
+        const targetValue = document.getElementById("acaan-target-value").value;
+        const targetSuit = document.getElementById("acaan-target-suit").value;
+        const targetPosition = document.getElementById("acaan-target-position").value;
+
+        // Reset tampilan
+        document.getElementById("acaan-result-container").style.display = "none";
+        
+        if (!bottomCard || !targetValue || !targetSuit || !targetPosition) {
+            // Tampilkan 4 keycards jika bottomCard dipilih
+            if (bottomCard) {
+                showAcaanBottomCards(bottomCard);
+            } else {
+                document.getElementById("acaan-bottom-display").style.display = "none";
+            }
+            return;
+        }
+
+        // Validasi posisi
+        const targetPos = parseInt(targetPosition);
+        if (targetPos < 1 || targetPos > 52) {
+            return;
+        }
+
+        // Tampilkan 4 keycards
+        showAcaanBottomCards(bottomCard);
+
+        // Bentuk kartu target
+        const targetCard = valueToRank[parseInt(targetValue)] + targetSuit;
+
+        // Hitung posisi kartu target saat ini menggunakan rumus tracking
+        const currentPosition = calculateCurrentPosition(bottomCard, targetCard);
+        
+        if (currentPosition === 0) {
+            document.getElementById("acaan-result-container").style.display = "block";
+            document.getElementById("acaan-selected-card").innerText = targetCard;
+            document.getElementById("acaan-current-position").innerText = "Error";
+            document.getElementById("acaan-target-pos-display").innerText = targetPos;
+            document.getElementById("acaan-cut-count").innerText = "-";
+            document.getElementById("acaan-cut-direction").innerText = "Kartu tidak ditemukan";
+            document.getElementById("acaan-verification").innerHTML = "<strong>Error:</strong> Tidak dapat menemukan kartu dalam stack.";
+            return;
+        }
+
+        // Hitung selisih
+        const difference = currentPosition - targetPos;
+        const absDifference = Math.abs(difference);
+
+        // Tentukan arah cut
+        let cutDirection, cutInstruction;
+        
+        if (difference === 0) {
+            cutDirection = "Tidak perlu cut";
+            cutInstruction = "Kartu sudah di posisi yang diminta!";
+        } else if (difference > 0) {
+            // Posisi sekarang > target → cut dari ATAS
+            cutDirection = "↑ Cut dari ATAS, letakkan di BAWAH";
+            cutInstruction = `Ambil ${absDifference} kartu dari atas deck, letakkan di bawah`;
+        } else {
+            // Posisi sekarang < target → cut dari BAWAH
+            cutDirection = "↓ Cut dari BAWAH, letakkan di ATAS";
+            cutInstruction = `Ambil ${absDifference} kartu dari bawah deck, letakkan di atas`;
+        }
+
+        // Update tampilan hasil
+        document.getElementById("acaan-result-container").style.display = "block";
+        
+        const selectedCardEl = document.getElementById("acaan-selected-card");
+        selectedCardEl.innerText = targetCard;
+        selectedCardEl.className = "value" + (getCardColor(targetCard) === 'red' ? ' red' : '');
+        
+        document.getElementById("acaan-current-position").innerText = currentPosition;
+        document.getElementById("acaan-target-pos-display").innerText = targetPos;
+        
+        if (difference === 0) {
+            document.getElementById("acaan-cut-count").innerText = "0";
+        } else {
+            document.getElementById("acaan-cut-count").innerText = absDifference;
+        }
+        document.getElementById("acaan-cut-direction").innerText = cutDirection;
+
+        // Verifikasi
+        let verificationText = "";
+        if (difference === 0) {
+            verificationText = `<strong>Verifikasi:</strong> ${targetCard} sudah berada di posisi ${targetPos}. Tidak perlu melakukan cut!`;
+        } else {
+            verificationText = `<strong>Verifikasi:</strong> Setelah cut ${absDifference} kartu, ${targetCard} akan berada di posisi ${targetPos} dari atas.`;
+        }
+        document.getElementById("acaan-verification").innerHTML = verificationText;
+
+        // Langkah perhitungan
+        const { refCard } = findReferenceInBottom4(bottomCard, targetCard);
+        const refValue = getCardValue(refCard.card);
+        const targetVal = parseInt(targetValue);
+        const urutanSetelah = refCard.index;
+        
+        let formula, category;
+        if (refValue > targetVal) {
+            category = "VALUE BESAR";
+            const selisih = refValue - targetVal;
+            const rawPos = (selisih * 4) - urutanSetelah;
+            formula = `(${refValue} - ${targetVal}) × 4 - ${urutanSetelah} = ${rawPos}`;
+        } else {
+            category = "VALUE KECIL";
+            const adjustedRef = refValue + 13;
+            const selisih = adjustedRef - targetVal;
+            const rawPos = (selisih * 4) - urutanSetelah;
+            formula = `(${refValue} + 13 - ${targetVal}) × 4 - ${urutanSetelah} = ${rawPos}`;
+        }
+
+        let stepsHtml = `
+            <div class="step" style="font-weight:700;color:var(--primary);margin-bottom:8px;">Langkah Perhitungan ACAAN:</div>
+            <div class="step">1. Kartu bawah: <span class="highlight">${bottomCard}</span></div>
+            <div class="step">2. Kartu pilihan: <span class="highlight">${targetCard}</span> (value: ${targetVal})</div>
+            <div class="step">3. Referensi suit ${targetSuit}: <span class="highlight">${refCard.card}</span> (value: ${refValue}, urutan: ${urutanSetelah})</div>
+            <div class="step">4. Kategori: <span class="highlight">${category}</span></div>
+            <div class="step">5. Posisi saat ini: <span class="highlight">${currentPosition}</span> dari atas</div>
+            <div class="step">6. Posisi target: <span class="highlight">${targetPos}</span> dari atas</div>
+            <div class="step">7. Selisih: ${currentPosition} - ${targetPos} = <span class="highlight">${difference}</span></div>
+            <div class="formula">Rumus posisi: ${formula}</div>
+            <div class="formula" style="margin-top:8px;">Instruksi: ${cutInstruction}</div>
+        `;
+        document.getElementById("acaan-steps").innerHTML = stepsHtml;
+    }
+
+    function showAcaanBottomCards(bottomCard) {
+        const bottom4 = getBottom4Cards(bottomCard);
+        document.getElementById("acaan-bottom-display").style.display = "block";
+        document.getElementById("acaan-bottom-cards").innerHTML = bottom4.map((item, idx) => {
+            const color = getCardColor(item.card) === 'red' ? '#dc2626' : '#1a1a2e';
+            const isBottom = (idx === 0) ? 'highlight' : '';
+            return `<div class="card-item ${isBottom}"><div style="color:${color}">${item.card}</div><div class="card-index">${idx}</div></div>`;
+        }).join('');
     }
 
     function initMnemonica() {
