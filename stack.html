@@ -1998,28 +1998,37 @@
                     <div class="rumus-section">
                         <div class="rumus-title">Cara Kerja Reverse (Posisi → Kartu)</div>
                         <div class="rumus-text">
-                            Reverse adalah kebalikan dari tracking. Dari posisi yang disebutkan, kita hitung kartu apa yang ada di posisi tersebut.
+                            Reverse digunakan ketika penonton menyebut angka posisi, dan Anda perlu menebak kartunya. Gunakan 5 langkah praktis ini:
                         </div>
                         
                         <div class="rumus-formula">
-                            Jarak = 52 - Posisi<br>
-                            Nilai = (Nilai Bawah - Jarak × 3) mod 13<br>
-                            Suit = (Index Suit Bawah - Jarak) mod 4
+                            1. JARAK = 52 - POSISI<br>
+                            2. LOMPATAN = JARAK ÷ 4 (ambil angka bulatnya)<br>
+                            3. SISA = JARAK mod 4 (sisa pembagian)<br>
+                            4. NILAI RAW = Bawah + Lompatan - (Sisa × 3)<br>
+                            5. SUIT = Mundur sesuai SISA (0=tetap, 1=mundur 1, 2=mundur 2, 3=mundur 3)
+                        </div>
+
+                        <div class="highlight-box" style="margin-top: 1rem;">
+                            <strong>ATURAN NILAI FINAL (MOD 13 Praktis):</strong><br>
+                            • Jika 1 s/d 13 → Pakai langsung<br>
+                            • Jika > 13 → Kurangi 13<br>
+                            • Jika < 1 (negatif) → 13 dikurang angka tersebut (Contoh: dapat -4 → 13 - 4 = 9)<br>
+                            • Jika = 0 → Jadikan 13 (King)
                         </div>
 
                         <div class="rumus-example">
-                            <div class="rumus-example-title">Contoh Perhitungan:</div>
+                            <div class="rumus-example-title">Contoh Perhitungan Lengkap:</div>
                             <div class="rumus-example-text">
-                                <strong>Kartu bawah:</strong> 7♠<br>
-                                <strong>Posisi yang ditanya:</strong> 20<br><br>
+                                <strong>Kartu bawah:</strong> Q♦ (12) | <strong>Posisi:</strong> 15<br><br>
                                 
-                                1. Jarak = 52 - 20 = 32<br>
-                                2. Nilai = (7 - 32 × 3) mod 13<br>
-                                   = (7 - 96) mod 13<br>
-                                   = -89 mod 13 = <strong>2</strong><br>
-                                3. Suit = (2 - 32) mod 4<br>
-                                   = -30 mod 4 = <strong>2 = ♠</strong><br>
-                                4. Hasil: <strong>2♠</strong>
+                                1. Jarak = 52 - 15 = 37<br>
+                                2. Lompatan = 37 ÷ 4 = 9<br>
+                                3. Sisa = 37 mod 4 = 1<br>
+                                4. Nilai Raw = 12 + 9 - (1 × 3) = 18<br>
+                                   → 18 > 13, jadi 18 - 13 = <strong>5</strong><br>
+                                5. Suit = ♦ mundur 1 langkah = <strong>♠</strong><br>
+                                <strong>Hasil Akhir: 5♠</strong>
                             </div>
                         </div>
                     </div>
