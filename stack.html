@@ -658,7 +658,7 @@ display: none;
 /* STACK SELECT */
 .stack-select {
 display: grid;
-grid-template-columns: repeat(3, 1fr);
+grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 gap: 1.5rem;
 margin: 2rem 0;
 }
@@ -696,6 +696,9 @@ background: linear-gradient(135deg, #ef4444, #dc2626);
 }
 .stack-btn.jaystack .stack-icon {
 background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+}
+.stack-btn.harding .stack-icon {
+background: linear-gradient(135deg, #10b981, #059669);
 }
 .stack-btn h3 {
 font-family: 'Playfair Display', serif;
@@ -1738,7 +1741,7 @@ $13.99
 <!-- LANDING INTRO -->
 <div class="landing-intro">
 <h2>Selamat Datang di Sistem Card Stack</h2>
-<p>Platform profesional untuk mempelajari dan menguasai sistem stack kartu terbaik di dunia. Pelajari Stebbin Stack, Mnemonica, dan JAY STACK dengan tools interaktif kami.</p>
+<p>Platform profesional untuk mempelajari dan menguasai sistem stack kartu terbaik di dunia. Pelajari Stebbin Stack, Mnemonica, JAY STACK, dan Bart Harding Stack dengan tools interaktif kami.</p>
 </div>
 
 <div class="action-buttons">
@@ -1802,6 +1805,11 @@ $13.99
 <div class="stack-icon">J</div>
 <h3>JAY STACK</h3>
 <p>Mod 53 Prime Orbit. Keacakan visual tingkat tinggi dengan algoritma "Kali 2, Kurangi 53".</p>
+</button>
+<button class="stack-btn harding" onclick="showPage('harding')">
+<div class="stack-icon">H</div>
+<h3>Bart Harding Stack</h3>
+<p>Sistem algoritma digit reversal. Tampak acak sempurna namun mudah dihitung tanpa hafalan.</p>
 </button>
 </div>
 </div>
@@ -2552,6 +2560,232 @@ JAY STACK - Complete Sequence (Positions 1-52)
 </div>
 </div>
 
+<!-- ========================================== -->
+<!-- BART HARDING STACK PAGE (REVISED)          -->
+<!-- ========================================== -->
+<div id="harding" class="page">
+<div class="main-card">
+<button class="back-btn" onclick="showPage('stackSelect')">
+← Kembali
+</button>
+
+<h2 class="section-title">Bart Harding Stack</h2>
+
+<div class="tab-container">
+<button class="tab-btn active" onclick="switchHardingTab('tracking', this)">Tracking</button>
+<button class="tab-btn" onclick="switchHardingTab('acaan', this)">ACAAN</button>
+<button class="tab-btn" onclick="switchHardingTab('about', this)">About BHS</button>
+</div>
+
+<!-- HARDING TRACKING TAB -->
+<div id="harding-tracking" class="tab-content active">
+<div class="info-box">
+<p><strong>Card Tracking:</strong> Pilih kartu paling bawah & kartu penonton. Posisi dihitung otomatis dari atas tumpukan menggunakan algoritma Digit Reversal.</p>
+</div>
+
+<label>Kartu Paling Bawah</label>
+<select id="harding-tracking-bottom" onchange="calculateHardingTracking()">
+<option value="" disabled selected>-- Pilih Kartu Bawah --</option>
+<optgroup label="♣ KLUB" id="harding-track-opt-club"></optgroup>
+<optgroup label="♥ HATI" id="harding-track-opt-heart" style="color:#dc2626;"></optgroup>
+<optgroup label="♠ SEKOP" id="harding-track-opt-spade"></optgroup>
+<optgroup label="♦ WAJIK" id="harding-track-opt-diamond" style="color:#dc2626;"></optgroup>
+</select>
+
+<label>Kartu Pilihan Penonton</label>
+<select id="harding-tracking-target" onchange="calculateHardingTracking()">
+<option value="" disabled selected>-- Pilih Kartu --</option>
+<optgroup label="♣ KLUB" id="harding-track-target-club"></optgroup>
+<optgroup label="♥ HATI" id="harding-track-target-heart" style="color:#dc2626;"></optgroup>
+<optgroup label="♠ SEKOP" id="harding-track-target-spade"></optgroup>
+<optgroup label="♦ WAJIK" id="harding-track-target-diamond" style="color:#dc2626;"></optgroup>
+</select>
+
+<div class="result-box">
+<h3>Posisi Kartu dari Atas</h3>
+<div class="result-value" id="harding-tracking-result">-</div>
+<div class="calculation-steps" id="harding-tracking-steps"></div>
+</div>
+</div>
+
+<!-- HARDING ACAAN TAB -->
+<div id="harding-acaan" class="tab-content">
+<div class="info-box">
+<p><strong>Any Card at Any Number:</strong> Tentukan kartu & nomor yang diminta untuk langsung mengetahui kartu paling bawah yang dibutuhkan.</p>
+</div>
+
+<div class="acaan-input-group">
+<h4><span class="step-num">1</span> Kartu Pilihan Penonton</h4>
+<div class="acaan-input-row">
+<div>
+<label>Nilai Kartu</label>
+<select id="harding-acaan-target-value" onchange="calculateHardingAcaan()">
+<option value="" disabled selected>-- Pilih Nilai --</option>
+<option value="1">A (1)</option><option value="2">2</option><option value="3">3</option>
+<option value="4">4</option><option value="5">5</option><option value="6">6</option>
+<option value="7">7</option><option value="8">8</option><option value="9">9</option>
+<option value="10">10</option><option value="11">J (11)</option><option value="12">Q (12)</option>
+<option value="13">K (13)</option>
+</select>
+</div>
+<div>
+<label>Suit Kartu</label>
+<select id="harding-acaan-target-suit" onchange="calculateHardingAcaan()">
+<option value="" disabled selected>-- Pilih Suit --</option>
+<option value="♣">♣ Klub (Clubs)</option>
+<option value="♥">♥ Hati (Hearts)</option>
+<option value="♠">♠ Sekop (Spades)</option>
+<option value="♦">♦ Wajik (Diamonds)</option>
+</select>
+</div>
+</div>
+</div>
+
+<div class="acaan-input-group">
+<h4><span class="step-num">2</span> Nomor yang Diminta (1–52)</h4>
+<input type="number" id="harding-acaan-target-position" min="1" max="52" placeholder="Contoh: 20" onchange="calculateHardingAcaan()" oninput="calculateHardingAcaan()">
+</div>
+
+<div id="harding-acaan-result-container" style="display:none;">
+<div class="acaan-result">
+<div class="acaan-result-title">Hasil Analisis ACAAN</div>
+
+<div class="acaan-summary">
+<div class="acaan-summary-item">
+<div class="label">Kartu Pilihan</div>
+<div class="value" id="harding-acaan-selected-card">-</div>
+</div>
+<div class="acaan-summary-item">
+<div class="label">Posisi Target</div>
+<div class="value" id="harding-acaan-target-pos-display">-</div>
+</div>
+<div class="acaan-summary-item">
+<div class="label">Posisi Saat Ini</div>
+<div class="value" id="harding-acaan-current-position">-</div>
+</div>
+</div>
+
+<div class="acaan-cut-instruction">
+<h4>Instruksi Cut Deck</h4>
+<div class="cut-number" id="harding-acaan-cut-count">-</div>
+<div class="cut-direction" id="harding-acaan-cut-direction">-</div>
+</div>
+
+<div class="acaan-new-bottom" id="harding-acaan-new-bottom-section" style="display:none;">
+<h4>Kartu Bawah Setelah Cut</h4>
+<div class="new-bottom-card" id="harding-acaan-new-bottom-card">-</div>
+<div class="new-bottom-note" id="harding-acaan-new-bottom-note">-</div>
+</div>
+
+<div class="acaan-verification" id="harding-acaan-verification">
+<strong>Verifikasi:</strong> Setelah cut, kartu pilihan spectator akan berada di posisi yang diminta.
+</div>
+</div>
+
+<div class="calculation-steps" id="harding-acaan-steps" style="margin-top:1.5rem;"></div>
+</div>
+</div>
+
+<!-- HARDING ABOUT TAB -->
+<div id="harding-about" class="tab-content">
+<div class="rumus-content">
+<div class="rumus-section">
+<div class="rumus-title">Apa Itu Bart Harding Stack?</div>
+<div class="rumus-text">
+Sistem susunan kartu Bart Harding muncul sekitar tahun 1962. Berbeda dari stack pada umumnya, susunan ini tampak acak baik dari sisi nilai maupun warna kartu, namun memungkinkan Anda mengetahui posisi kartu tertentu atau kartu pada nomor tertentu.
+</div>
+<div class="highlight-box">
+Ini bukan <strong>memorized deck</strong>—Anda tidak perlu menghafal seluruh urutan acak 52 kartu. Cukup gunakan algoritma hitung sederhana dari bayangan Sorted Order Deck. Sangat efektif untuk rutinitas seperti Any Card at Any Number (ACAAN).
+</div>
+</div>
+
+<div class="rumus-section">
+<div class="rumus-title">Sorted Order Deck (CHaSeD)</div>
+<div class="rumus-text">
+Untuk memakai sistem ini, bayangkan satu pak kartu yang tersusun rapi dari kartu 1 hingga 52 dengan urutan bunga Clubs, Hearts, Spades, Diamonds (CHaSeD), masing-masing dari As (1) sampai King (13):
+</div>
+
+<div class="rumus-formula">
+♣ Clubs (1–13) | ♥ Hearts (14–26) | ♠ Spades (27–39) | ♦ Diamonds (40–52)
+</div>
+
+<div class="rumus-example">
+<div class="rumus-example-title">Contoh Mapping:</div>
+<div class="rumus-example-text">
+Di mana posisi 5 of Spades (5♠)? Dalam Sorted Deck, kartu ini berada di urutan ke-31 (26 + 5), sehingga angka 31 menjadi dasar perhitungan posisi di Bart Harding Stack.
+</div>
+</div>
+</div>
+
+<div class="rumus-section">
+<div class="rumus-title">Aturan Utama: Cara Mencari Kartu pada Posisi Tertentu</div>
+<div class="rumus-text">
+Penonton menyebutkan angka bebas dari 1 sampai 52. Ikuti langkah berikut:
+</div>
+
+<div class="highlight-box">
+<strong>Langkah-langkah:</strong><br>
+1. Ambil angka posisi yang diminta.<br>
+2. Balikkan digit angkanya. Jika angkanya satu digit (1–9), tambahkan nol di depan sebelum dibalik (misalnya 1 menjadi 01, lalu dibalik menjadi 10).<br>
+3. Jika hasil balikannya lebih besar dari 52, kurangi 5 pada digit pertama dan tambah 5 pada digit kedua.<br>
+4. Angka hasil akhir tersebut menunjukkan nomor kartu di Sorted Order Deck—itulah kartu yang berada di posisi nomor yang diminta.
+</div>
+
+<div class="rumus-example">
+<div class="rumus-example-title">Contoh Perhitungan:</div>
+<div class="rumus-example-text">
+<strong>Nomor 12:</strong> Dibalik menjadi 21 → Kartu ke-21 di Sorted Deck adalah <strong>8♥</strong>. Maka posisi ke-12 di Harding Deck adalah 8♥.<br><br>
+<strong>Nomor 41:</strong> Dibalik menjadi 14 → Kartu ke-14 di Sorted Deck adalah <strong>A♥</strong>. Maka posisi ke-41 di Harding Deck adalah A♥.<br><br>
+<strong>Nomor 1:</strong> Menjadi 01 → Dibalik menjadi 10 → Kartu ke-10 di Sorted Deck adalah <strong>10♣</strong>. Maka posisi ke-1 di Harding Deck adalah 10♣.
+</div>
+</div>
+</div>
+
+<div class="rumus-section">
+<div class="rumus-title">Penyesuaian Digit (−5 / +5)</div>
+<div class="rumus-text">
+Langkah tambahan hanya dilakukan jika angka setelah dibalik melebihi 52: selalu kurangi 5 dari digit pertama dan tambahkan 5 ke digit kedua.</div>
+
+<div class="rumus-formula">
+Digit Pertama − 5 | Digit Kedua + 5
+</div>
+
+<div class="rumus-example">
+<div class="rumus-example-title">Contoh Penyesuaian:</div>
+<div class="rumus-example-text">
+<strong>Nomor 35:</strong> Dibalik → 53 (>52)<br>
+→ (5−5) dan (3+5) = 08 → Kartu ke-8 = <strong>8♣</strong><br><br>
+
+<strong>Nomor 17:</strong> Dibalik → 71 (>52)<br>
+→ (7−5) dan (1+5) = 26 → Kartu ke-26 = <strong>K♥</strong>
+</div>
+</div>
+</div>
+
+<div class="rumus-section">
+<div class="rumus-title">Pengecualian & Mencari Posisi Kartu</div>
+<div class="highlight-box">
+<strong>Pengecualian:</strong> Terdapat 2 kartu yang dikecualikan dari aturan balik angka, yaitu <strong>6 of Clubs (6♣)</strong> dan <strong>7 of Clubs (7♣)</strong>. Keduanya tetap berada di posisi ke-6 dan ke-7 baik pada Sorted Order Deck maupun Bart Harding Stack.
+</div>
+
+<div class="rumus-text" style="margin-top:1rem;">
+<strong>Mencari Posisi Kartu:</strong> Jika penonton menyebut sebuah kartu, tentukan dulu nomor urutnya di Sorted Deck, lalu balikkan angkanya (dan terapkan aturan −5 / +5 jika hasil balikannya > 52).
+</div>
+
+<div class="rumus-example">
+<div class="rumus-example-title">Contoh:</div>
+<div class="rumus-example-text">
+<strong>Jack of Hearts (J♥):</strong> Posisi ke-24 di Sorted Deck → Dibalik menjadi <strong>42</strong> (posisi di Harding Stack).<br>
+<strong>3 of Diamonds (3♦):</strong> Posisi ke-42 di Sorted Deck → Dibalik menjadi <strong>24</strong> (posisi di Harding Stack).<br>
+<strong>Posisi ke-31:</strong> Dibalik menjadi 13 → Kartu ke-13 di Sorted Deck adalah <strong>K♣</strong>.
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
 </div>
 
 <!-- FOOTER -->
@@ -2569,6 +2803,7 @@ JAY STACK - Complete Sequence (Positions 1-52)
 <li><a href="#" onclick="openPasswordModal(); return false;">Stebbin Stack</a></li>
 <li><a href="#" onclick="openPasswordModal(); return false;">Mnemonica System</a></li>
 <li><a href="#" onclick="openPasswordModal(); return false;">JAY STACK</a></li>
+<li><a href="#" onclick="openPasswordModal(); return false;">Bart Harding Stack</a></li>
 </ul>
 </div>
 <div class="footer-section">
@@ -2784,6 +3019,7 @@ if (pageId === 'randomizer') initRandomizer();
 if (pageId === 'stebbin') initStebbin();
 if (pageId === 'mnemonica') initMnemonica();
 if (pageId === 'jaystack') initJayStack();
+if (pageId === 'harding') initHarding();
 window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -2810,6 +3046,16 @@ btn.classList.add('active');
 if (tabName === 'sequence') {
 renderJayCardList();
 }
+}
+
+// ==========================================
+// BART HARDING TAB SWITCHER
+// ==========================================
+function switchHardingTab(tabName, btn) {
+document.querySelectorAll('#harding .tab-content').forEach(t => t.classList.remove('active'));
+document.querySelectorAll('#harding .tab-btn').forEach(b => b.classList.remove('active'));
+document.getElementById('harding-' + tabName).classList.add('active');
+btn.classList.add('active');
 }
 
 function openPasswordModal() {
@@ -3458,7 +3704,6 @@ const idxTarget = getJayCardIndex(targetCard);
 
 if (idxBottom === -1 || idxTarget === -1) return;
 
-// ✅ RUMUS YANG BENAR:
 let position = (idxTarget - idxBottom + 52) % 52;
 if (position === 0) position = 52;
 
@@ -3485,7 +3730,6 @@ if (pos < 1 || pos > 52) return;
 
 const idxBottom = getJayCardIndex(bottomCard);
 
-// ✅ RUMUS YANG BENAR:
 const idxTarget = (idxBottom + pos) % 52;
 const resultCard = getJayCardFromIndex(idxTarget);
 
@@ -3524,7 +3768,6 @@ const idxTarget = getJayCardIndex(targetCard);
 
 if (idxBottom === -1 || idxTarget === -1) return;
 
-// ✅ RUMUS POSISI YANG BENAR
 let currentPosition = (idxTarget - idxBottom + 52) % 52;
 if (currentPosition === 0) currentPosition = 52;
 
@@ -3591,6 +3834,201 @@ document.getElementById("jay-acaan-steps").innerHTML = `
 <div class="step">3. Posisi saat ini: (${idxTarget} - ${idxBottom} + 52) mod 52 = <span class="highlight">${currentPosition}</span> dari atas</div>
 <div class="step">4. Posisi target: <span class="highlight">${targetPos}</span> dari atas</div>
 <div class="step">5. Selisih: ${currentPosition} - ${targetPos} = <span class="highlight">${difference}</span></div>
+<div class="formula">Instruksi: ${cutInstruction}</div>
+${newBottomCard && difference !== 0 ? `<div class="formula" style="margin-top:8px;color:#059669;font-weight:700;">Kartu bawah baru: ${newBottomCard}</div>` : ''}
+`;
+}
+
+// ==========================================
+// BART HARDING STACK LOGIC (EXACT MATCH)
+// ==========================================
+
+// Sorted Order Deck (CHaSeD): Clubs 1-13, Hearts 14-26, Spades 27-39, Diamonds 40-52
+const sortedDeck = [];
+(function buildSortedDeck() {
+const suitOrder = ['♣', '♥', '♠', '♦']; // CHaSeD
+for (let s = 0; s < 4; s++) {
+for (let v = 1; v <= 13; v++) {
+sortedDeck.push(formatCard(v, suitOrder[s]));
+}
+}
+})();
+
+// Build Harding Stack using exact digit reversal algorithm from uploaded HTML
+const hardingStack = [];
+(function buildHardingStack() {
+for (let pos = 1; pos <= 52; pos++) {
+// Exceptions: 6♣ stays at pos 6, 7♣ stays at pos 7
+if (pos === 6) {
+hardingStack.push('6♣');
+continue;
+}
+if (pos === 7) {
+hardingStack.push('7♣');
+continue;
+}
+
+let numStr = pos.toString().padStart(2, '0');
+let reversed = parseInt(numStr.split('').reverse().join(''));
+
+if (reversed > 52) {
+let d1 = Math.floor(reversed / 10);
+let d2 = reversed % 10;
+d1 = d1 - 5;
+d2 = d2 + 5;
+reversed = d1 * 10 + d2;
+}
+
+// reversed is the index in sortedDeck (1-based)
+hardingStack.push(sortedDeck[reversed - 1]);
+}
+})();
+
+function getHardingCardIndex(card) {
+return hardingStack.indexOf(card);
+}
+
+function getHardingCardFromIndex(index) {
+return hardingStack[((index % 52) + 52) % 52];
+}
+
+function populateHardingDropdowns() {
+const suitGroups = [
+{group: 'club', symbol: '♣'}, {group: 'heart', symbol: '♥'},
+{group: 'spade', symbol: '♠'}, {group: 'diamond', symbol: '♦'}
+];
+const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+
+function populate(prefix) {
+suitGroups.forEach(suit => {
+ranks.forEach(rank => {
+const card = rank + suit.symbol;
+const opt = new Option(card, card);
+const elem = document.getElementById(`${prefix}-${suit.group}`);
+if (elem) elem.appendChild(opt);
+});
+});
+}
+populate('harding-track-opt');
+populate('harding-track-target');
+populate('harding-acaan-opt');
+}
+
+function initHarding() {
+populateHardingDropdowns();
+}
+
+function calculateHardingTracking() {
+const bottomCard = document.getElementById("harding-tracking-bottom").value;
+const targetCard = document.getElementById("harding-tracking-target").value;
+
+if (!bottomCard || !targetCard) {
+document.getElementById("harding-tracking-result").innerText = "-";
+document.getElementById("harding-tracking-steps").innerHTML = "";
+return;
+}
+
+const idxBottom = getHardingCardIndex(bottomCard);
+const idxTarget = getHardingCardIndex(targetCard);
+
+if (idxBottom === -1 || idxTarget === -1) return;
+
+let position = (idxTarget - idxBottom + 52) % 52;
+if (position === 0) position = 52;
+
+document.getElementById("harding-tracking-result").innerText = `Posisi ${position}`;
+document.getElementById("harding-tracking-steps").innerHTML = `
+<div class="step" style="font-weight:700;color:var(--primary);margin-bottom:8px;">Langkah Perhitungan BART HARDING (Tracking):</div>
+<div class="step">1. Kartu bawah: <span class="highlight">${bottomCard}</span> (Indeks Harding: ${idxBottom})</div>
+<div class="step">2. Kartu target: <span class="highlight">${targetCard}</span> (Indeks Harding: ${idxTarget})</div>
+<div class="step">3. Posisi dari atas: (${idxTarget} - ${idxBottom} + 52) mod 52</div>
+<div class="step">4. = ${idxTarget - idxBottom + 52} mod 52 = <span class="highlight">${position}</span></div>
+<div class="formula">Rumus: Posisi = (Idx_Target - Idx_Bottom + 52) mod 52</div>
+`;
+}
+
+function calculateHardingAcaan() {
+const targetValue = document.getElementById("harding-acaan-target-value").value;
+const targetSuit = document.getElementById("harding-acaan-target-suit").value;
+const targetPosition = document.getElementById("harding-acaan-target-position").value;
+
+document.getElementById("harding-acaan-result-container").style.display = "none";
+
+if (!targetValue || !targetSuit || !targetPosition) return;
+
+const targetPos = parseInt(targetPosition);
+if (targetPos < 1 || targetPos > 52) return;
+
+const targetCard = valueToRank[parseInt(targetValue)] + targetSuit;
+const idxTarget = getHardingCardIndex(targetCard);
+
+if (idxTarget === -1) return;
+
+// Current position is simply idxTarget + 1 since we're working with standard Harding stack
+let currentPosition = idxTarget + 1;
+
+const difference = currentPosition - targetPos;
+const absDifference = Math.abs(difference);
+
+let cutDirection, cutInstruction, newBottomCard = null, newBottomNote = "";
+
+if (difference === 0) {
+cutDirection = "Tidak perlu cut";
+cutInstruction = "Kartu sudah di posisi yang diminta!";
+newBottomCard = hardingStack[51]; // Last card in standard stack
+newBottomNote = "Kartu bawah tetap sama karena tidak ada cut";
+} else if (difference > 0) {
+cutDirection = "↑ Cut dari ATAS, letakkan di BAWAH";
+cutInstruction = `Ambil ${absDifference} kartu dari atas deck, letakkan di bawah`;
+const newBottomIdx = (51 + absDifference) % 52;
+newBottomCard = hardingStack[newBottomIdx];
+newBottomNote = `Setelah cut ${absDifference} kartu dari atas ke bawah, kartu yang tadinya di posisi ${absDifference} dari atas menjadi kartu bawah baru`;
+} else {
+cutDirection = "↓ Cut dari BAWAH, letakkan di ATAS";
+cutInstruction = `Ambil ${absDifference} kartu dari bawah deck, letakkan di atas`;
+const newBottomIdx = (51 + (52 - absDifference)) % 52;
+newBottomCard = hardingStack[newBottomIdx];
+newBottomNote = `Setelah cut ${absDifference} kartu dari bawah ke atas, kartu yang tadinya di posisi ${52 - absDifference} dari atas menjadi kartu bawah baru`;
+}
+
+document.getElementById("harding-acaan-result-container").style.display = "block";
+
+const selectedCardEl = document.getElementById("harding-acaan-selected-card");
+selectedCardEl.innerText = targetCard;
+selectedCardEl.className = "value" + (getCardColor(targetCard) === 'red' ? ' red' : '');
+
+document.getElementById("harding-acaan-current-position").innerText = currentPosition;
+document.getElementById("harding-acaan-target-pos-display").innerText = targetPos;
+
+if (difference === 0) document.getElementById("harding-acaan-cut-count").innerText = "0";
+else document.getElementById("harding-acaan-cut-count").innerText = absDifference;
+
+document.getElementById("harding-acaan-cut-direction").innerText = cutDirection;
+
+if (newBottomCard) {
+document.getElementById("harding-acaan-new-bottom-section").style.display = "block";
+const newBottomEl = document.getElementById("harding-acaan-new-bottom-card");
+newBottomEl.innerText = newBottomCard;
+newBottomEl.className = "new-bottom-card" + (getCardColor(newBottomCard) === 'red' ? ' red' : '');
+document.getElementById("harding-acaan-new-bottom-note").innerText = newBottomNote;
+} else {
+document.getElementById("harding-acaan-new-bottom-section").style.display = "none";
+}
+
+let verificationText = "";
+if (difference === 0) {
+verificationText = `<strong>Verifikasi:</strong> ${targetCard} sudah berada di posisi ${targetPos}. Tidak perlu melakukan cut!`;
+} else {
+verificationText = `<strong>Verifikasi:</strong> Setelah cut ${absDifference} kartu, ${targetCard} akan berada di posisi ${targetPos} dari atas. Kartu bawah baru adalah <strong>${newBottomCard}</strong>.`;
+}
+document.getElementById("harding-acaan-verification").innerHTML = verificationText;
+
+document.getElementById("harding-acaan-steps").innerHTML = `
+<div class="step" style="font-weight:700;color:var(--primary);margin-bottom:8px;">Langkah Perhitungan ACAAN BART HARDING:</div>
+<div class="step">1. Kartu pilihan: <span class="highlight">${targetCard}</span> (Indeks Harding: ${idxTarget})</div>
+<div class="step">2. Posisi saat ini: <span class="highlight">${currentPosition}</span> dari atas</div>
+<div class="step">3. Posisi target: <span class="highlight">${targetPos}</span> dari atas</div>
+<div class="step">4. Selisih: ${currentPosition} - ${targetPos} = <span class="highlight">${difference}</span></div>
 <div class="formula">Instruksi: ${cutInstruction}</div>
 ${newBottomCard && difference !== 0 ? `<div class="formula" style="margin-top:8px;color:#059669;font-weight:700;">Kartu bawah baru: ${newBottomCard}</div>` : ''}
 `;
