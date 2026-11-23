@@ -1,0 +1,1012 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Bart Harding · Stack Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070d0b;
+    --surface: rgba(18, 28, 25, 0.78);
+    --surface-solid: #111b18;
+    --surface-elevated: #172521;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-gold: rgba(216, 181, 109, 0.35);
+    --text: #f3f7f4;
+    --muted: #8fa399;
+    --gold: #e0be75;
+    --gold-glow: rgba(224, 190, 117, 0.18);
+    --emerald: #6ee7b7;
+    --card-bg: #faf8f2;
+    --card-red: #dc2626;
+    --card-black: #111827;
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background: 
+      radial-gradient(circle at 15% 0%, rgba(28, 64, 50, 0.45) 0%, transparent 45%),
+      radial-gradient(circle at 85% 15%, rgba(216, 181, 109, 0.12) 0%, transparent 40%),
+      var(--bg);
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    padding-bottom: 40px;
+  }
+
+  .wrap {
+    max-width: 580px;
+    margin: 0 auto;
+    padding: 20px 16px;
+  }
+
+  /* Header */
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .mark {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #1d332b, #0e1915);
+    border: 1px solid var(--border-gold);
+    display: grid;
+    place-items: center;
+    color: var(--gold);
+    font-size: 22px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  .eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .brand h1 {
+    font-size: 19px;
+    font-weight: 800;
+    margin: 2px 0 0;
+    letter-spacing: -0.01em;
+  }
+
+  .badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--emerald);
+    background: rgba(110, 231, 183, 0.08);
+    border: 1px solid rgba(110, 231, 183, 0.2);
+    padding: 6px 10px;
+    border-radius: 99px;
+    white-space: nowrap;
+  }
+
+  /* Segmented Tab Control */
+  .tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background: rgba(12, 20, 17, 0.9);
+    border: 1px solid var(--border);
+    padding: 5px;
+    border-radius: 16px;
+    margin-bottom: 18px;
+    gap: 5px;
+  }
+
+  .tab {
+    background: transparent;
+    border: 0;
+    color: var(--muted);
+    padding: 11px 6px;
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 700;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+  }
+
+  .tab.active {
+    background: linear-gradient(135deg, #21362e, #162620);
+    color: var(--gold);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  /* Main Panel */
+  .panel {
+    background: var(--surface);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  }
+
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .panel h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  .sub {
+    color: var(--muted);
+    margin: 4px 0 0;
+    font-size: 12.5px;
+    line-height: 1.45;
+  }
+
+  .reset-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font: inherit;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 7px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+    flex-shrink: 0;
+  }
+
+  .reset-btn:hover, .reset-btn:active {
+    color: var(--text);
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  /* Form Fields */
+  .fields {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .field label {
+    display: flex;
+    justify-content: space-between;
+    color: #b7c7bf;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 7px;
+  }
+
+  .select-wrap {
+    position: relative;
+  }
+
+  .select-wrap::after {
+    content: "▾";
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gold);
+    pointer-events: none;
+    font-size: 14px;
+  }
+
+  .field select,
+  .field input {
+    width: 100%;
+    height: 50px;
+    padding: 0 16px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #0a120f;
+    color: var(--text);
+    font: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    outline: none;
+    appearance: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .field select:focus,
+  .field input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px var(--gold-glow);
+  }
+
+  /* Number Stepper for Mobile */
+  .number-control {
+    display: grid;
+    grid-template-columns: 52px 1fr 52px;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .step-btn {
+    height: 50px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #13201c;
+    color: var(--gold);
+    font-size: 22px;
+    font-weight: 700;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: 0.15s;
+    user-select: none;
+  }
+
+  .step-btn:active {
+    transform: scale(0.94);
+    background: #1e322c;
+  }
+
+  .number-control input {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--gold);
+    padding: 0 8px;
+  }
+
+  /* Result Card */
+  .result {
+    margin-top: 20px;
+    padding: 20px 18px;
+    border: 1px solid var(--border-gold);
+    background: linear-gradient(155deg, rgba(26, 46, 37, 0.9), rgba(14, 24, 20, 0.95));
+    border-radius: 20px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    animation: fadeIn 0.22s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0.5; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-head {
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--emerald);
+  }
+
+  .hero-output {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 12px 0 14px;
+  }
+
+  .big-number {
+    font-size: 56px;
+    line-height: 1;
+    font-weight: 800;
+    color: var(--gold);
+    letter-spacing: -0.03em;
+    text-shadow: 0 4px 24px rgba(224, 190, 117, 0.25);
+  }
+
+  .big-card-title {
+    font-size: 32px;
+    line-height: 1.1;
+    font-weight: 800;
+    color: var(--gold);
+  }
+
+  .big-card-sub {
+    font-size: 13px;
+    color: #d6e2dc;
+    margin-top: 4px;
+  }
+
+  /* Realistic Mini Playing Card */
+  .playing-card {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 90px;
+    background: linear-gradient(145deg, #ffffff, #efeCE3);
+    color: var(--card-black);
+    border-radius: 10px;
+    font-weight: 800;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+    user-select: none;
+  }
+
+  .playing-card.red {
+    color: var(--card-red);
+  }
+
+  .playing-card .corner-top {
+    position: absolute;
+    top: 5px;
+    left: 6px;
+    font-size: 11px;
+    line-height: 1;
+    text-align: center;
+  }
+
+  .playing-card .center-suit {
+    font-size: 26px;
+    line-height: 1;
+  }
+
+  .playing-card.sm {
+    width: 46px;
+    height: 64px;
+    border-radius: 8px;
+  }
+
+  .playing-card.sm .corner-top {
+    font-size: 9.5px;
+    top: 4px;
+    left: 5px;
+  }
+
+  .playing-card.sm .center-suit {
+    font-size: 19px;
+  }
+
+  .summary-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(0, 0, 0, 0.22);
+    padding: 10px 12px;
+    border-radius: 14px;
+    font-size: 13px;
+    color: #d7e3dc;
+  }
+
+  .cards-pair {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  /* Accordion / Formula Details */
+  details.steps {
+    margin-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 12px;
+  }
+
+  details.steps summary {
+    list-style: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  details.steps summary::-webkit-details-marker {
+    display: none;
+  }
+
+  details.steps summary::after {
+    content: "Lihat Detail Rumus ▾";
+    color: var(--gold);
+    font-size: 11.5px;
+  }
+
+  details.steps[open] summary::after {
+    content: "Tutup Rumus ▴";
+  }
+
+  .steps-body {
+    margin-top: 10px;
+    font-size: 12.5px;
+    color: #b8c7bf;
+    display: grid;
+    gap: 6px;
+    background: rgba(7, 13, 11, 0.45);
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  /* About BHS Content Styles */
+  .info-stack {
+    display: grid;
+    gap: 14px;
+  }
+
+  .info-card {
+    background: rgba(10, 18, 15, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 18px;
+    padding: 16px;
+  }
+
+  .info-card.highlight {
+    border-color: var(--border-gold);
+    background: linear-gradient(155deg, rgba(26, 46, 37, 0.55), rgba(12, 20, 17, 0.85));
+  }
+
+  .info-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .info-card h3 {
+    margin: 0 0 8px;
+    font-size: 15.5px;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  .info-card p {
+    margin: 0 0 10px;
+    font-size: 13px;
+    color: #c7d6ce;
+    line-height: 1.58;
+  }
+
+  .info-card p:last-child {
+    margin-bottom: 0;
+  }
+
+  .rule-list {
+    margin: 8px 0 0;
+    padding-left: 18px;
+    display: grid;
+    gap: 7px;
+    font-size: 13px;
+    color: #d7e4dd;
+  }
+
+  .rule-list li b {
+    color: var(--gold);
+  }
+
+  .example-box {
+    margin-top: 10px;
+    padding: 11px 13px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.28);
+    border-left: 3px solid var(--emerald);
+    font-size: 12.5px;
+    color: #d2e0d8;
+    line-height: 1.55;
+  }
+
+  .example-box + .example-box {
+    margin-top: 8px;
+  }
+
+  .mini-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .mini-table th,
+  .mini-table td {
+    padding: 8px 6px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .mini-table th {
+    background: rgba(224, 190, 117, 0.1);
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  .mini-table td {
+    color: #dce8e2;
+  }
+
+  .suit-pills {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .suit-pill {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 9px 6px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .suit-pill span {
+    display: block;
+    font-size: 18px;
+    margin-bottom: 2px;
+  }
+
+  .suit-pill.red span {
+    color: #f87171;
+  }
+
+  .tag {
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .foot {
+    margin-top: 22px;
+    color: #5c7066;
+    font-size: 11px;
+    text-align: center;
+    letter-spacing: 0.04em;
+  }
+
+  @media (min-width: 520px) {
+    .wrap {
+      padding: 36px 20px;
+    }
+    .panel {
+      padding: 26px;
+    }
+    .tab {
+      padding: 12px 10px;
+      font-size: 13.5px;
+    }
+    .fields.two-col {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="mark">♠</div>
+      <div>
+        <div class="eyebrow">Magic System</div>
+        <h1>Bart Harding Stack</h1>
+      </div>
+    </div>
+    <div class="badge">CHaSeD · 52</div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="tracking" role="tab">01 · Tracking</button>
+    <button class="tab" data-tab="acaan" role="tab">02 · ACAAN</button>
+    <button class="tab" data-tab="about" role="tab">03 · About BHS</button>
+  </nav>
+
+  <!-- TAB 1: CARD TRACKING -->
+  <section class="panel" id="tracking">
+    <div class="panel-header">
+      <div>
+        <h2>Card Tracking</h2>
+        <p class="sub">Pilih kartu paling bawah &amp; kartu penonton. Posisi dihitung otomatis dari atas tumpukan.</p>
+      </div>
+      <button class="reset-btn" id="resetTrack" type="button">Reset</button>
+    </div>
+
+    <div class="fields two-col">
+      <div class="field">
+        <label for="bottomTrack">Kartu Paling Bawah</label>
+        <div class="select-wrap">
+          <select id="bottomTrack"></select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="targetTrack">Kartu Pilihan Penonton</label>
+        <div class="select-wrap">
+          <select id="targetTrack"></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="result" id="trackResult" aria-live="polite"></div>
+  </section>
+
+  <!-- TAB 2: ACAAN -->
+  <section class="panel hidden" id="acaan">
+    <div class="panel-header">
+      <div>
+        <h2>Any Card at Any Number</h2>
+        <p class="sub">Tentukan kartu &amp; nomor yang diminta untuk langsung mengetahui kartu paling bawah yang dibutuhkan.</p>
+      </div>
+      <button class="reset-btn" id="resetA" type="button">Reset</button>
+    </div>
+
+    <div class="fields">
+      <div class="field">
+        <label for="targetA">Kartu Pilihan Penonton</label>
+        <div class="select-wrap">
+          <select id="targetA"></select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="numberA">Nomor yang Diminta (1–52)</label>
+        <div class="number-control">
+          <button type="button" class="step-btn" id="minusNum" aria-label="Kurangi nomor">−</button>
+          <input id="numberA" type="number" min="1" max="52" value="10" inputmode="numeric">
+          <button type="button" class="step-btn" id="plusNum" aria-label="Tambah nomor">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="result" id="aResult" aria-live="polite"></div>
+  </section>
+
+  <!-- TAB 3: ABOUT BHS -->
+  <section class="panel hidden" id="about">
+    <div class="panel-header">
+      <div>
+        <h2>About Bart Harding Stack</h2>
+        <p class="sub">Ringkasan sistem susunan kartu Bart Harding, urutan Sorted Deck, dan aturan perhitungannya.</p>
+      </div>
+    </div>
+
+    <div class="info-stack">
+      <div class="info-card highlight">
+        <div class="info-tag">Ringkasan Sistem</div>
+        <h3>Apa Itu Bart Harding Stack?</h3>
+        <p>
+          Sistem susunan kartu <b>Bart Harding</b> muncul sekitar tahun <b>1962</b>. Berbeda dari stack pada umumnya, susunan ini tampak acak baik dari sisi nilai maupun warna kartu, namun memungkinkan Anda mengetahui posisi kartu tertentu atau kartu pada nomor tertentu.
+        </p>
+        <p>
+          Ini <b>bukan</b> <i>memorized deck</i>—Anda tidak perlu menghafal seluruh urutan acak 52 kartu. Cukup gunakan algoritma hitung sederhana dari bayangan <b>Sorted Order Deck</b>. Sangat efektif untuk rutinitas seperti <i>Any Card at Any Number (ACAAN)</i>.
+        </p>
+      </div>
+
+      <div class="info-card">
+        <div class="info-tag">Fondasi Urutan</div>
+        <h3>Sorted Order Deck (CHaSeD)</h3>
+        <p>
+          Untuk memakai sistem ini, bayangkan satu pak kartu yang tersusun rapi dari kartu 1 hingga 52 dengan urutan bunga <b>Clubs, Hearts, Spades, Diamonds (CHaSeD)</b>, masing-masing dari <b>As (1)</b> sampai <b>King (13)</b>:
+        </p>
+        <div class="suit-pills">
+          <div class="suit-pill"><span>♣</span>Clubs (1–13)</div>
+          <div class="suit-pill red"><span>♥</span>Hearts (14–26)</div>
+          <div class="suit-pill"><span>♠</span>Spades (27–39)</div>
+          <div class="suit-pill red"><span>♦</span>Diamonds (40–52)</div>
+        </div>
+        <div class="example-box">
+          <b>Contoh:</b> Di mana posisi <b>5 of Spades (5♠)</b>? Dalam Sorted Deck, kartu ini berada di urutan ke-<b>31</b> (26 + 5), sehingga angka 31 menjadi dasar perhitungan posisi di Bart Harding Stack.
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-tag">Aturan Utama</div>
+        <h3>Cara Mencari Kartu pada Posisi Tertentu (1–52)</h3>
+        <ol class="rule-list">
+          <li>Penonton menyebutkan angka bebas dari <b>1 sampai 52</b>.</li>
+          <li><b>Balikkan digit angkanya</b>. Jika angkanya satu digit (1–9), tambahkan nol di depan sebelum dibalik (misalnya <b>1</b> menjadi <b>01</b>, lalu dibalik menjadi <b>10</b>).</li>
+          <li>Jika hasil balikannya <b>lebih besar dari 52</b>, <b>kurangi 5 pada digit pertama</b> dan <b>tambah 5 pada digit kedua</b>.</li>
+          <li>Angka hasil akhir tersebut menunjukkan nomor kartu di <b>Sorted Order Deck</b>—itulah kartu yang berada di posisi nomor yang diminta pada Bart Harding Stack.</li>
+        </ol>
+
+        <div class="example-box">
+          <b>Nomor 12:</b> dibalik menjadi <b>21</b> → kartu ke-21 di Sorted Deck adalah <b>8 of Hearts (8♥)</b>. Maka posisi ke-12 di Harding Deck adalah <b>8♥</b>.
+        </div>
+        <div class="example-box">
+          <b>Nomor 41:</b> dibalik menjadi <b>14</b> → kartu ke-14 di Sorted Deck adalah <b>Ace of Hearts (A♥)</b>. Maka posisi ke-41 di Harding Deck adalah <b>A♥</b>.
+        </div>
+        <div class="example-box">
+          <b>Nomor 1:</b> menjadi <b>01</b> → dibalik menjadi <b>10</b> → kartu ke-10 di Sorted Deck adalah <b>10 of Clubs (10♣)</b>. Maka posisi ke-1 di Harding Deck adalah <b>10♣</b>.
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-tag">Jika Hasil Balikan &gt; 52</div>
+        <h3>Penyesuaian Digit (−5 / +5)</h3>
+        <p>
+          Langkah tambahan hanya dilakukan jika angka setelah dibalik melebihi <b>52</b>: selalu <b>kurangi 5 dari digit pertama</b> dan <b>tambahkan 5 ke digit kedua</b>.
+        </p>
+        <table class="mini-table">
+          <thead>
+            <tr>
+              <th>Nomor Awal</th>
+              <th>Dibalik</th>
+              <th>Digit 1 (−5) &amp; Digit 2 (+5)</th>
+              <th>Sorted Deck</th>
+              <th>Kartu</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>35</b></td>
+              <td>53</td>
+              <td>(5−5) dan (3+5) = <b>08</b></td>
+              <td>Ke-8</td>
+              <td><b>8♣</b> (8 of Clubs)</td>
+            </tr>
+            <tr>
+              <td><b>17</b></td>
+              <td>71</td>
+              <td>(7−5) dan (1+5) = <b>26</b></td>
+              <td>Ke-26</td>
+              <td><b>K♥</b> (King of Hearts)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="info-card">
+        <div class="info-tag">Pengecualian &amp; Mencari Posisi Kartu</div>
+        <h3>2 Kartu Pengecualian &amp; Lokasi Kartu</h3>
+        <p>
+          <b>Pengecualian:</b> Terdapat <b>2 kartu</b> yang dikecualikan dari aturan balik angka, yaitu <b>6 of Clubs (6♣)</b> dan <b>7 of Clubs (7♣)</b>. Keduanya tetap berada di posisi ke-<b>6</b> dan ke-<b>7</b> baik pada Sorted Order Deck maupun Bart Harding Stack.
+        </p>
+        <p>
+          <b>Mencari Posisi Kartu:</b> Jika penonton menyebut sebuah kartu, tentukan dulu nomor urutnya di Sorted Deck, lalu balikkan angkanya (dan terapkan aturan −5 / +5 jika hasil balikannya &gt; 52).
+        </p>
+        <div class="example-box">
+          <b>Jack of Hearts (J♥):</b> posisi ke-24 di Sorted Deck → dibalik menjadi <b>42</b> (posisi di Harding Stack).
+        </div>
+        <div class="example-box">
+          <b>3 of Diamonds (3♦):</b> posisi ke-42 di Sorted Deck → dibalik menjadi <b>24</b> (posisi di Harding Stack).
+        </div>
+        <div class="example-box">
+          <b>Posisi ke-31:</b> dibalik menjadi <b>13</b> → kartu ke-13 di Sorted Deck adalah <b>King of Clubs (K♣)</b>.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="foot">BART HARDING STACK · Clubs, Hearts, Spades, Diamonds</div>
+</div>
+
+<script>
+const suits = [
+  { id: 'C', name: 'Clubs', symbol: '♣', red: false },
+  { id: 'H', name: 'Hearts', symbol: '♥', red: true },
+  { id: 'S', name: 'Spades', symbol: '♠', red: false },
+  { id: 'D', name: 'Diamonds', symbol: '♦', red: true }
+];
+const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+const cards = [];
+
+for (const s of suits) {
+  for (let i = 0; i < 13; i++) {
+    cards.push({
+      rank: ranks[i],
+      suit: s.id,
+      symbol: s.symbol,
+      red: s.red,
+      name: ranks[i] + s.symbol,
+      full: ranks[i] + ' of ' + s.name,
+      sorted: i + 1 + suits.indexOf(s) * 13
+    });
+  }
+}
+
+function reversePosition(sorted) {
+  if (sorted === 6 || sorted === 7) {
+    return {
+      position: sorted,
+      trace: `Pengecualian Bart Harding: ${sorted} Clubs tetap di posisi ${sorted}.`
+    };
+  }
+  const raw = String(sorted).padStart(2, '0').split('').reverse().join('');
+  let n = Number(raw);
+  let trace = `Sorted Deck ${sorted} → dibalik menjadi ${raw}.`;
+  if (n > 52) {
+    const a = Number(raw[0]) - 5;
+    const b = Number(raw[1]) + 5;
+    n = a * 10 + b;
+    trace += ` Karena ${raw} > 52: digit pertama −5 & digit kedua +5 → ${String(n).padStart(2, '0')}.`;
+  }
+  return { position: n, trace };
+}
+
+const byName = new Map(cards.map(c => [c.name, c]));
+const positionMap = new Map(cards.map(c => [c.name, reversePosition(c.sorted).position]));
+const cardAtPosition = new Map(cards.map(c => [positionMap.get(c.name), c]));
+
+function fill(id) {
+  const el = document.getElementById(id);
+  el.innerHTML = cards.map(c => `<option value="${c.name}">${c.symbol} &nbsp; ${c.full}</option>`).join('');
+}
+
+['bottomTrack', 'targetTrack', 'targetA'].forEach(fill);
+
+function renderCard(c, size = '') {
+  return `
+    <div class="playing-card ${c.red ? 'red' : ''} ${size}" aria-label="${c.full}">
+      <div class="corner-top">${c.rank}<br>${c.symbol}</div>
+      <div class="center-suit">${c.symbol}</div>
+    </div>
+  `;
+}
+
+// AUTO CALCULATE: CARD TRACKING
+function track() {
+  const b = byName.get(document.getElementById('bottomTrack').value);
+  const t = byName.get(document.getElementById('targetTrack').value);
+  const bp = positionMap.get(b.name);
+  const tp = positionMap.get(t.name);
+
+  let count = (tp - bp + 52) % 52;
+  if (count === 0) count = 52;
+
+  const br = reversePosition(b.sorted);
+  const tr = reversePosition(t.sorted);
+
+  document.getElementById('trackResult').innerHTML = `
+    <div class="result-head">Urutan Kartu dari Atas Tumpukan</div>
+    <div class="hero-output">
+      <div>
+        <div class="big-number">${count}</div>
+        <div class="big-card-sub">Kartu ke-<b>${count}</b> dari atas deck</div>
+      </div>
+      <div class="cards-pair">
+        ${renderCard(b, 'sm')}
+        ${renderCard(t, 'sm')}
+      </div>
+    </div>
+    <div class="summary-row">
+      <div>Bawah: <b>${b.full}</b> &nbsp;•&nbsp; Target: <b>${t.full}</b></div>
+    </div>
+    <details class="steps">
+      <summary>Rincian Perhitungan</summary>
+      <div class="steps-body">
+        <div>• Posisi stack kartu bawah (${b.name}): <b>${bp}</b></div>
+        <div>• Posisi stack kartu target (${t.name}): <b>${tp}</b></div>
+        <div>• Rumus: (${tp} − ${bp} + 52) mod 52 = <span class="tag">${count}</span></div>
+        <div>• ${br.trace}</div>
+        <div>• ${tr.trace}</div>
+      </div>
+    </details>
+  `;
+}
+
+// AUTO CALCULATE: ACAAN (DIRECT FORMULA)
+function acaan() {
+  const t = byName.get(document.getElementById('targetA').value);
+  const rawVal = document.getElementById('numberA').value;
+  const n = Number(rawVal);
+
+  if (rawVal === '' || !Number.isInteger(n) || n < 1 || n > 52) {
+    document.getElementById('aResult').innerHTML = `
+      <div class="result-head" style="color:#f87171">Nomor Tidak Valid</div>
+      <div class="big-card-sub" style="margin-top:8px">Masukkan angka bulat antara <b>1</b> sampai <b>52</b>.</div>
+    `;
+    return;
+  }
+
+  const tp = positionMap.get(t.name);
+  let requiredBottomPos = (tp - n + 52) % 52;
+  if (requiredBottomPos === 0) requiredBottomPos = 52;
+
+  const requiredBottom = cardAtPosition.get(requiredBottomPos);
+  const tr = reversePosition(t.sorted);
+  const rr = reversePosition(requiredBottom.sorted);
+
+  document.getElementById('aResult').innerHTML = `
+    <div class="result-head">Kartu Paling Bawah yang Harus Digunakan</div>
+    <div class="hero-output">
+      <div>
+        <div class="big-card-title">${requiredBottom.name}</div>
+        <div class="big-card-sub"><b>${requiredBottom.full}</b></div>
+      </div>
+      ${renderCard(requiredBottom)}
+    </div>
+    <div class="summary-row">
+      <div>Letakkan <b>${requiredBottom.full}</b> di paling bawah, maka <b>${t.full}</b> otomatis berada di urutan ke-<b>${n}</b>.</div>
+    </div>
+    <details class="steps">
+      <summary>Rincian Rumusan</summary>
+      <div class="steps-body">
+        <div>• Posisi stack kartu target (${t.name}): <b>${tp}</b></div>
+        <div>• Rumus kartu bawah: (${tp} − ${n} + 52) mod 52 = <span class="tag">${requiredBottomPos}</span></div>
+        <div>• Kartu pada posisi stack ${requiredBottomPos}: <b>${requiredBottom.full}</b></div>
+        <div>• ${tr.trace}</div>
+        <div>• ${rr.trace}</div>
+        <div class="tag">✓ Verifikasi: (${tp} − ${requiredBottomPos} + 52) mod 52 = ${n}</div>
+      </div>
+    </details>
+  `;
+}
+
+// Event Listeners untuk Trigger Otomatis (Real-time)
+document.getElementById('bottomTrack').addEventListener('change', track);
+document.getElementById('targetTrack').addEventListener('change', track);
+
+document.getElementById('targetA').addEventListener('change', acaan);
+document.getElementById('numberA').addEventListener('input', acaan);
+
+// Stepper Buttons (- / +) untuk kemudahan input di HP
+document.getElementById('minusNum').addEventListener('click', () => {
+  const input = document.getElementById('numberA');
+  let val = parseInt(input.value, 10) || 1;
+  input.value = val > 1 ? val - 1 : 52;
+  acaan();
+});
+
+document.getElementById('plusNum').addEventListener('click', () => {
+  const input = document.getElementById('numberA');
+  let val = parseInt(input.value, 10) || 0;
+  input.value = val < 52 ? val + 1 : 1;
+  acaan();
+});
+
+// Reset Buttons
+document.getElementById('resetTrack').addEventListener('click', () => {
+  document.getElementById('bottomTrack').value = 'Q♥';
+  document.getElementById('targetTrack').value = '3♥';
+  track();
+});
+
+document.getElementById('resetA').addEventListener('click', () => {
+  document.getElementById('targetA').value = '3♥';
+  document.getElementById('numberA').value = '10';
+  acaan();
+});
+
+// Tab Switcher
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === btn));
+    document.getElementById('tracking').classList.toggle('hidden', btn.dataset.tab !== 'tracking');
+    document.getElementById('acaan').classList.toggle('hidden', btn.dataset.tab !== 'acaan');
+    document.getElementById('about').classList.toggle('hidden', btn.dataset.tab !== 'about');
+  });
+});
+
+// Default Initial Values
+document.getElementById('bottomTrack').value = 'Q♥';
+document.getElementById('targetTrack').value = '3♥';
+document.getElementById('targetA').value = '3♥';
+document.getElementById('numberA').value = '10';
+
+track();
+acaan();
+</script>
+</body>
+</html>
